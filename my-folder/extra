@@ -1,0 +1,24 @@
+
+
+//   var defaultdata = {
+//                       "speech": "hello",
+//                       "messages": [
+//                         {
+//                           "type": 1,
+//                           "platform": "telegram",
+//                           "title": cryptoCoin[0].c +"("+cryptoCoin[0].n+")",
+//                           "subtitle": "\n\n*"+cryptoCoin[0].c +"("+cryptoCoin[0].n+")*"+ " is " + "*"+coinValue + " " + currency+"*",
+//                           "imageUrl": ilink,
+//                           "buttons": [
+//                             {
+//                               "text": "View Profile",
+//                               "postback": link
+//                             }
+//                           ]
+//                         },
+//                         {
+//                           "type": 1,
+//                           "speech": "hello"
+//                         }
+//                       ]
+//               }
