@@ -23,7 +23,7 @@ server.use(bodyParser.json());
 let uniqID;
 let displayName;
 var currency = "";
-
+var platform;
 console.log("Value" + gUser)
 
 // dbAllCoinZ.g_createRecord(gUser,{
@@ -56,7 +56,7 @@ server.post('/getCoinValue', function (req, res) {
     // });
 
     //console.log(JSON.stringify(req.headers))
-    console.log(JSON.stringify(req.body))
+    //console.log(JSON.stringify(req.body))
 
 
 
@@ -64,15 +64,34 @@ server.post('/getCoinValue', function (req, res) {
     let source = req.body.originalRequest.source
 
 
-    console.log(result.metadata.intentName)
+    //console.log(result.metadata.intentName)
+    console.log(JSON.stringify(req.body))
 
 
-    if (source == "telegram") {
-        displayName = (req.body).originalRequest.data.message.chat.username;
-        uniqID = (req.body).originalRequest.data.message.chat.id
+    switch (source) {
+        case "telegram":
+            platform = "telegram"
+            displayName = (req.body).originalRequest.data.message.chat.username;
+            uniqID = (req.body).originalRequest.data.message.chat.id
+            break;
+        case "slack_testbot":
+            platform = "slack"
+            break;
+        case "skype":
+            platform = "skype"
+            break;
+        default:
+            platform = "telegram"
     }
+    //console.log(result.metadata.intentName)
 
 
+    if (result.metadata.intentName == "Default Welcome Intent") {
+        var cardResponse = getDefaultCardMessageResponse()
+        console.log(cardResponse)
+        cardResponse.messages[0].subtitle = "\n Hello "+ displayName + "!!!\n\n _All CoinZ - Get CryptoCoins' value in local currencies!!!_\n\n *>*  Send *help* for help/configuration \n\n *>* ``` Set default currency by sending:``` \n *SET CURR USD* / *SET CURR BTC* / *SET CURR IND*"
+         sendDialogflowResponse(res, cardResponse)
+    }
 
     if (result.metadata.intentName == "getCoinValue") {
 
@@ -96,22 +115,25 @@ server.post('/getCoinValue', function (req, res) {
         var userCurrency = result.parameters["currency-name"];
         if (userCurrency == "" && result.parameters["CryptoCoin"] !== "") {
             userCurrency = result.parameters["CryptoCoin"]
-        } 
-        if(userCurrency=="")
-        {
-           return sendResult(source, false, null, res, "Currency could not be identified.No changes are made");
-         }
-      
+        }
+        if (userCurrency == "") {
+
+            return sendDialogflowResponse(res, getSimpleMessageObject("Currency could not be identified.No changes are made :("))
+            //return sendResult(source, false, null, res, "Currency could not be identified.No changes are made");
+        }
+
         dbAllCoinZ.g_UpdateInsert(gUser, {
             uniqID: uniqID
         }, {
-                displayName: displayName,
-                uniqID: uniqID,
-                curr: userCurrency
-            }).then(function () {
-                sendResult(source, false, null, res, "Default currency has been set to " + userCurrency)
-                //console.log("currency-name " + userCurrency)
-            })
+            displayName: displayName,
+            uniqID: uniqID,
+            curr: userCurrency
+        }).then(function () {
+
+            sendDialogflowResponse(res, getSimpleMessageObject("Default currency has been set to " + userCurrency))
+
+            //console.log("currency-name " + userCurrency)
+        })
 
     } else if (result.metadata.intentName == "Default Fallback Intent") {
 
@@ -125,7 +147,41 @@ server.listen((process.env.PORT || 8000), function () {
     console.log("Server is up and running... ");
 });
 
+function sendDialogflowResponse(res, result) {
 
+    res.send(result)
+
+}
+
+function getDefaultCardMessageResponse() {
+
+    var message = {
+        "messages": [{
+            "buttons": [{
+                "postback": "https://sites.google.com/view/allcoinz/home",
+                "text": "AllCoinZ"
+            }],
+            "imageUrl": "https://sites.google.com/view/allcoinz/home",
+            "platform": platform,
+            "subtitle": "Welcome to AllCoinZ",
+            "title": "AllCoinZ",
+            "type": 1
+        }]
+    }
+    return message;
+
+}
+
+function getSimpleMessageObject(message) {
+
+    var message = {
+        "messages": [{
+            "speech": message,
+            "type": 0
+        }]
+    }
+    return message;
+}
 
 function sendResult(type, success, coinResult, res, onlyNotification = "") {
 
@@ -145,11 +201,29 @@ function sendResult(type, success, coinResult, res, onlyNotification = "") {
         if (onlyNotification != "") {
             text = onlyNotification
         }
+
+
+
+        var responseData1 = {
+
+            "messages": [{
+                "buttons": [{
+                    "postback": "https://sites.google.com/view/allcoinz/home",
+                    "text": "AllCoinZ"
+                }],
+                "imageUrl": "https://sites.google.com/view/allcoinz/home",
+                "platform": "telegram",
+                "subtitle": "\n _Get CryptoCoins' value in local currencies!!!_\n\n Send *help* for help/configuration \n\n``` Set default currency by sending:``` \n\n *SET CURR USD* / *SET CURR BTC* / *SET CURR IND*",
+                "title": "AllCoinZ",
+                "type": 1
+            }]
+        }
+
         responseData = {
             "data": {
                 "telegram": {
                     "text": text //\n\n["+link +"]",
-                    ,
+                        ,
                     parse_mode: "markdown",
                     disable_web_page_preview: true,
                     "reply_markup": {
@@ -236,7 +310,7 @@ function sendResult(type, success, coinResult, res, onlyNotification = "") {
         }
         //console.log("skyppee")
     }
-    res.send(responseData)
+    sendDialogflowResponse(res, responseData)
 }
 
 
@@ -258,7 +332,7 @@ function getCurrency() {
 
         }
 
-    }, function (error) { })
+    }, function (error) {})
 
     return deferred.promise;
 }
@@ -300,6 +374,7 @@ function getCoinObject(result) {
 
             var JSONResponse = JSON.parse(response.body);
             //console.log("JSON Coin Value :"+cryptoCoin[0].n+ ":"+ JSONResponse[cryptoCoin[0].n]);
+            console.log(JSONResponse);
             var coinValue = JSONResponse[cryptoCoin[0].n.toUpperCase()][currency];
             var speechOP = ""
             //console.log("CV" + coinValue);
