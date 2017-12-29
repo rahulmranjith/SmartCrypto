@@ -1,4 +1,4 @@
-'use strict';
+'use strict'; //rahulmr
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -23,7 +23,7 @@ server.use(bodyParser.json());
 let uniqID;
 let displayName;
 var currency = "";
-
+var platform;
 console.log("Value" + gUser)
 
 // dbAllCoinZ.g_createRecord(gUser,{
@@ -64,19 +64,34 @@ server.post('/getCoinValue', function (req, res) {
     let source = req.body.originalRequest.source
 
 
-    console.log(result.metadata.intentName)
-//    console.log(JSON.stringify((req.body).originalRequest.data.message.chat))
+    //console.log(result.metadata.intentName)
+    console.log(JSON.stringify(req.body))
 
 
-
-
-
-    if (source == "telegram") {
-        displayName = (req.body).originalRequest.data.message.chat.username;
-        uniqID = (req.body).originalRequest.data.message.chat.id
+    switch (source) {
+        case "telegram":
+            platform = "telegram"
+            displayName = (req.body).originalRequest.data.message.chat.username;
+            uniqID = (req.body).originalRequest.data.message.chat.id
+            break;
+        case "slack_testbot":
+            platform = "slack"
+            break;
+        case "skype":
+            platform = "skype"
+            break;
+        default:
+            platform = "telegram"
     }
+    //console.log(result.metadata.intentName)
 
 
+    if (result.metadata.intentName == "Default Welcome Intent") {
+        var cardResponse = getDefaultCardMessageResponse()
+        console.log(cardResponse)
+        cardResponse.messages[0].subtitle = "\n Hello "+ displayName + "!!!\n\n _All CoinZ - Get CryptoCoins' value in local currencies!!!_\n\n *>*  Send *help* for help/configuration \n\n *>* ``` Set default currency by sending:``` \n *SET CURR USD* / *SET CURR BTC* / *SET CURR IND*"
+         sendDialogflowResponse(res, cardResponse)
+    }
 
     if (result.metadata.intentName == "getCoinValue") {
 
@@ -98,7 +113,14 @@ server.post('/getCoinValue', function (req, res) {
     }
     if (result.metadata.intentName == "ChangeCurrency") {
         var userCurrency = result.parameters["currency-name"];
+        if (userCurrency == "" && result.parameters["CryptoCoin"] !== "") {
+            userCurrency = result.parameters["CryptoCoin"]
+        }
+        if (userCurrency == "") {
 
+            return sendDialogflowResponse(res, getSimpleMessageObject("Currency could not be identified.No changes are made :("))
+            //return sendResult(source, false, null, res, "Currency could not be identified.No changes are made");
+        }
 
         dbAllCoinZ.g_UpdateInsert(gUser, {
             uniqID: uniqID
@@ -106,10 +128,12 @@ server.post('/getCoinValue', function (req, res) {
             displayName: displayName,
             uniqID: uniqID,
             curr: userCurrency
-        })
+        }).then(function () {
 
-        sendResult(source, false, null, res,"Currency is set to " + userCurrency)
-        console.log("currency-name " + userCurrency)
+            sendDialogflowResponse(res, getSimpleMessageObject("Default currency has been set to " + userCurrency))
+
+            //console.log("currency-name " + userCurrency)
+        })
 
     } else if (result.metadata.intentName == "Default Fallback Intent") {
 
@@ -123,13 +147,47 @@ server.listen((process.env.PORT || 8000), function () {
     console.log("Server is up and running... ");
 });
 
+function sendDialogflowResponse(res, result) {
 
+    res.send(result)
+
+}
+
+function getDefaultCardMessageResponse() {
+
+    var message = {
+        "messages": [{
+            "buttons": [{
+                "postback": "https://sites.google.com/view/allcoinz/home",
+                "text": "AllCoinZ"
+            }],
+            "imageUrl": "https://sites.google.com/view/allcoinz/home",
+            "platform": platform,
+            "subtitle": "Welcome to AllCoinZ",
+            "title": "AllCoinZ",
+            "type": 1
+        }]
+    }
+    return message;
+
+}
+
+function getSimpleMessageObject(message) {
+
+    var message = {
+        "messages": [{
+            "speech": message,
+            "type": 0
+        }]
+    }
+    return message;
+}
 
 function sendResult(type, success, coinResult, res, onlyNotification = "") {
 
     var text;
     var responseData
-    console.log(type)
+    //console.log(type)
     if (type == "telegram") {
 
         if (success) {
@@ -143,6 +201,24 @@ function sendResult(type, success, coinResult, res, onlyNotification = "") {
         if (onlyNotification != "") {
             text = onlyNotification
         }
+
+
+
+        var responseData1 = {
+
+            "messages": [{
+                "buttons": [{
+                    "postback": "https://sites.google.com/view/allcoinz/home",
+                    "text": "AllCoinZ"
+                }],
+                "imageUrl": "https://sites.google.com/view/allcoinz/home",
+                "platform": "telegram",
+                "subtitle": "\n _Get CryptoCoins' value in local currencies!!!_\n\n Send *help* for help/configuration \n\n``` Set default currency by sending:``` \n\n *SET CURR USD* / *SET CURR BTC* / *SET CURR IND*",
+                "title": "AllCoinZ",
+                "type": 1
+            }]
+        }
+
         responseData = {
             "data": {
                 "telegram": {
@@ -183,11 +259,11 @@ function sendResult(type, success, coinResult, res, onlyNotification = "") {
 
         }
 
-      
 
-    }else if (type=="slack_testbot"){
-      
-      if (success) {
+
+    } else if (type == "slack_testbot") {
+
+        if (success) {
             text = "\n\n`" + coinResult.CoinFN + "(" + coinResult.CoinSN + ")`" + "= " + "*" + coinResult.CoinValue + " " + coinResult.CoinCurrency + "*   "
 
         } else {
@@ -195,11 +271,11 @@ function sendResult(type, success, coinResult, res, onlyNotification = "") {
             text = "*Coin cannot be identified.* \n` Message to add new coin.`"
 
         }
-     
-      if (onlyNotification != "") {
+
+        if (onlyNotification != "") {
             text = onlyNotification
         }
-    responseData = {
+        responseData = {
             "data": {
                 "slack": {
                     "text": text,
@@ -208,12 +284,10 @@ function sendResult(type, success, coinResult, res, onlyNotification = "") {
             }
 
         }
-    
-    }
-  
-  else if (type=="skype"){
-      
-      if (success) {
+
+    } else if (type == "skype") {
+
+        if (success) {
             text = "\n\n`" + coinResult.CoinFN + "(" + coinResult.CoinSN + ")`" + "= " + "*" + coinResult.CoinValue + " " + coinResult.CoinCurrency + "*   "
 
         } else {
@@ -221,11 +295,11 @@ function sendResult(type, success, coinResult, res, onlyNotification = "") {
             text = "*Coin cannot be identified.* \n` Message to add new coin.`"
 
         }
-     
-      if (onlyNotification != "") {
+
+        if (onlyNotification != "") {
             text = onlyNotification
         }
-    responseData = {
+        responseData = {
             "data": {
                 "skype": {
                     "text": text,
@@ -234,9 +308,9 @@ function sendResult(type, success, coinResult, res, onlyNotification = "") {
             }
 
         }
-      console.log("skyppee")
+        //console.log("skyppee")
     }
-    res.send(responseData)
+    sendDialogflowResponse(res, responseData)
 }
 
 
@@ -249,7 +323,7 @@ function getCurrency() {
     dbAllCoinZ.g_getRecord(gUser, {
         uniqID: uniqID
     }).then(function (item) {
-        console.log("item " + item)
+        //console.log("item " + item)
         if (item) {
             console.log("Selected Currency " + item.curr)
             deferred.resolve(item.curr);
@@ -272,7 +346,7 @@ function getCoinObject(result) {
     var deferred = Q.defer();
 
     cryptoCoin = result.parameters.CryptoCoin;
-    console.log("hello " + JSON.stringify(result.parameters))
+    //console.log("hello " + JSON.stringify(result.parameters))
     if (cryptoCoin == undefined || currency == undefined) {
         speechOP = "Coin or Currency cannot be identified.";
 
@@ -300,6 +374,7 @@ function getCoinObject(result) {
 
             var JSONResponse = JSON.parse(response.body);
             //console.log("JSON Coin Value :"+cryptoCoin[0].n+ ":"+ JSONResponse[cryptoCoin[0].n]);
+            console.log(JSONResponse);
             var coinValue = JSONResponse[cryptoCoin[0].n.toUpperCase()][currency];
             var speechOP = ""
             //console.log("CV" + coinValue);
