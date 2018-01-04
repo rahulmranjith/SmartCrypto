@@ -1,5 +1,41 @@
 
 
+var display = {
+            "DISPLAY": {
+                "BTC": {
+                    "USD": {
+                        "FROMSYMBOL": "Ƀ",
+                        "TOSYMBOL": "$",
+                        "MARKET": "CryptoCompare Index",
+                        "PRICE": "$ 14,624.3",
+                        "LASTUPDATE": "Just now",
+                        "LASTVOLUME": "Ƀ 0.05483",
+                        "LASTVOLUMETO": "$ 799.39",
+                        "LASTTRADEID": "145826016",
+                        "VOLUMEDAY": "Ƀ 84,958.0",
+                        "VOLUMEDAYTO": "$ 1,238,574,452.6",
+                        "VOLUME24HOUR": "Ƀ 123,694.2",
+                        "VOLUME24HOURTO": "$ 1,780,576,820.0",
+                        "OPENDAY": "$ 14,398.7",
+                        "HIGHDAY": "$ 15,109.8",
+                        "LOWDAY": "$ 13,951.1",
+                        "OPEN24HOUR": "$ 13,960.0",
+                        "HIGH24HOUR": "$ 15,147.8",
+                        "LOW24HOUR": "$ 13,443.7",
+                        "LASTMARKET": "Bitfinex",
+                        "CHANGE24HOUR": "$ 664.23",
+                        "CHANGEPCT24HOUR": "4.76",
+                        "CHANGEDAY": "$ 225.57",
+                        "CHANGEPCTDAY": "1.57",
+                        "SUPPLY": "Ƀ 16,769,875.0",
+                        "MKTCAP": "$ 245.25 B",
+                        "TOTALVOLUME24H": "Ƀ 324.93 K",
+                        "TOTALVOLUME24HTO": "$ 4,723.44 M"
+                    }
+                }
+            }
+        }
+
 //   var defaultdata = {
 //                       "speech": "hello",
 //                       "messages": [
@@ -22,3 +58,48 @@
 //                         }
 //                       ]
 //               }
+
+
+
+
+
+//console.log("Value" + gUser)
+
+// dbAllCoinZ.g_createRecord(gUser,{
+//     displayName: "rahul",
+//     uniqID: 1234,
+//     curr: "INR"
+// })
+
+
+// dbAllCoinZ.g_UpdateInsert(gUser,{uniqID:123456},{
+//     displayName: "mrrahul",
+//     uniqID: 12345,
+//     curr: "INR"
+// // })
+
+// var a = dbAllCoinZ.g_getRecords(gUser);
+// a.then(function (success) {
+//     //console.log("Value" + JSON.stringify(success))
+// }, function (error) {
+//     //console.log("Value" + JSON.stringify(error))
+// })
+
+
+
+    // const app = new ApiAiApp({
+    //     req,
+    //     res
+    // });
+
+    ////console.log(JSON.stringify(req.headers))
+    ////console.log(JSON.stringify(req.body))
+
+//     dbAllCoinZ.g_getRecords(gUser, {
+//         displayName: "rahul",
+//         uniqID: 1234,
+//         curr: "INR"
+//     }).then(function (items) {
+//         console.log(JSON.stringify(items))
+
+//     })
