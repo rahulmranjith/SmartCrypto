@@ -7,6 +7,7 @@ var Sequelize = require('sequelize');
 var app = express();
 
 
+global.lg = function(message){console.log(message)}; 
 
 
 // setup a new database
@@ -45,20 +46,33 @@ const User = sequelize.define('user', {
   },
   curr: {
     type: Sequelize.STRING
+  },
+  portfolio:{
+    type:Sequelize.STRING
   }
 });
 
+ 
+User.sync(
+  //{alter: true}
+);
 
-User.sync();
 
 
+// User.findAll().then(function (success) {
+//       console.log("Value Result" + JSON.stringify(success))
+// }, function (error) {
+//      console.log("Value Error" + JSON.stringify(error))
+// })  
+   
+ 
 // User.destroy({
 //     where: {
-//         // criteria
+//          uniqID:"U8J0ZPRJR"490302005 
 //     }
-// })
+// }) 
 
-
+ 
 //methods
 var getRecords = function (model) {
   

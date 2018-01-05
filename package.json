@@ -20,8 +20,8 @@
     "q":"^1.5.1",
 		"es6-map": "^0.1.4",
 		"prettyjson": "^1.2.1",
-		"underscore.string": "^3.3.4"
-    
+		"underscore.string": "^3.3.4",
+    "node-telegram-bot-api":"*"
   },
   "engines": {
     "node": "8.1.x"
