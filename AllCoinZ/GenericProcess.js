@@ -1,5 +1,6 @@
 const Util = require('../AllCoinZ/util')
 const telegram = require('../AllCoinZ/telegram')
+const Google = require('../AllCoinZ/Google')
 const slack = require('../AllCoinZ/slack')
 const Q = require('q')
 const dbAllCoinZ = require('../db/initialize');
@@ -11,6 +12,7 @@ function getWelcomeMessage(platform, displayName) {
     var cardResponse = Util.m_getDefaultCardMessageResponse(platform)
     var welcomeMessage = "";
 
+    console.log(Util.m_platform)
     switch (Util.m_platform) {
         case "telegram":
             welcomeMessage = telegram.m_formatWelcomeMessage(displayName);
@@ -20,10 +22,14 @@ function getWelcomeMessage(platform, displayName) {
             welcomeMessage = slack.m_formatWelcomeMessage(displayName);
             cardResponse=welcomeMessage
             break;
+        case "google":
+            welcomeMessage = Google.m_formatWelcomeMessage(displayName);
+            
+            break;
         default:
             "Hello Welcome to AllCoinZ"
     }
-    console.log(cardResponse)
+    
     return cardResponse;
 }
 
@@ -41,6 +47,9 @@ function getResponseMessage(coinResult) {
         case "skype":
             responseMessage = telegram.m_ResponseMessage(coinResult);
             break;
+        case "google":
+            responseMessage = Google.m_ResponseMessage(coinResult);
+            break;
         default:
             "Please try again !!!"
 
@@ -49,17 +58,16 @@ function getResponseMessage(coinResult) {
     return responseMessage
 }
 
-function SyncPortfolio(userInfo, portfolios) {
+function SyncPortfolio(userInfo, gapp) {
 
 
     var deferred = Q.defer();
 
     var portfolio;
-    var cryptoCoin = portfolios.CryptoCoin;
-    var newQuantity = portfolios.number;
-    var BuySell = (portfolios.BuySell.toUpperCase() == "B" ||
-        portfolios.BuySell.toUpperCase() == "ADD" ||
-        portfolios.BuySell.toUpperCase() == "BUY")
+    var cryptoCoin = gapp.getArgument("CryptoCoin");
+    var newQuantity = gapp.getArgument("number");
+     
+    var BuySell = (gapp.getArgument("BuySell").toUpperCase() == "B" )
     var userInfoData;
 
     dbAllCoinZ.g_getRecord(gUser, {
@@ -81,7 +89,7 @@ function SyncPortfolio(userInfo, portfolios) {
                 })
 
             }
-            console.log(JSON.stringify(item))
+            //console.log(JSON.stringify(item))
 
         } else {
             var currentPortfolio = JSON.parse(item.portfolio)
@@ -131,7 +139,7 @@ function SyncPortfolio(userInfo, portfolios) {
     //     title: "Portfolio Details",
     //     buttons: []
     // }))
-            console.log("updated the portfolio");
+            //console.log("updated the portfolio");
         }, function (error) {
             deferred.reject(error)
         })
@@ -175,7 +183,7 @@ function getPortfolio(userInfo) {
         let myPortfolio = result.portfolio;
         Util.m_myCurrency = result.curr;
         if (myPortfolio == null) {} else {
-            console.log(JSON.parse(myPortfolio));
+            //console.log(JSON.parse(myPortfolio));
 
             deferred.resolve(JSON.parse(myPortfolio), result.curr);
 
@@ -277,7 +285,7 @@ function getPortFolioCoinData(input, myCurrency) {
     var baseUrl = 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms=';
     var parsedUrl = baseUrl + cryptoCoinstoFetch + "&tsyms=BTC," + myCurrency + "&e=CCCAGG"
 
-    console.log(parsedUrl);
+    //console.log(parsedUrl);
     request(parsedUrl, function (error, response, body) {
 
         

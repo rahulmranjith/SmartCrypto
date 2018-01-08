@@ -1,7 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 
 // replace the value below with the Telegram token you receive from @BotFather
-const token = '487480335:AAE97N5Vqb_9Gb79qIuZQwiI8AmalpfbB28';
+const token = '511570368:AAGp_zu8TLQjUYHHM0H1o8lw2427pkMVTkI';
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, {polling: true});
@@ -32,5 +32,5 @@ bot.on('message', (msg) => {
 setInterval(() => {
     
  // send back the matched "whatever" to the chat
- bot.sendMessage(490302005,"Hello" + new Date());
+ //bot.sendMessage(490302005,"Hello" + new Date());
 }, 3000);

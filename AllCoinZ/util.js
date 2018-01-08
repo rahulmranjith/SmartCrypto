@@ -87,10 +87,10 @@ function getCoinObject(coinsCount) {
 
         deferred.reject(null);
     } else {
-        console.log("cryptocoins" + cryptoCoin)
+        //console.log("cryptocoins" + cryptoCoin)
       
          for (const key of Object.keys(myCoins)) {
-            console.log(key, myCoins[key]);
+            //console.log(key, myCoins[key]);
         }
       
         cryptoCoin = myCoins.findCoin(cryptoCoin.toUpperCase());;

@@ -4,18 +4,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const http = require('http');
 const request = require('request');
-const app = express();
 const Map = require('es6-map');
 
 const Q = require('q')
 const dbAllCoinZ = require('./db/initialize');
-
 const telegramAPI = require('./AllCoinZ/telegram')
 const Util = require('./AllCoinZ/util')
-
 const GenProc = require('./AllCoinZ/GenericProcess')
+const telegramPush = require('./AllCoinZ/push')
 
-//const telegramPush = require('./AllCoinZ/push')
+const Google = require('./AllCoinZ/Google')
 
 var gUser = dbAllCoinZ.g_User;
 
@@ -32,31 +30,42 @@ var currency = "";
 var exchange = "CCCAGG"
 var platform;
 
+var gapp;
 
-server.post('/getCoinValue', function (req, res) {
+const ApiAiApp = require('actions-on-google').DialogflowApp;
+
+let res;
+
+server.post('/', function (request, response, next) {
+
+    gapp = new ApiAiApp({ request, response });
+  
+    Google.m_gapp(gapp)
+    //console.log("GAPP" + JSON.stringify(gapp.body_.originalRequest))
 
 
-    let result = req.body.result;
-    let source = req.body.originalRequest.source
+    res = response;
+    let originalRequest = gapp.body_.originalRequest
 
-    //console.log(JSON.stringify(req.body.originalRequest))
-    ////console.log(result.metadata.intentName)
-    console.log(JSON.stringify(req.body))
-
-
-    switch (source) {
+    //console.log(originalRequest.source)  
+    switch (originalRequest.source) {
         case "telegram":
             platform = "telegram"
-            displayName = (req.body).originalRequest.data.message.chat.username;
-            uniqID = (req.body).originalRequest.data.message.chat.id
+            displayName = originalRequest.data.message.chat.username;
+            uniqID = originalRequest.data.message.chat.id
             break;
         case "slack_testbot":
-            displayName = (req.body).originalRequest.data.user;
-            uniqID = (req.body).originalRequest.data.user;
+            displayName = originalRequest.data.user;
+            uniqID = originalRequest.data.user;
             platform = "slack"
             break;
         case "skype":
             platform = "skype"
+            break;
+        case "google":
+            platform = "google"      
+        displayName = gapp.body_.originalRequest.data.user.userId
+            uniqID =gapp.body_.originalRequest.data.user.userId
             break;
         default:
             platform = "telegram"
@@ -64,120 +73,142 @@ server.post('/getCoinValue', function (req, res) {
     Util.m_platform = platform
 
 
-  
-    if (result.metadata.intentName == "ViewPortfolio") {
 
-        GenProc.m_getTotalPortfolioValue({
-            displayName,
-            uniqID
-        }, false).then(function (VPortfolio) {
-            sendDialogflowResponse(res, VPortfolio)
+    let actionMap = new Map();
+    //actionMap.set('request_name_permission', getName);
+    //actionMap.set('thankyouPermission', thankyouPermission);
+    //actionMap.set('ViewPortfolio', ViewPortfolio);
+    actionMap.set('getCoinValue', getCoinValue);
+    actionMap.set('TotalPortfolioValue', TotalPortfolioValue);
+    actionMap.set('ViewPortfolio', ViewPortfolio);
+    actionMap.set('ViewPortfolio', ViewPortfolio);
 
-        }, function (error) {
-            console.log(error);
-            sendDialogflowResponse(res, error)
-        })
-    } else if (result.metadata.intentName == "TotalPortfolioValue") {
-        //var welcomeMessageResponse = GenProc.m_getWelcomeMessage(platform,displayName)
-        //sendDialogflowResponse(res, welcomeMessageResponse)
-        GenProc.m_getTotalPortfolioValue({
-                displayName,
-                uniqID
-            }, true)
-            .then(function (TPV) {
-                    console.log("aaa" + TPV)
-                    sendDialogflowResponse(res, TPV)
-                },
-                function (error) {
-                    console.log(error);
-                    sendDialogflowResponse(res, error)
-                })
+    actionMap.set('input.welcome', DefaultWelcomeIntent);
+    actionMap.set('setCurrency', ChangeCurrency);
+    actionMap.set('input.unknown', DefaultFallbackIntent);
+    actionMap.set('BuySellCoin', BuySellCoin);
+    actionMap.set('gethelp', DefaultWelcomeIntent);
 
+    gapp.handleRequest(actionMap);
 
+})
+function DefaultWelcomeIntent() {
+    
+    var welcomeMessageResponse = GenProc.m_getWelcomeMessage(platform, displayName)
+    sendDialogflowResponse(res, welcomeMessageResponse)
+}
 
+function ChangeCurrency() {
+    var userCurrency = gapp.getArgument("currency-name")
+    if (userCurrency == "" && gapp.getArgument["CryptoCoin"] !== "") {
+        userCurrency = gapp.getArgument["CryptoCoin"]
+    }
+    if (userCurrency == "") {
+        return sendDialogflowResponse(res, Util.m_getSimpleMessageObject("Currency could not be identified.No changes are made :("))
+    }
 
-
-    } else if (result.metadata.intentName == "BuySellCoin") {
-        //var welcomeMessageResponse = GenProc.m_getWelcomeMessage(platform,displayName)
-        //sendDialogflowResponse(res, welcomeMessageResponse)
-        GenProc.m_SyncPortfolio({
-            displayName,
-            uniqID
-        }, result.parameters).then(function (message) {
-            sendDialogflowResponse(res, message)
-        }, function (error) {
-            sendDialogflowResponse(res, error)
-        })
-
-
-
-    } else if (result.metadata.intentName == "Default Welcome Intent" || result.metadata.intentName =="help") {
-        var welcomeMessageResponse = GenProc.m_getWelcomeMessage(platform, displayName)
-        sendDialogflowResponse(res, welcomeMessageResponse)
-    } else if (result.metadata.intentName == "getCoinValue") {
-
-        Util.m_getCurrency(uniqID).then(function () {
-
-            var count = 1;
-            if (result.parameters.count != "") {
-                count = result.parameters.count
-            }
-
-            var oCoin = Util.m_getCoinObject({
-                count: count,
-                CryptoCoin: result.parameters.CryptoCoin
-            })
-            oCoin.then(function (coinResult) {
-                sendResult(true, coinResult, res)
-            }).catch(function (err) {
-                console.log("m_getCurrency method failed")
-            });
-        })
-
-    } else if (result.metadata.intentName == "ChangeCurrency") {
-        var userCurrency = result.parameters["currency-name"];
-        if (userCurrency == "" && result.parameters["CryptoCoin"] !== "") {
-            userCurrency = result.parameters["CryptoCoin"]
-        }
-        if (userCurrency == "") {
-            return sendDialogflowResponse(res, Util.m_getSimpleMessageObject("Currency could not be identified.No changes are made :("))
-        }
-
-        dbAllCoinZ.g_UpdateInsert(gUser, {
-            uniqID: uniqID
-        }, {
+    dbAllCoinZ.g_UpdateInsert(gUser, {
+        uniqID: uniqID
+    }, {
             displayName: displayName,
             uniqID: uniqID,
             curr: userCurrency
         }).then(function () {
             sendDialogflowResponse(res, Util.m_getSimpleMessageObject("Default currency has been set to " + userCurrency))
         })
+}
 
-    } else if (result.metadata.intentName == "Default Fallback Intent") {
-      
-      
-        sendDialogflowResponse(res, GenProc.m_callPayLoadFormatMessage("`Please check the keyword or Coin name .  Check help for keywords`"))
-        //sendResult(false, null, res)
+function DefaultFallbackIntent() {
+    sendDialogflowResponse(res, GenProc.m_callPayLoadFormatMessage("`Please check the keyword or Coin name .  Check help for keywords`"))
+}
+function BuySellCoin() {//var welcomeMessageResponse = GenProc.m_getWelcomeMessage(platform,displayName)
+    //sendDialogflowResponse(res, welcomeMessageResponse)
+    GenProc.m_SyncPortfolio({
+        displayName,
+        uniqID
+    }, gapp).then(function (message) {
+        sendDialogflowResponse(res, message)
+    }, function (error) {
+        sendDialogflowResponse(res, error)
+    })
+}
+
+function getCoinValue() {
+  
+    Util.m_getCurrency(uniqID).then(function () {
+        var count = 1;
+        if (gapp.getArgument("count") != null) {
+            count = gapp.getArgument("count")
+        }
+        var oCoin = Util.m_getCoinObject({
+            count: count,
+            CryptoCoin: gapp.getArgument("CryptoCoin")
+        })
+        oCoin.then(function (coinResult) {
+            sendDialogflowResponse(res, GenProc.m_getResponseMessage(coinResult))
+          
+        }).catch(function (err) {
+            console.log("m_getCurrency method failed"+ err)
+        });
     }
-
-});
+    )
+}
+function ViewPortfolio() {
+    GenProc.m_getTotalPortfolioValue({
+        displayName,
+        uniqID
+    }, false).then(function (VPortfolio) {
+        sendDialogflowResponse(res, VPortfolio)
+    }, function (error) {
+        console.log(error);
+        sendDialogflowResponse(res, error)
+    })
+}
+function TotalPortfolioValue() {
+    GenProc.m_getTotalPortfolioValue({
+        displayName,
+        uniqID
+    }, true)
+        .then(function (TPV) {
+            //console.log("aaa" + TPV)
+            sendDialogflowResponse(res, TPV)
+        },
+        function (error) {
+            console.log(error);
+            sendDialogflowResponse(res, error)
+        })
+}
 
 server.listen((process.env.PORT || 8000), function () {
     //console.log("Server is up and running... ");
 });
 
 function sendDialogflowResponse(res, result) {
-
+  //console.log(gapp.body_.originalRequest.data.user.userId)
+  
+  if(Util.m_platform!="google"){
     res.send(result)
-
+  }
+    //console.log("result"+JSON.stringify(result))
+  
+//     res.send({"messages": [
+//   {
+//     "displayText": "Text response",
+//     "platform": "google",
+//     "textToSpeech": "A",//result.messages[0].subtitle,
+//     "type": "simple_response"
+//   }
+// ]})
+  
+  //   gapp.ask(gapp.buildRichResponse()
+  //   // Create a basic card and add it to the rich response
+  //   .addSimpleResponse('Simple Response')
+  //   .addBasicCard(gapp.buildBasicCard('Basic Card')
+  //     .setTitle('Basica Card Simple Title')
+  //     .addButton('Button', 'https://example.google.com/mathandprimes')
+  //     .setImage('https://www.cryptocompare.com/media/20646/eth.png', 'Ethereum')
+  //     .setImageDisplay('CROPPED')
+  //   )
+  // );
 }
 
-function sendResult(success, coinResult, res) {
-
-    var text;
-    var responseData
-
-    var responseData = GenProc.m_getResponseMessage(coinResult)
-
-    sendDialogflowResponse(res, responseData)
-}

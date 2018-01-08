@@ -1,16 +1,48 @@
 const Util = require('../AllCoinZ/util')
 
-
+var gapp;
 function formatWelcomeMessage(displayName) {
+    console.log("welcome");
+
+    // return "\n Hello *" + displayName + "*     !!!\n\n *💰All CoinZ - Get CryptoCoins' value in local currencies!!!💰*\n\n `Type in any Coin name like` *BTC* `or` *BitCoin* .\n\n *>*` Can ask interactively : `"+
+    //   "\n *   -What's the value of XRP* \n *   -How much is BTC* \n *   -Get me value of ETH and so on..*\n\n *>* `Send` *help* `for help/configuration` \n\n *>*` Set default currency by sending:` \n    -*CUR[USD]* / *CURR BTC* / *CUR IND*"
+    //     //+"\n aaa"
+    //   +"\n \n*>*` Set Portfolio using` :\n   - `To Add send` *B 1.23 BTC* \n   - `To Remove send` *S 1.00 BTC* \n   - `To view current Portfolio send` *VP* \n   - `To view Total Porftolio Value send` *PT*"
+
+  var welcomeMessage =""
+  const textToSpeech = '<speak>' +
+    'Here are <say-as interpret-as="characters">SSML</say-as> samples. ' +
+    'I can pause <break time="3" />. ' +
+    'I can play a sound <audio src="https://www.example.com/MY_WAVE_FILE.wav">your wave file</audio>. ' +
+    'I can speak in cardinals. Your position is <say-as interpret-as="cardinal">10</say-as> in line. ' +
+    'Or I can speak in ordinals. You are <say-as interpret-as="ordinal">10</say-as> in line. ' +
+    'Or I can even speak in digits. Your position in line is <say-as interpret-as="digits">10</say-as>. ' +
+    'I can also substitute phrases, like the <sub alias="World Wide Web Consortium">W3C</sub>. ' +
+    'Finally, I can speak a paragraph with two sentences. ' +
+    '<p><s>This is sentence one.</s><s>This is sentence two.</s></p>' +
+    '</speak>';
+  
+  welcomeMessage ='<speak>'+
+  'All CoinZ - Get CryptoCoins value in local currencies!!'+
+  'Type in any Coin name like BTC or BitCoin '+
+  '</speak>';
+    
+   gapp.ask(welcomeMessage)
+//   gapp.ask({
+//     speech: 'Howdy! I can tell you fun facts about ' +
+//     'almost any number, like 42. What do you have in mind?',
+//     displayText: "\n Hello *" + displayName + "*     !!!\n\n *💰All CoinZ - Get CryptoCoins' value in local currencies!!!💰*\n\n `Type in any Coin name like` *BTC* `or` *BitCoin* .\n\n *>*` Can ask interactively : `"+
+//       "\n *   -What's the value of XRP* \n *   -How much is BTC* \n *   -Get me value of ETH and so on..*\n\n *>* `Send` *help* `for help/configuration` \n\n *>*` Set default currency by sending:` \n    -*CUR[USD]* / *CURR BTC* / *CUR IND*"
+//         //+"\n aaa"
+//       +"\n \n*>*` Set Portfolio using` :\n   - `To Add send` *B 1.23 BTC* \n   - `To Remove send` *S 1.00 BTC* \n   - `To view current Portfolio send` *VP* \n   - `To view Total Porftolio Value send` *PT*"
 
 
-    return "\n Hello *" + displayName + "*     !!!\n\n *💰All CoinZ - Get CryptoCoins' value in local currencies!!!💰*\n\n `Type in any Coin name like` *BTC* `or` *BitCoin* .\n\n *>*` Can ask interactively : `"+
-      "\n *   -What's the value of XRP* \n *   -How much is BTC* \n *   -Get me value of ETH and so on..*\n\n *>* `Send` *help* `for help/configuration` \n\n *>*` Set default currency by sending:` \n    -*CUR[USD]* / *CURR BTC* / *CUR IND*"
-        //+"\n aaa"
-      +"\n \n*>*` Set Portfolio using` :\n   - `To Add send` *B 1.23 BTC* \n   - `To Remove send` *S 1.00 BTC* \n   - `To view current Portfolio send` *VP* \n   - `To view Total Porftolio Value send` *PT*"
-
+//   });
 }
 
+ function setgapp(mgapp){
+       gapp=mgapp
+ }
 
 function ResponseMessage(coinResult) {
 
@@ -212,5 +244,6 @@ module.exports = {
     m_ResponseMessage: ResponseMessage,
     m_getPortfolioData: getPortfolioData,
     m_getPortfolioInfo: getPortfolioInfo,
-  m_getPayLoadMessage:getPayLoadMessage
+  m_getPayLoadMessage:getPayLoadMessage,
+  m_gapp:setgapp
 }

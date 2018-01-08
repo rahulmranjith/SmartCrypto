@@ -13,7 +13,7 @@
     "express": "^4.15.3",
     "sqlite3": "*",
     "sequelize": "*",
-    "actions-on-google": "^1.6.1",
+    "actions-on-google": "*",
     
 		"body-parser": "^1.15.2",
 		"request": "^2.79.0",
