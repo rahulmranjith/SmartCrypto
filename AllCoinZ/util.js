@@ -14,6 +14,11 @@ function removeCurrencySymbols(currency) {
     return currency.PRICE.split(',').join("").split(currency.TOSYMBOL).join("").split(currency.FROMSYMBOL).join("")
 }
 
+
+
+
+
+
 function getCurrency(uniqID) {
 
     var deferred = Q.defer();
@@ -22,7 +27,8 @@ function getCurrency(uniqID) {
     }).then(function (item) {
         ////console.log("item " + item)
         if (item) {
-            myCurrency=item.curr
+           
+          if(item.curr==null){myCurrency="INR"}else{ myCurrency=item.curr} 
             deferred.resolve(item.curr);
         } else {
           myCurrency="INR"
@@ -30,7 +36,7 @@ function getCurrency(uniqID) {
 
         }
 
-    }, function (error) {})
+    }, function (error) {console.log("Currency fetch error" +JSON.stringify(error) ) })
 
     return deferred.promise;
 }
@@ -77,11 +83,13 @@ function getCoinObject(coinsCount) {
     var speechOP = "";
   
 
-
+ 
     var deferred = Q.defer();
 
     cryptoCoin = coinsCount.CryptoCoin;
     ////console.log("hello " + JSON.stringify(result.parameters))
+  
+    console.log("myCurrency"+ myCurrency)
     if (cryptoCoin == undefined || myCurrency == undefined) {
         speechOP = "Coin or Currency cannot be identified.";
 
@@ -89,10 +97,11 @@ function getCoinObject(coinsCount) {
     } else {
         //console.log("cryptocoins" + cryptoCoin)
       
-         for (const key of Object.keys(myCoins)) {
-            //console.log(key, myCoins[key]);
-        }
-      
+//          for (const key of Object.keys(myCoins)) {
+//             //console.log(key, myCoins[key]);
+//         }
+        
+        console.log("get coin val" + cryptoCoin)
         cryptoCoin = myCoins.findCoin(cryptoCoin.toUpperCase());;
 
 
@@ -118,6 +127,8 @@ function getCoinObject(coinsCount) {
             var coinValue = "" // JSONResponse[cryptoCoin[0].n.toUpperCase()][currency];
             var speechOP = ""
             ////console.log("CV" + coinValue);
+            
+           
             if (coinValue != undefined) {
                 
                 oCoin = {

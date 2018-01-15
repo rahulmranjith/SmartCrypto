@@ -72,6 +72,14 @@ User.sync(
 //     }
 // }) 
 
+// User.find({where:{uniqID:"ABwppHGPMtus_OInPU49GevukD7HE7e-XDr47X8CXS28ftsSq5PMByRWw_Z8PEV0OcMR5cXA8KWt8bFHzA"}}).then(function(success){
+  
+//   console.log(success)
+
+
+
+// },function(error){console.log(error)})
+
  
 //methods
 var getRecords = function (model) {

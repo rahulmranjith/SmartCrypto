@@ -37,6 +37,7 @@ function getWelcomeMessage(platform, displayName) {
 function getResponseMessage(coinResult) {
 
     var responseMessage
+      console.log(Util.m_platform)
     switch (Util.m_platform) {
         case "telegram":
             responseMessage = telegram.m_ResponseMessage(coinResult);
@@ -133,8 +134,29 @@ function SyncPortfolio(userInfo, gapp) {
             uniqID: userInfo.uniqID
         }, userInfoData).then(function () {
       
-           deferred.resolve(callPayLoadFormatMessage("Portfolio Details\n`"+ newQuantity + " " + cryptoCoin + " has been " +updatetext+" successfully !!!`"))
-    //         deferred.resolve(Util.m_getDefaultCardMessageResponse(Util.m_platform, {
+          console.log(Util.m_platform)
+    switch (Util.m_platform) {
+        case "telegram":
+            deferred.resolve(callPayLoadFormatMessage("Portfolio Details\n`"+ newQuantity + " " + cryptoCoin + " has been " +updatetext+" successfully !!!`"))
+   
+            break;
+        case "slack":
+            deferred.resolve(callPayLoadFormatMessage("Portfolio Details\n`"+ newQuantity + " " + cryptoCoin + " has been " +updatetext+" successfully !!!`"))
+   
+            break;
+        case "google":
+            Google.m_sendPortfolioUpdate(newQuantity + " " + cryptoCoin + " has been " +updatetext+" successfully !!!");
+            
+            break;
+        default:
+            "Hello Welcome to AllCoinZ"
+    }
+          
+          
+          
+           //deferred.resolve(callPayLoadFormatMessage("Portfolio Details\n`"+ newQuantity + " " + cryptoCoin + " has been " +updatetext+" successfully !!!`"))
+  
+          //         deferred.resolve(Util.m_getDefaultCardMessageResponse(Util.m_platform, {
     //     subtitle:"`"+ newQuantity + " " + cryptoCoin + " has been " +updatetext+" successfully !!!`",
     //     title: "Portfolio Details",
     //     buttons: []
@@ -221,6 +243,9 @@ function getTotalPortfolioValue(userInfo, fetchValue) {
                     case "skype":
                         resultPortFolioWithData = telegram.m_getPortfolioData(myportFolioData, myPortfolio);
                         break;
+                    case "google":
+                        Google.m_getPortfolioData(myportFolioData, myPortfolio);
+                        break;
                     default:
                         "Please try again !!!"
                 }
@@ -246,6 +271,9 @@ function getTotalPortfolioValue(userInfo, fetchValue) {
                     break;
                 case "skype":
                     portfolioWithQuanitity = telegram.m_getPortfolioInfo(myPortfolio);
+                    break;
+                case "google":
+                    portfolioWithQuanitity = Google.m_getPortfolioInfo(myPortfolio);
                     break;
                 default:
                     "Please try again !!!"

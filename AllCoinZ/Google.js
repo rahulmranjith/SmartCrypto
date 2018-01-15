@@ -1,6 +1,13 @@
 const Util = require('../AllCoinZ/util')
 
 var gapp;
+
+function sendPortfolioUpdate(message){
+
+gapp.ask("<speak>"+ message+" from the portfolio </speak>")
+
+
+}
 function formatWelcomeMessage(displayName) {
     console.log("welcome");
 
@@ -23,9 +30,10 @@ function formatWelcomeMessage(displayName) {
     '</speak>';
   
   welcomeMessage ='<speak>'+
-  'All CoinZ - Get CryptoCoins value in local currencies!!'+
-  'Type in any Coin name like BTC or BitCoin '+
-  '</speak>';
+  '<emphasis level="moderate">All CoinZ</emphasis> Get CryptoCoins value in fiat currencies!!<break time="1s"/>Say help for options'+
+  '</speak>'
+ 
+   
     
    gapp.ask(welcomeMessage)
 //   gapp.ask({
@@ -44,80 +52,151 @@ function formatWelcomeMessage(displayName) {
        gapp=mgapp
  }
 
-function ResponseMessage(coinResult) {
 
-    var responseData = {
 
-        "messages": [getCoinInfo(coinResult), {
-            "platform": "telegram",
-            "type": 4,
-            payload: {
-                "telegram": {
-                    "text": "&#9889;<i> Please select next coin...</i>", //\n\n["+link +"]",,
-                    //photo:coinResult.CoinImg,
-                    parse_mode: "HTML",
-                    disable_web_page_preview: false,
-                    "title": "AllCoinZ",
-                    "reply_markup": {
-                        "keyboard": [
-                            [{
-                                "text": "BTC"
 
-                            }, {
-                                "text": "ETH"
+ 
+  //   gapp.ask(gapp.buildRichResponse()
+  //   // Create a basic card and add it to the rich response
+  //   .addSimpleResponse('Simple Response')
+  //   .addBasicCard(gapp.buildBasicCard('Basic Card')
+  //     .setTitle('Basica Card Simple Title')
+  //     .addButton('Button', 'https://example.google.com/mathandprimes')
+  //     .setImage('https://www.cryptocompare.com/media/20646/eth.png', 'Ethereum')
+  //     .setImageDisplay('CROPPED')
+  //   )
+  // );
+function ResponseMessage(CoinInfo) {
 
-                            }, {
-                                "text": "XRP"
+    console.log("ResponseMessage")
+    var coinInfoinCurrency = CoinInfo.CoinValue.DISPLAY[CoinInfo.CoinSN][CoinInfo.CoinCurrency]
+    var coinInfoinBTC = CoinInfo.CoinValue.DISPLAY[CoinInfo.CoinSN]["BTC"]
 
-                            }, {
-                                "text": "PINK"
+    var currencyPrice = Util.m_removeCurrencySymbols(coinInfoinCurrency)
+    var BTCPrice = Util.m_removeCurrencySymbols(coinInfoinBTC)
+  
+    var coinDetail = "💰" + "*" + CoinInfo.CoinFN.toUpperCase() + "*💰\n\n` " + CoinInfo.CoinCount + " " + CoinInfo.CoinSN + "` = *" + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL + "*" + "\n " +
+        "\n` " + CoinInfo.CoinCount + " " + CoinInfo.CoinSN + "` = *" + (CoinInfo.CoinCount * BTCPrice).toFixed(9) + " " + coinInfoinBTC.TOSYMBOL + "* \n\n _ % in 24 Hrs : _ *" + coinInfoinCurrency.CHANGEPCT24HOUR + "* \n " + "_ High Day : _ *" + coinInfoinCurrency.HIGHDAY + "* \n " +
+        "_ Low Day : _ *" + coinInfoinCurrency.LOWDAY + "* \n " + "_ Market Cap : _ *" + coinInfoinCurrency.MKTCAP + "* \n " + "_ Updated : _ *" + coinInfoinCurrency.LASTUPDATE + "* \n "
+  var text;
+  
+  text = CoinInfo.CoinFN.toUpperCase() +" = " + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL
+  
+  var sound = '<speak>'+CoinInfo.CoinFN.toUpperCase() +" is " + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL + '</speak>';
+  
+  // gapp.ask(gapp.buildRichResponse()
+  //   // Create a basic card and add it to the rich response
+  //   .addSimpleResponse('Math and prime numbers it is!')
+  //   .addBasicCard(gapp.buildBasicCard('42 is an even composite number. It' +
+  //     'is composed of three distinct prime numbers multiplied together. It' +
+  //     'has a total of eight divisors. 42 is an abundant number, because the' +
+  //     'sum of its proper divisors 54 is greater than itself. To count from' +
+  //     '1 to 42 would take you about twenty-one…')
+  //     .setTitle('Math & prime numbers')
+  //     .addButton('Read more', 'https://example.google.com/mathandprimes')
+  //     .setImage('https://example.google.com/42.png', 'Image alternate text')
+  //     .setImageDisplay('CROPPED')
+  //   )
+  // );
+  
+//' <
+   var  simpleResponse = '<speak> <say-as interpret-as="fraction">'+ CoinInfo.CoinCount + '</say-as> '+ CoinInfo.CoinFN + ' is <emphasis level="moderate"><say-as interpret-as="fraction">'+(CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " +coinInfoinCurrency.TOSYMBOL+'</say-as></emphasis></speak>';
+   
+  var content = "*"+CoinInfo.CoinCount + " " + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * currencyPrice).toFixed(5)+ " " +coinInfoinCurrency.TOSYMBOL+"**"+" <br>*"+
+      CoinInfo.CoinCount + "" + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * BTCPrice).toFixed(9) + " " + coinInfoinBTC.TOSYMBOL + "** <br> "+
+      "*% in 24 Hrs :* **" + coinInfoinCurrency.CHANGEPCT24HOUR + "** <br>  " + 
+      "*High Day :* **" + coinInfoinCurrency.HIGHDAY + "** <br>  " +
+      "*Low Day :* **" + coinInfoinCurrency.LOWDAY + "**<br>" + 
+      "*Market Cap :* **" + coinInfoinCurrency.MKTCAP + "**<br>" + 
+      "*Updated :* **" + coinInfoinCurrency.LASTUPDATE + "**  "
+  
+  gapp.ask(gapp.buildRichResponse()
+    // Create a basic card and add it to the rich response
+    .addSimpleResponse(simpleResponse)
+    .addBasicCard(gapp.buildBasicCard(content)
+      .setTitle("💰" +  CoinInfo.CoinFN.toUpperCase() + "💰" )
+      .addButton('View '+ CoinInfo.CoinSN, CoinInfo.CoinURL)
+      .setImage(CoinInfo.CoinImg, CoinInfo.CoinFN)
+      .setImageDisplay('CROPPED')
+    )
+  );
+    
+    
+    
+    
+    
+//     var responseData = {
 
-                            }, {
-                                "text": "DOGE"
-                            }, {
-                                "text": "IOTA"
-                            }],
-                            [{
-                                "text": "ETN"
-                            }, {
-                                "text": "XLM"
-                            }, {
-                                "text": "XVG"
-                            }, {
-                                "text": "ADA"
-                            }, {
-                                "text": "BCH"
-                            }, {
-                                "text": "TRX"
-                            }],
-                            [{
-                                    "text": "C[USD]"
-                                }, {
-                                    "text": "C[INR]"
-                                }, {
-                                    "text": "View Portfolio"
-                                }, {
-                                    "text": "Portfolio Total"
-                                },
-                                //{
-                                //     "text": "CUR[BTC]"
-                                // }, {
-                                //     "text": "CUR[EUR]"
-                                // }
-                            ]
+//         "messages": [getCoinInfo(coinResult), {
+//             "platform": "telegram",
+//             "type": 4,
+//             payload: {
+//                 "telegram": {
+//                     "text": "&#9889;<i> Please select next coin...</i>", //\n\n["+link +"]",,
+//                     //photo:coinResult.CoinImg,
+//                     parse_mode: "HTML",
+//                     disable_web_page_preview: false,
+//                     "title": "AllCoinZ",
+//                     "reply_markup": {
+//                         "keyboard": [
+//                             [{
+//                                 "text": "BTC"
 
-                        ],
-                        resize_keyboard: true
+//                             }, {
+//                                 "text": "ETH"
 
-                    }
-                }
-            }
-        }]
+//                             }, {
+//                                 "text": "XRP"
 
-    }
+//                             }, {
+//                                 "text": "PINK"
 
-    //console.log(responseData)
-    return responseData;
+//                             }, {
+//                                 "text": "DOGE"
+//                             }, {
+//                                 "text": "IOTA"
+//                             }],
+//                             [{
+//                                 "text": "ETN"
+//                             }, {
+//                                 "text": "XLM"
+//                             }, {
+//                                 "text": "XVG"
+//                             }, {
+//                                 "text": "ADA"
+//                             }, {
+//                                 "text": "BCH"
+//                             }, {
+//                                 "text": "TRX"
+//                             }],
+//                             [{
+//                                     "text": "C[USD]"
+//                                 }, {
+//                                     "text": "C[INR]"
+//                                 }, {
+//                                     "text": "View Portfolio"
+//                                 }, {
+//                                     "text": "Portfolio Total"
+//                                 },
+//                                 //{
+//                                 //     "text": "CUR[BTC]"
+//                                 // }, {
+//                                 //     "text": "CUR[EUR]"
+//                                 // }
+//                             ]
+
+//                         ],
+//                         resize_keyboard: true
+
+//                     }
+//                 }
+//             }
+//         }]
+
+//     }
+
+//     //console.log(responseData)
+//     return responseData;
 }
 
  
@@ -205,7 +284,7 @@ function formatMyPortfoliowithData(data, myCoins, currency) {
 
     }
     op = op + "\n*[TPV]:  " + " " + totalCurrency.toFixed(3) + " " + displayCurrency + " | " + totalBTC.toFixed(9) + " " + displayBTC + "*"
-
+    gapp.ask("<speak>Total Value is "+'<emphasis level="moderate"><say-as interpret-as="fraction">'+ totalCurrency.toFixed(3) + " " + displayCurrency +"</say-as></emphasis></speak>")
     return op;
 }
 
@@ -245,5 +324,6 @@ module.exports = {
     m_getPortfolioData: getPortfolioData,
     m_getPortfolioInfo: getPortfolioInfo,
   m_getPayLoadMessage:getPayLoadMessage,
-  m_gapp:setgapp
+  m_gapp:setgapp,
+  m_sendPortfolioUpdate:sendPortfolioUpdate
 }

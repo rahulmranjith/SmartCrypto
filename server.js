@@ -38,6 +38,7 @@ let res;
 
 server.post('/', function (request, response, next) {
 
+    console.log(JSON.stringify(request))
     gapp = new ApiAiApp({ request, response });
   
     Google.m_gapp(gapp)
@@ -136,6 +137,7 @@ function BuySellCoin() {//var welcomeMessageResponse = GenProc.m_getWelcomeMessa
 function getCoinValue() {
   
     Util.m_getCurrency(uniqID).then(function () {
+      
         var count = 1;
         if (gapp.getArgument("count") != null) {
             count = gapp.getArgument("count")
@@ -145,6 +147,7 @@ function getCoinValue() {
             CryptoCoin: gapp.getArgument("CryptoCoin")
         })
         oCoin.then(function (coinResult) {
+          
             sendDialogflowResponse(res, GenProc.m_getResponseMessage(coinResult))
           
         }).catch(function (err) {
