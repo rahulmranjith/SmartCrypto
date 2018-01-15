@@ -1,5 +1,6 @@
 
 
+
 var display = {
             "DISPLAY": {
                 "BTC": {
@@ -103,3 +104,118 @@ var display = {
 //         console.log(JSON.stringify(items))
 
 //     })
+
+
+
+
+
+
+
+
+
+
+server.post('/getCoinValue', function (req, res) {
+
+  
+   console.log(JSON.stringify(req.result))
+
+    let result = req.body.result;
+    let source = req.body.originalRequest.source
+
+    //console.log(JSON.stringify(req.body.originalRequest))
+    ////console.log(result.metadata.intentName)
+   // console.log(JSON.stringify(req.body))
+
+
+    switch (source) {
+        case "telegram":
+            platform = "telegram"
+            displayName = (req.body).originalRequest.data.message.chat.username;
+            uniqID = (req.body).originalRequest.data.message.chat.id
+            break;
+        case "slack_testbot":
+            displayName = (req.body).originalRequest.data.user;
+            uniqID = (req.body).originalRequest.data.user;
+            platform = "slack"
+            break;
+        case "skype":
+            platform = "skype"
+            break;
+        default:
+            platform = "telegram"
+    }
+    Util.m_platform = platform
+
+
+  
+    if (result.metadata.intentName == "1ViewPortfolio") {
+
+        GenProc.m_getTotalPortfolioValue({
+            displayName,
+            uniqID
+        }, false).then(function (VPortfolio) {
+            sendDialogflowResponse(res, VPortfolio)
+
+        }, function (error) {
+            console.log(error);
+            sendDialogflowResponse(res, error)
+        })
+    } else if (result.metadata.intentName == "1TotalPortfolioValue") {
+        //var welcomeMessageResponse = GenProc.m_getWelcomeMessage(platform,displayName)
+        //sendDialogflowResponse(res, welcomeMessageResponse)
+        GenProc.m_getTotalPortfolioValue({
+                displayName,
+                uniqID
+            }, true)
+            .then(function (TPV) {
+                    console.log("aaa" + TPV)
+                    sendDialogflowResponse(res, TPV)
+                },
+                function (error) {
+                    console.log(error);
+                    sendDialogflowResponse(res, error)
+                })
+
+
+
+
+
+    } else if (result.metadata.intentName == "BuySellCoin") {
+        
+
+
+    } else if (result.metadata.intentName == "Default Welcome Intent" || result.metadata.intentName =="help") {
+       
+    } else if (result.metadata.intentName == "getCoinValue") {
+
+        Util.m_getCurrency(uniqID).then(function () {
+
+            var count = 1;
+            if (result.parameters.count != "") {
+                count = result.parameters.count
+            }
+
+            var oCoin = Util.m_getCoinObject({
+                count: count,
+                CryptoCoin: result.parameters.CryptoCoin
+            })
+            oCoin.then(function (coinResult) {
+                sendResult(true, coinResult, res)
+            }).catch(function (err) {
+                console.log("m_getCurrency method failed")
+            });
+        })
+
+    } else if (result.metadata.intentName == "ChangeCurrency") {
+        
+
+    } else if (result.metadata.intentName == "Default Fallback Intent") {
+      
+      
+            //sendResult(false, null, res)
+    }
+
+  
+});
+
+
