@@ -36,7 +36,8 @@ function getCurrency(uniqID) {
 
         }
 
-    }, function (error) {console.log("Currency fetch error" +JSON.stringify(error) ) })
+    }, function (error) {
+        console.log("Currency fetch error" +JSON.stringify(error) ) })
 
     return deferred.promise;
 }

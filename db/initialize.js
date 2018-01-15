@@ -54,7 +54,7 @@ const User = sequelize.define('user', {
 
  
 User.sync(
-  //{alter: true}
+  {alter: true}
 );
 
 

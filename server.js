@@ -38,7 +38,7 @@ let res;
 
 server.post('/', function (request, response, next) {
 
-    console.log(JSON.stringify(request))
+    //console.log(JSON.stringify(request))
     gapp = new ApiAiApp({ request, response });
   
     Google.m_gapp(gapp)
@@ -181,13 +181,13 @@ function TotalPortfolioValue() {
             sendDialogflowResponse(res, error)
         })
 }
-server.get('/rahul', (req, res) => {
-    res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n'+ new Date()).end();
-  });
+
 server.listen((process.env.PORT || 8000), function () {
     //console.log("Server is up and running... ");
 });
-
+server.get('/rahulmr', (req, res) => {
+    res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n'+ new Date()).end();
+  });
 
 function sendDialogflowResponse(res, result) {
   //console.log(gapp.body_.originalRequest.data.user.userId)
