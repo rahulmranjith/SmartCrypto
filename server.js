@@ -181,10 +181,13 @@ function TotalPortfolioValue() {
             sendDialogflowResponse(res, error)
         })
 }
-
+server.get('/rahul', (req, res) => {
+    res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n'+ new Date()).end();
+  });
 server.listen((process.env.PORT || 8000), function () {
     //console.log("Server is up and running... ");
 });
+
 
 function sendDialogflowResponse(res, result) {
   //console.log(gapp.body_.originalRequest.data.user.userId)
