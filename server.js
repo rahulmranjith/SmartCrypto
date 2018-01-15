@@ -4,16 +4,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const http = require('http');
 const request = require('request');
-const app = express();
 const Map = require('es6-map');
-const myCoins = require('./AllCoinZ/jsonCoin');
+
 const Q = require('q')
 const dbAllCoinZ = require('./db/initialize');
-
 const telegramAPI = require('./AllCoinZ/telegram')
 const Util = require('./AllCoinZ/util')
-
 const GenProc = require('./AllCoinZ/GenericProcess')
+const telegramPush = require('./AllCoinZ/push')
+
+const Google = require('./AllCoinZ/Google')
 
 var gUser = dbAllCoinZ.g_User;
 
@@ -30,78 +30,164 @@ var currency = "";
 var exchange = "CCCAGG"
 var platform;
 
+var gapp;
 
+<<<<<<< HEAD
 server.post('/getCoinValue', function (req, res) {
 
     let result = req.body.result;
     let source = req.body.originalRequest.source
+=======
+const ApiAiApp = require('actions-on-google').DialogflowApp;
+
+let res;
+
+server.post('/', function (request, response, next) {
+>>>>>>> 9f07c58f0ed0864651dff7e0643ba042b8e9ffb8
+
+    console.log(JSON.stringify(request))
+    gapp = new ApiAiApp({ request, response });
+  
+    Google.m_gapp(gapp)
+    //console.log("GAPP" + JSON.stringify(gapp.body_.originalRequest))
 
 
-    ////console.log(result.metadata.intentName)
-    //console.log(JSON.stringify(req.body))
+    res = response;
+    let originalRequest = gapp.body_.originalRequest
 
-
-    switch (source) {
+    //console.log(originalRequest.source)  
+    switch (originalRequest.source) {
         case "telegram":
             platform = "telegram"
-            displayName = (req.body).originalRequest.data.message.chat.username;
-            uniqID = (req.body).originalRequest.data.message.chat.id
+            displayName = originalRequest.data.message.chat.username;
+            uniqID = originalRequest.data.message.chat.id
             break;
         case "slack_testbot":
+            displayName = originalRequest.data.user;
+            uniqID = originalRequest.data.user;
             platform = "slack"
             break;
         case "skype":
             platform = "skype"
             break;
+        case "google":
+            platform = "google"      
+        displayName = gapp.body_.originalRequest.data.user.userId
+            uniqID =gapp.body_.originalRequest.data.user.userId
+            break;
         default:
             platform = "telegram"
     }
-   Util.m_platform=platform
-  
-  
-  
-    if (result.metadata.intentName == "Default Welcome Intent") {
-        var welcomeMessageResponse = GenProc.m_getWelcomeMessage(platform,displayName)
-        sendDialogflowResponse(res, welcomeMessageResponse)
+    Util.m_platform = platform
+
+
+
+    let actionMap = new Map();
+    //actionMap.set('request_name_permission', getName);
+    //actionMap.set('thankyouPermission', thankyouPermission);
+    //actionMap.set('ViewPortfolio', ViewPortfolio);
+    actionMap.set('getCoinValue', getCoinValue);
+    actionMap.set('TotalPortfolioValue', TotalPortfolioValue);
+    actionMap.set('ViewPortfolio', ViewPortfolio);
+    actionMap.set('ViewPortfolio', ViewPortfolio);
+
+    actionMap.set('input.welcome', DefaultWelcomeIntent);
+    actionMap.set('setCurrency', ChangeCurrency);
+    actionMap.set('input.unknown', DefaultFallbackIntent);
+    actionMap.set('BuySellCoin', BuySellCoin);
+    actionMap.set('gethelp', DefaultWelcomeIntent);
+
+    gapp.handleRequest(actionMap);
+
+})
+function DefaultWelcomeIntent() {
+    
+    var welcomeMessageResponse = GenProc.m_getWelcomeMessage(platform, displayName)
+    sendDialogflowResponse(res, welcomeMessageResponse)
+}
+
+function ChangeCurrency() {
+    var userCurrency = gapp.getArgument("currency-name")
+    if (userCurrency == "" && gapp.getArgument["CryptoCoin"] !== "") {
+        userCurrency = gapp.getArgument["CryptoCoin"]
+    }
+    if (userCurrency == "") {
+        return sendDialogflowResponse(res, Util.m_getSimpleMessageObject("Currency could not be identified.No changes are made :("))
     }
 
-    else if (result.metadata.intentName == "getCoinValue") {
-
-        Util.m_getCurrency(uniqID).then(function (mycurrency) {
-            currency = mycurrency
-            var oCoin = getCoinObject(result)
-            oCoin.then(function (coinResult) {
-                sendResult(true, coinResult, res)
-            }).catch(function (err) {
-                console.log("m_getCurrency method failed")
-            });
-        })
-
-    }
-    else if (result.metadata.intentName == "ChangeCurrency") {
-        var userCurrency = result.parameters["currency-name"];
-        if (userCurrency == "" && result.parameters["CryptoCoin"] !== "") {
-            userCurrency = result.parameters["CryptoCoin"]
-        }
-        if (userCurrency == "") {
-            return sendDialogflowResponse(res, Util.m_getSimpleMessageObject("Currency could not be identified.No changes are made :("))
-        }
-
-        dbAllCoinZ.g_UpdateInsert(gUser, {
-            uniqID: uniqID
-        }, {
+    dbAllCoinZ.g_UpdateInsert(gUser, {
+        uniqID: uniqID
+    }, {
             displayName: displayName,
             uniqID: uniqID,
             curr: userCurrency
         }).then(function () {
             sendDialogflowResponse(res, Util.m_getSimpleMessageObject("Default currency has been set to " + userCurrency))
         })
+}
 
-    } else if (result.metadata.intentName == "Default Fallback Intent") {
-        sendResult(false, null, res)
+function DefaultFallbackIntent() {
+    sendDialogflowResponse(res, GenProc.m_callPayLoadFormatMessage("`Please check the keyword or Coin name .  Check help for keywords`"))
+}
+function BuySellCoin() {//var welcomeMessageResponse = GenProc.m_getWelcomeMessage(platform,displayName)
+    //sendDialogflowResponse(res, welcomeMessageResponse)
+    GenProc.m_SyncPortfolio({
+        displayName,
+        uniqID
+    }, gapp).then(function (message) {
+        sendDialogflowResponse(res, message)
+    }, function (error) {
+        sendDialogflowResponse(res, error)
+    })
+}
+
+function getCoinValue() {
+  
+    Util.m_getCurrency(uniqID).then(function () {
+      
+        var count = 1;
+        if (gapp.getArgument("count") != null) {
+            count = gapp.getArgument("count")
+        }
+        var oCoin = Util.m_getCoinObject({
+            count: count,
+            CryptoCoin: gapp.getArgument("CryptoCoin")
+        })
+        oCoin.then(function (coinResult) {
+          
+            sendDialogflowResponse(res, GenProc.m_getResponseMessage(coinResult))
+          
+        }).catch(function (err) {
+            console.log("m_getCurrency method failed"+ err)
+        });
     }
-
-});
+    )
+}
+function ViewPortfolio() {
+    GenProc.m_getTotalPortfolioValue({
+        displayName,
+        uniqID
+    }, false).then(function (VPortfolio) {
+        sendDialogflowResponse(res, VPortfolio)
+    }, function (error) {
+        console.log(error);
+        sendDialogflowResponse(res, error)
+    })
+}
+function TotalPortfolioValue() {
+    GenProc.m_getTotalPortfolioValue({
+        displayName,
+        uniqID
+    }, true)
+        .then(function (TPV) {
+            //console.log("aaa" + TPV)
+            sendDialogflowResponse(res, TPV)
+        },
+        function (error) {
+            console.log(error);
+            sendDialogflowResponse(res, error)
+        })
+}
 
 server.get('/rahul', (req, res) => {
     res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n'+ new Date()).end();
@@ -117,91 +203,31 @@ server.listen(PORT, () => {
   });
 
 function sendDialogflowResponse(res, result) {
-
+  //console.log(gapp.body_.originalRequest.data.user.userId)
+  
+  if(Util.m_platform!="google"){
     res.send(result)
-
-}
-
-function sendResult(success, coinResult, res) {
-
-    var text;
-    var responseData
-       
-    var responseData = GenProc.m_getResponseMessage(platform,coinResult)
-    
-    sendDialogflowResponse(res, responseData)
-}
-
-
-
-
- 
-function getCoinObject(result) {
-    var speechOutput = "";;
-    var cryptoCoin;
-    var speechOP = "";
-
-
-    var deferred = Q.defer();
-
-    cryptoCoin = result.parameters.CryptoCoin;
-    ////console.log("hello " + JSON.stringify(result.parameters))
-    if (cryptoCoin == undefined || currency == undefined) {
-        speechOP = "Coin or Currency cannot be identified.";
-
-        deferred.reject(null);
-    } else {
-        cryptoCoin = myCoins.findCoin(cryptoCoin.toUpperCase());;
-
-
-        var count = 1;
-        if (result.parameters.count != "") {
-            count = result.parameters.count
-        }
-
-        var BaseLinkUrl = "https://www.cryptocompare.com";
-        var link = BaseLinkUrl + cryptoCoin[0].u;
-        var ilink = BaseLinkUrl + cryptoCoin[0].iu;
-        //var baseUrl = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=';
-        //var parsedUrl = baseUrl + cryptoCoin[0].n + "&tsyms=" + currency
-
-        var baseUrl = 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms=';
-        var parsedUrl = baseUrl + cryptoCoin[0].n + "&tsyms=BTC,INR," + currency + "&e=CCCAGG"
-        var oCoin;
-
-        //console.log(parsedUrl);
-
-        var request = require('request');
-        request(parsedUrl, function (error, response, body) {
-
-            var JSONResponse = JSON.parse(response.body);
-            ////console.log("JSON Coin Value :"+cryptoCoin[0].n+ ":"+ JSONResponse[cryptoCoin[0].n]);
-            //console.log(JSONResponse);
-            var coinValue = "" // JSONResponse[cryptoCoin[0].n.toUpperCase()][currency];
-            var speechOP = ""
-            ////console.log("CV" + coinValue);
-            if (coinValue != undefined) {
-                coinValue = (count * coinValue).toFixed(5);
-
-                oCoin = {
-                    CoinFN: cryptoCoin[0].c,
-                    CoinSN: cryptoCoin[0].n,
-                    CoinImg: ilink,
-                    CoinURL: link,
-                    CoinValue: JSONResponse,
-                    CoinCurrency: currency,
-                    CoinCount: count
-                }
-                deferred.resolve(oCoin);
-            } else {
-                oCoin = null;
-                deferred.reject(null);
-            }
-
-            ////console.log(speechOP);
-
-        })
-    }
-    return deferred.promise;
+  }
+    //console.log("result"+JSON.stringify(result))
+  
+//     res.send({"messages": [
+//   {
+//     "displayText": "Text response",
+//     "platform": "google",
+//     "textToSpeech": "A",//result.messages[0].subtitle,
+//     "type": "simple_response"
+//   }
+// ]})
+  
+  //   gapp.ask(gapp.buildRichResponse()
+  //   // Create a basic card and add it to the rich response
+  //   .addSimpleResponse('Simple Response')
+  //   .addBasicCard(gapp.buildBasicCard('Basic Card')
+  //     .setTitle('Basica Card Simple Title')
+  //     .addButton('Button', 'https://example.google.com/mathandprimes')
+  //     .setImage('https://www.cryptocompare.com/media/20646/eth.png', 'Ethereum')
+  //     .setImageDisplay('CROPPED')
+  //   )
+  // );
 }
 
