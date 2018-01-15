@@ -33,11 +33,6 @@ var platform;
 
 server.post('/getCoinValue', function (req, res) {
 
-
-
-
-
-
     let result = req.body.result;
     let source = req.body.originalRequest.source
 
@@ -108,9 +103,18 @@ server.post('/getCoinValue', function (req, res) {
 
 });
 
-server.listen((process.env.PORT || 8000), function () {
-    //console.log("Server is up and running... ");
-});
+server.get('/rahul', (req, res) => {
+    res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n'+ new Date()).end();
+  });
+
+// server.listen((process.env.PORT || 8000), function () {
+//     console.log("Server is up and running... ");
+// });
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`);
+    console.log('Press Ctrl+C to quit.');
+  });
 
 function sendDialogflowResponse(res, result) {
 

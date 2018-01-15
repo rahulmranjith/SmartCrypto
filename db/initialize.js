@@ -21,7 +21,7 @@ var sequelize = new Sequelize('AllCoinZ', process.env.DB_USER, process.env.DB_PA
   },
     // Security note: the database is saved to the file `database.sqlite` on the local filesystem. It's deliberately placed in the `.data` directory
     // which doesn't get copied if someone remixes the project.
-  storage: '.data/AllCoinZ.sqlite'
+  storage: 'data/AllCoinZ.sqlite'
 });
 
 // authenticate with the database
