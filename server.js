@@ -32,18 +32,11 @@ var platform;
 
 var gapp;
 
-<<<<<<< HEAD
-server.post('/getCoinValue', function (req, res) {
-
-    let result = req.body.result;
-    let source = req.body.originalRequest.source
-=======
 const ApiAiApp = require('actions-on-google').DialogflowApp;
 
 let res;
 
 server.post('/', function (request, response, next) {
->>>>>>> 9f07c58f0ed0864651dff7e0643ba042b8e9ffb8
 
     console.log(JSON.stringify(request))
     gapp = new ApiAiApp({ request, response });
@@ -189,18 +182,9 @@ function TotalPortfolioValue() {
         })
 }
 
-server.get('/rahul', (req, res) => {
-    res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n'+ new Date()).end();
-  });
-
-// server.listen((process.env.PORT || 8000), function () {
-//     console.log("Server is up and running... ");
-// });
-const PORT = process.env.PORT || 8080;
-server.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`);
-    console.log('Press Ctrl+C to quit.');
-  });
+server.listen((process.env.PORT || 8000), function () {
+    //console.log("Server is up and running... ");
+});
 
 function sendDialogflowResponse(res, result) {
   //console.log(gapp.body_.originalRequest.data.user.userId)

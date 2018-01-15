@@ -13,25 +13,14 @@
     "express": "^4.15.3",
     "sqlite3": "*",
     "sequelize": "*",
-<<<<<<< HEAD
-    "actions-on-google": "^1.6.1",
+    "actions-on-google": "*",
     "body-parser": "^1.15.2",
     "request": "^2.79.0",
     "q": "^1.5.1",
     "es6-map": "^0.1.4",
     "prettyjson": "^1.2.1",
-    "underscore.string": "^3.3.4"
-=======
-    "actions-on-google": "*",
-    
-		"body-parser": "^1.15.2",
-		"request": "^2.79.0",
-    "q":"^1.5.1",
-		"es6-map": "^0.1.4",
-		"prettyjson": "^1.2.1",
-		"underscore.string": "^3.3.4",
-    "node-telegram-bot-api":"*"
->>>>>>> 9f07c58f0ed0864651dff7e0643ba042b8e9ffb8
+    "underscore.string": "^3.3.4",
+    "node-telegram-bot-api": "*"
   },
   "engines": {
     "node": "8.1.x"
