@@ -1,11 +1,9 @@
-
-
 const Q = require('q')
 const dbAllCoinZ = require('../db/initialize');
 var gUser = dbAllCoinZ.g_User;
 const myCoins = require('../AllCoinZ/jsonCoin');
 
-var platform ;
+var platform;
 let myCurrency;
 
 
@@ -16,7 +14,20 @@ function removeCurrencySymbols(currency) {
 
 
 
+function getUsers() {
+    var deferred = Q.defer();
+    dbAllCoinZ.g_getRecords(gUser).then(function (item) {
 
+        deferred.resolve(item)
+
+    }, function (error) {
+        console.log("Could not fetch" + JSON.stringify(error))
+        deferred.reject("Could not fetch" + JSON.stringify(error))
+
+    })
+
+    return deferred.promise;
+}
 
 
 function getCurrency(uniqID) {
@@ -27,23 +38,28 @@ function getCurrency(uniqID) {
     }).then(function (item) {
         ////console.log("item " + item)
         if (item) {
-           
-          if(item.curr==null){myCurrency="INR"}else{ myCurrency=item.curr} 
+
+            if (item.curr == null) {
+                myCurrency = "INR"
+            } else {
+                myCurrency = item.curr
+            }
             deferred.resolve(item.curr);
         } else {
-          myCurrency="INR"
-          deferred.resolve("INR");
+            myCurrency = "INR"
+            deferred.resolve("INR");
 
         }
 
     }, function (error) {
-        console.log("Currency fetch error" +JSON.stringify(error) ) })
+        console.log("Currency fetch error" + JSON.stringify(error))
+    })
 
     return deferred.promise;
 }
 
 
-function getDefaultCardMessageResponse(platform,messageContents) {
+function getDefaultCardMessageResponse(platform, messageContents) {
 
     var message = {
         "messages": [{
@@ -69,39 +85,40 @@ function getSimpleMessageObject(message) {
     var message = {
         "messages": [{
             "speech": message,
-            "type": 0,"text": "You can read about *entities* [here](/docs/concept-entities).",
-    "parse_mode": "Markdown"
+            "type": 0,
+            "text": "You can read about *entities* [here](/docs/concept-entities).",
+            "parse_mode": "Markdown"
         }]
     }
     return message;
 }
 
 
- 
+
 function getCoinObject(coinsCount) {
     var speechOutput = "";;
     var cryptoCoin;
     var speechOP = "";
-  
 
- 
+
+
     var deferred = Q.defer();
 
     cryptoCoin = coinsCount.CryptoCoin;
     ////console.log("hello " + JSON.stringify(result.parameters))
-  
-    console.log("myCurrency"+ myCurrency)
+
+    console.log("myCurrency" + myCurrency)
     if (cryptoCoin == undefined || myCurrency == undefined) {
         speechOP = "Coin or Currency cannot be identified.";
 
         deferred.reject(null);
     } else {
         //console.log("cryptocoins" + cryptoCoin)
-      
-//          for (const key of Object.keys(myCoins)) {
-//             //console.log(key, myCoins[key]);
-//         }
-        
+
+        //          for (const key of Object.keys(myCoins)) {
+        //             //console.log(key, myCoins[key]);
+        //         }
+
         console.log("get coin val" + cryptoCoin)
         cryptoCoin = myCoins.m_findCoin(cryptoCoin.toUpperCase());;
 
@@ -120,18 +137,18 @@ function getCoinObject(coinsCount) {
 
         var request = require('request');
         request(parsedUrl, function (error, response, body) {
-              
-          //console.log("JSON Response" + JSON.stringify(response.body))
+
+            //console.log("JSON Response" + JSON.stringify(response.body))
             var JSONResponse = JSON.parse(response.body);
             ////console.log("JSON Coin Value :"+cryptoCoin[0].n+ ":"+ JSONResponse[cryptoCoin[0].n]);
             //console.log(JSONResponse);
             var coinValue = "" // JSONResponse[cryptoCoin[0].n.toUpperCase()][currency];
             var speechOP = ""
             ////console.log("CV" + coinValue);
-            
-           
+
+
             if (coinValue != undefined) {
-                
+
                 oCoin = {
                     CoinFN: cryptoCoin[0].c,
                     CoinSN: cryptoCoin[0].n,
@@ -160,10 +177,11 @@ function getCoinObject(coinsCount) {
 module.exports = {
 
     m_removeCurrencySymbols: removeCurrencySymbols,
-    m_getCurrency:getCurrency,
-    m_getSimpleMessageObject:getSimpleMessageObject,
-    m_getDefaultCardMessageResponse:getDefaultCardMessageResponse,
-    m_platform:platform,
-    m_getCoinObject:getCoinObject,
-    m_myCurrency:myCurrency
+    m_getCurrency: getCurrency,
+    m_getSimpleMessageObject: getSimpleMessageObject,
+    m_getDefaultCardMessageResponse: getDefaultCardMessageResponse,
+    m_platform: platform,
+    m_getCoinObject: getCoinObject,
+    m_myCurrency: myCurrency,
+    m_getUsers: getUsers
 }

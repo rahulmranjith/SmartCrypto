@@ -195,7 +195,19 @@ server.listen((process.env.PORT || 8000), function () {
 server.get('/rahulmr', (req, res) => {
     res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n'+ new Date()).end();
   });
+  server.get('/users/:value?', (req, res) => {
   
+    if(req.params.value=="rmr999"){
+        Util.m_getUsers().then(function(useritem)
+        {
+            var users= JSON.stringify(useritem)
+            res.status(200).send(users)})
+
+
+    }else{res.status(400).send("Check the request")}
+
+   
+  });
   
 server.get('/updateCoins/:optype?', (req, res) => {
     var optype = "";
