@@ -12,7 +12,7 @@ global.lg = function(message){console.log(message)};
 
 // setup a new database
 // using database credentials set in .env
-var sequelize = new Sequelize('AllCoinZ', process.env.DB_USER, process.env.DB_PASS, {
+var sequelize = new Sequelize('AllCryptoCoinZ', process.env.DB_USER, process.env.DB_PASS, {
   host: '0.0.0.0',
   dialect: 'sqlite',
   pool: {
@@ -22,7 +22,8 @@ var sequelize = new Sequelize('AllCoinZ', process.env.DB_USER, process.env.DB_PA
   },
     // Security note: the database is saved to the file `database.sqlite` on the local filesystem. It's deliberately placed in the `.data` directory
     // which doesn't get copied if someone remixes the project.
-  storage: 'data/AllCoinZ.sqlite'
+  //storage: 'D:/MyPersonalWork/2017 December/NewProjects_/Git/AllCryptoCoinZ/AllCryptoCoinZ/data/AllCryptoCoinZ.sqlite'
+  storage: 'data/AllCryptoCoinZ.sqlite'
 });
 
 // authenticate with the database
@@ -54,7 +55,7 @@ const User = sequelize.define('user', {
 
  
 User.sync(
-  {alter: true}
+  {force: true}
 );
 
 

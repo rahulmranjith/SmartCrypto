@@ -1,3 +1,5 @@
+
+
 'use strict'; //rahulmr
 
 const express = require('express');
@@ -12,7 +14,7 @@ const telegramAPI = require('./AllCoinZ/telegram')
 const Util = require('./AllCoinZ/util')
 const GenProc = require('./AllCoinZ/GenericProcess')
 const telegramPush = require('./AllCoinZ/push')
-
+const fetchCoin = require('./AllCoinZ/fetchCoin');
 const Google = require('./AllCoinZ/Google')
 
 var gUser = dbAllCoinZ.g_User;
@@ -116,7 +118,8 @@ function ChangeCurrency() {
             curr: userCurrency
         }).then(function () {
             sendDialogflowResponse(res, Util.m_getSimpleMessageObject("Default currency has been set to " + userCurrency))
-        })
+        },function(error){
+            console.log(error)})
 }
 
 function DefaultFallbackIntent() {
@@ -184,11 +187,29 @@ function TotalPortfolioValue() {
 
 server.listen((process.env.PORT || 8000), function () {
     //console.log("Server is up and running... ");
+    fetchCoin.m_updateCoins("").then(function(success){
+        console.log("Loaded the coin array without errors..")
+      
+    },function(error){console.log(error) })
 });
 server.get('/rahulmr', (req, res) => {
     res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n'+ new Date()).end();
   });
+  
+  
+server.get('/updateCoins/:optype?', (req, res) => {
+    var optype = "";
+     optype = req.params.optype
 
+    fetchCoin.m_updateCoins(optype).then(function(success){
+        console.log(success)
+        res.status(200).send(success)
+
+    },function(error){console.log(error) ;res.status(400).send(error)})
+  });
+
+
+  
 function sendDialogflowResponse(res, result) {
   //console.log(gapp.body_.originalRequest.data.user.userId)
   

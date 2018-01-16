@@ -103,7 +103,7 @@ function getCoinObject(coinsCount) {
 //         }
         
         console.log("get coin val" + cryptoCoin)
-        cryptoCoin = myCoins.findCoin(cryptoCoin.toUpperCase());;
+        cryptoCoin = myCoins.m_findCoin(cryptoCoin.toUpperCase());;
 
 
         var BaseLinkUrl = "https://www.cryptocompare.com";

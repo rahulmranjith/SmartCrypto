@@ -5,7 +5,6 @@ const slack = require('../AllCoinZ/slack')
 const Q = require('q')
 const dbAllCoinZ = require('../db/initialize');
 var gUser = dbAllCoinZ.g_User;
-const myCoins = require('../AllCoinZ/jsonCoin');
 
 function getWelcomeMessage(platform, displayName) {
 
@@ -199,8 +198,19 @@ function getPortfolio(userInfo) {
     }).then(function (result) {
 
         if (result == null) {
-
-            return deferred.reject("`Please create a new portfolio. Check help !!`")
+            switch (Util.m_platform) {
+                case "telegram","slack", "skype":
+                     return deferred.reject("`Please create a new portfolio. Check help !!`")
+                    break;
+                case "google":
+                    Google.sendPortfolioUpdate("Please create a new portfolio. Check help !!!");
+                    break;
+                default:
+                    "Please try again !!!"
+        
+        
+            }    
+           
         }
         let myPortfolio = result.portfolio;
         Util.m_myCurrency = result.curr;
@@ -304,7 +314,7 @@ function getPortFolioCoinData(input, myCurrency) {
 
 
     for (const coin of Object.keys(input)) {
-        var foundCoin = myCoins.findCoin(coin.toUpperCase())
+        var foundCoin = myCoins.m_findCoin(coin.toUpperCase())
           //console.log(foundCoin);
         if (foundCoin !== null && foundCoin != "") {
             cryptoCoinstoFetch = cryptoCoinstoFetch + "," + foundCoin[0].n
