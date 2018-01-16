@@ -52,9 +52,20 @@ function updateCoins(optype) {
         console.log(JSON.stringify(jsonCoin));
         var jsonv = JSON.stringify(jsonCoin)
 
-        var fs = require('fs');
+        var type = "";
+        if (optype != undefined) {
+            if (optype.toLowerCase() == "csv") {
+                type = csvOp
+            }
+            if (optype.toLowerCase() == "json") {
+                type = JSON.stringify(CollectionEntityJSON)
+            }
+            jsCoin.m_setCoins(jsonv)
+            return deferred.resolve("Succesfully completed the operations\n" + type)
+        }
 
 
+/*      var fs = require('fs');
         fs.writeFile("AllCryptoCoinZ/data/coinentityCSV.txt", csvOp, function (err) {
             if (err) {
                 console.log(err);
@@ -88,7 +99,7 @@ function updateCoins(optype) {
             });
             console.log("The file was saved!");
         });
-
+*/
 
     })
     return deferred.promise
