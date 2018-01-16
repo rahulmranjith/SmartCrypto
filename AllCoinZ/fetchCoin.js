@@ -61,7 +61,7 @@ function updateCoins(optype) {
                 type = JSON.stringify(CollectionEntityJSON)
             }
             jsCoin.m_setCoins(jsonv)
-            return deferred.resolve("Succesfully completed the operations\n" + type)
+            return deferred.resolve(type)
         }
 
 

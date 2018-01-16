@@ -5,7 +5,14 @@ const slack = require('../AllCoinZ/slack')
 const Q = require('q')
 const dbAllCoinZ = require('../db/initialize');
 var gUser = dbAllCoinZ.g_User;
+var HttpResponse;
 
+function setHttpResponse(HttpRes){
+    HttpResponse=HttpRes
+}
+function getHttpResponse(){
+   return  HttpResponse;
+}
 function getWelcomeMessage(platform, displayName) {
 
     var cardResponse = Util.m_getDefaultCardMessageResponse(platform)
@@ -15,7 +22,7 @@ function getWelcomeMessage(platform, displayName) {
     switch (Util.m_platform) {
         case "telegram":
             welcomeMessage = telegram.m_formatWelcomeMessage(displayName);
-           cardResponse.messages[0].subtitle = welcomeMessage
+            cardResponse.messages[0].subtitle = welcomeMessage
             break;
         case "slack":
             welcomeMessage = slack.m_formatWelcomeMessage(displayName);
@@ -33,10 +40,10 @@ function getWelcomeMessage(platform, displayName) {
 }
 
 
-function getResponseMessage(coinResult) {
+function getCoinValueResponse(coinResult) {
 
     var responseMessage
-      console.log(Util.m_platform)
+    console.log(Util.m_platform)
     switch (Util.m_platform) {
         case "telegram":
             responseMessage = telegram.m_ResponseMessage(coinResult);
@@ -346,9 +353,10 @@ function getPortFolioCoinData(input, myCurrency) {
 module.exports = {
 
     m_getWelcomeMessage: getWelcomeMessage,
-    m_getResponseMessage: getResponseMessage,
+    m_getCoinValueResponse: getCoinValueResponse,
     m_SyncPortfolio: SyncPortfolio,
     m_getTotalPortfolioValue: getTotalPortfolioValue,
-m_callPayLoadFormatMessage:callPayLoadFormatMessage
-
+    m_callPayLoadFormatMessage:callPayLoadFormatMessage,
+    m_setHttpResponse:setHttpResponse,
+    m_getHttpResponse:getHttpResponse
 }
