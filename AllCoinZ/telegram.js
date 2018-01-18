@@ -1,24 +1,23 @@
 const Util = require('../AllCoinZ/util')
-const GenProc = require('../AllCoinZ/GenericProcess')
+
 
 function formatWelcomeMessage(displayName) {
-    var cardResponse = Util.m_getDefaultCardMessageResponse(platform);
-    
-
+    var cardResponse = Util.m_getDefaultCardMessageResponse(Util.m_platform);
     var message = "\n Hello *" + displayName + "*     !!!\n\n *💰All CoinZ - Get CryptoCoins' value in local currencies!!!💰*\n\n `Type in any Coin name like` *BTC* `or` *BitCoin* .\n\n *>*` Can ask interactively : `"+
       "\n *   -What's the value of XRP* \n *   -How much is BTC* \n *   -Get me value of ETH and so on..*\n\n *>* `Send` *help* `for help/configuration` \n\n *>*` Set default currency by sending:` \n    -*CUR[USD]* / *CURR BTC* / *CUR IND*"
-        //+"\n aaa"
       +"\n\n*>*` Set Portfolio using` :\n   - `To Add send` *B 1.23 BTC* \n   - `To Remove send` *S 1.00 BTC* \n   - `To view current Portfolio send` *VP* \n   - `To view Total Porftolio Value send` *PT*"
       cardResponse.messages[0].subtitle = message
       sendDialogHTTPResponse(cardResponse)
 }
+function sendSimpleMessage(message){
 
+    sendDialogHTTPResponse(message)
+
+}
 
 function sendDialogHTTPResponse(result){
-
-    var HttpResponse = GenProc.m_getHttpResponse();
+    var HttpResponse = Util.m_getHttpResponse();
     HttpResponse.send(result)
-
 }
 
 
@@ -95,7 +94,7 @@ function ResponseMessage(coinResult) {
     }
 
     //console.log(responseData)
-    return responseData;
+    sendDialogHTTPResponse(responseData);
 }
 
  
@@ -191,7 +190,7 @@ function getPortfolioData(myportfolioData, myCoins) {
   
     
     var TelegramTPV = getPayLoadMessage("*Total Portfolio Value:*\n"+formatMyPortfoliowithData(myportfolioData, myCoins, Util.m_myCurrency)) 
-    return TelegramTPV
+    sendDialogHTTPResponse(TelegramTPV) 
 }
 
 
@@ -213,39 +212,11 @@ function getPortfolioInfo(myCoins) {
     var TelegramPInfo = getPayLoadMessage("*My Portfolio:*\n\n"+op)
     
     
-    return TelegramPInfo
+    sendDialogHTTPResponse(TelegramPInfo)  
 
 }
 
 
-function sendDialogflowResponse(res, result) {
-    //console.log(gapp.body_.originalRequest.data.user.userId)
-    
-    if(Util.m_platform!="google"){
-      res.send(result)
-    }
-      //console.log("result"+JSON.stringify(result))
-    
-  //     res.send({"messages": [
-  //   {
-  //     "displayText": "Text response",
-  //     "platform": "google",
-  //     "textToSpeech": "A",//result.messages[0].subtitle,
-  //     "type": "simple_response"
-  //   }
-  // ]})
-    
-    //   gapp.ask(gapp.buildRichResponse()
-    //   // Create a basic card and add it to the rich response
-    //   .addSimpleResponse('Simple Response')
-    //   .addBasicCard(gapp.buildBasicCard('Basic Card')
-    //     .setTitle('Basica Card Simple Title')
-    //     .addButton('Button', 'https://example.google.com/mathandprimes')
-    //     .setImage('https://www.cryptocompare.com/media/20646/eth.png', 'Ethereum')
-    //     .setImageDisplay('CROPPED')
-    //   )
-    // );
-  }
   
 
 
@@ -254,5 +225,6 @@ module.exports = {
     m_ResponseMessage: ResponseMessage,
     m_getPortfolioData: getPortfolioData,
     m_getPortfolioInfo: getPortfolioInfo,
-  m_getPayLoadMessage:getPayLoadMessage
+  m_getPayLoadMessage:getPayLoadMessage,
+  m_sendSimpleMessage:sendSimpleMessage
 }

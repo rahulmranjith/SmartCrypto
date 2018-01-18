@@ -6,6 +6,14 @@ const myCoins = require('../AllCoinZ/jsonCoin');
 var platform;
 let myCurrency;
 
+var HttpResponse;
+
+function setHttpResponse(HttpRes){
+    HttpResponse=HttpRes
+}
+function getHttpResponse(){
+   return  HttpResponse;
+}
 
 function removeCurrencySymbols(currency) {
     //console.log(currency)
@@ -86,7 +94,7 @@ function getSimpleMessageObject(message) {
         "messages": [{
             "speech": message,
             "type": 0,
-            "text": "You can read about *entities* [here](/docs/concept-entities).",
+            "text": "AllCryptoCoinZ",
             "parse_mode": "Markdown"
         }]
     }
@@ -148,7 +156,6 @@ function getCoinObject(coinsCount) {
 
 
             if (coinValue != undefined) {
-
                 oCoin = {
                     CoinFN: cryptoCoin[0].c,
                     CoinSN: cryptoCoin[0].n,
@@ -163,9 +170,7 @@ function getCoinObject(coinsCount) {
                 oCoin = null;
                 deferred.reject(null);
             }
-
             ////console.log(speechOP);
-
         })
     }
     return deferred.promise;
@@ -175,7 +180,6 @@ function getCoinObject(coinsCount) {
 
 
 module.exports = {
-
     m_removeCurrencySymbols: removeCurrencySymbols,
     m_getCurrency: getCurrency,
     m_getSimpleMessageObject: getSimpleMessageObject,
@@ -183,5 +187,7 @@ module.exports = {
     m_platform: platform,
     m_getCoinObject: getCoinObject,
     m_myCurrency: myCurrency,
-    m_getUsers: getUsers
+    m_getUsers: getUsers,
+    m_setHttpResponse:setHttpResponse,
+    m_getHttpResponse:getHttpResponse
 }

@@ -8,6 +8,11 @@ gapp.ask("<speak>"+ message+" from the portfolio </speak>")
 
 
 }
+function sendSimpleMessage(message){
+
+    sendPortfolioUpdate(message)
+
+}
 function formatWelcomeMessage(displayName) {
     console.log("welcome");
 
@@ -325,5 +330,6 @@ module.exports = {
     m_getPortfolioInfo: getPortfolioInfo,
   m_getPayLoadMessage:getPayLoadMessage,
   m_gapp:setgapp,
-  m_sendPortfolioUpdate:sendPortfolioUpdate
+  m_sendPortfolioUpdate:sendPortfolioUpdate,
+  m_sendSimpleMessage:sendSimpleMessage
 }

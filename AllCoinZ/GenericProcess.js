@@ -5,57 +5,60 @@ const slack = require('../AllCoinZ/slack')
 const Q = require('q')
 const dbAllCoinZ = require('../db/initialize');
 var gUser = dbAllCoinZ.g_User;
-var HttpResponse;
 
-function setHttpResponse(HttpRes){
-    HttpResponse=HttpRes
-}
-function getHttpResponse(){
-   return  HttpResponse;
-}
 function getWelcomeMessage(platform, displayName) {
-
-    var cardResponse = Util.m_getDefaultCardMessageResponse(platform)
-    var welcomeMessage = "";
-
     console.log(Util.m_platform)
     switch (Util.m_platform) {
         case "telegram":
-            welcomeMessage = telegram.m_formatWelcomeMessage(displayName);
-            cardResponse.messages[0].subtitle = welcomeMessage
+            telegram.m_formatWelcomeMessage(displayName);
             break;
         case "slack":
-            welcomeMessage = slack.m_formatWelcomeMessage(displayName);
-            cardResponse=welcomeMessage
+            slack.m_formatWelcomeMessage(displayName);           
             break;
         case "google":
-            welcomeMessage = Google.m_formatWelcomeMessage(displayName);
-            
+            Google.m_formatWelcomeMessage(displayName);        
             break;
         default:
-            "Hello Welcome to AllCoinZ"
-    }
-    
-    return cardResponse;
+            "Hello Welcome to AllCryptoCoinZ"
+    } 
 }
 
+function sendSimpleMessage(message){
+    
+    console.log(Util.m_platform)
+    switch (Util.m_platform) {
+        case "telegram":
+            telegram.m_sendSimpleMessage(callPayLoadFormatMessage(message));
+            break;
+        case "slack":
+            slack.m_sendSimpleMessage(callPayLoadFormatMessage(message));        
+            break;
+        case "google":
+            Google.m_sendSimpleMessage(message);     
+            break;
+        default:
+            "Hello Welcome to AllCryptoCoinZ"
+    } 
 
-function getCoinValueResponse(coinResult) {
+
+}
+
+function sendCoinResponse(coinResult) {
 
     var responseMessage
     console.log(Util.m_platform)
     switch (Util.m_platform) {
         case "telegram":
-            responseMessage = telegram.m_ResponseMessage(coinResult);
+            telegram.m_ResponseMessage(coinResult);
             break;
         case "slack":
-            responseMessage = slack.m_ResponseMessage(coinResult);
+             slack.m_ResponseMessage(coinResult);
             break;
         case "skype":
-            responseMessage = telegram.m_ResponseMessage(coinResult);
+            telegram.m_ResponseMessage(coinResult);
             break;
         case "google":
-            responseMessage = Google.m_ResponseMessage(coinResult);
+            Google.m_ResponseMessage(coinResult);
             break;
         default:
             "Please try again !!!"
@@ -140,25 +143,20 @@ function SyncPortfolio(userInfo, gapp) {
             uniqID: userInfo.uniqID
         }, userInfoData).then(function () {
       
-          console.log(Util.m_platform)
+
+            
+          
     switch (Util.m_platform) {
         case "telegram":
-            deferred.resolve(callPayLoadFormatMessage("Portfolio Details\n`"+ newQuantity + " " + cryptoCoin + " has been " +updatetext+" successfully !!!`"))
-   
-            break;
         case "slack":
-            deferred.resolve(callPayLoadFormatMessage("Portfolio Details\n`"+ newQuantity + " " + cryptoCoin + " has been " +updatetext+" successfully !!!`"))
-   
+             sendSimpleMessage("Portfolio Details\n`"+ newQuantity + " " + cryptoCoin + " has been " +updatetext+" successfully !!!`")
             break;
         case "google":
-            Google.m_sendPortfolioUpdate(newQuantity + " " + cryptoCoin + " has been " +updatetext+" successfully !!!");
-            
+             sendSimpleMessage(newQuantity + " " + cryptoCoin + " has been " +updatetext+" successfully !!!");            
             break;
         default:
             "Hello Welcome to AllCoinZ"
-    }
-          
-          
+            }
           
            //deferred.resolve(callPayLoadFormatMessage("Portfolio Details\n`"+ newQuantity + " " + cryptoCoin + " has been " +updatetext+" successfully !!!`"))
   
@@ -246,19 +244,16 @@ function getTotalPortfolioValue(userInfo, fetchValue) {
 
             oPortFolioLatestData.then(function (myportFolioData) {
 
-               
-                var resultPortFolioWithData
+            
                 switch (Util.m_platform) {
                     case "telegram":
-                    
-                        resultPortFolioWithData = telegram.m_getPortfolioData(myportFolioData, myPortfolio);
+                    telegram.m_getPortfolioData(myportFolioData, myPortfolio);
                         break;
                     case "slack":
-                     
-                        resultPortFolioWithData = slack.m_getPortfolioData(myportFolioData, myPortfolio);
+                      slack.m_getPortfolioData(myportFolioData, myPortfolio);
                         break;
                     case "skype":
-                        resultPortFolioWithData = telegram.m_getPortfolioData(myportFolioData, myPortfolio);
+                      telegram.m_getPortfolioData(myportFolioData, myPortfolio);
                         break;
                     case "google":
                         Google.m_getPortfolioData(myportFolioData, myPortfolio);
@@ -269,41 +264,40 @@ function getTotalPortfolioValue(userInfo, fetchValue) {
 
                 // console.log(resultPortFolioWithData)  
 
-                deferred.resolve(resultPortFolioWithData);
+                deferred.resolve(true);
             }).catch(function (err) {
-                console.log("m_getCurrency method failed" + err)
+             
+                return deferred.reject(false);
             })
 
 
         } else {
-            var portfolioWithQuanitity
-
-
+        
             switch (Util.m_platform) {
                 case "telegram":
-                    portfolioWithQuanitity = telegram.m_getPortfolioInfo(myPortfolio);
+                    telegram.m_getPortfolioInfo(myPortfolio);
                     break;
                 case "slack":
-                    portfolioWithQuanitity = slack.m_getPortfolioInfo(myPortfolio);
+                   slack.m_getPortfolioInfo(myPortfolio);
                     break;
                 case "skype":
-                    portfolioWithQuanitity = telegram.m_getPortfolioInfo(myPortfolio);
+                    telegram.m_getPortfolioInfo(myPortfolio);
                     break;
                 case "google":
-                    portfolioWithQuanitity = Google.m_getPortfolioInfo(myPortfolio);
+                    Google.m_getPortfolioInfo(myPortfolio);
                     break;
                 default:
                     "Please try again !!!"
             }
 
-            deferred.resolve(portfolioWithQuanitity);
+            deferred.resolve(true);
         }
 
 
     }, function (error) {
         console.log(error);
       
-      return deferred.reject(callPayLoadFormatMessage ("Portfolio Details\n"+error) );
+      return deferred.reject(false);
     })
     return deferred.promise;
 
@@ -353,10 +347,9 @@ function getPortFolioCoinData(input, myCurrency) {
 module.exports = {
 
     m_getWelcomeMessage: getWelcomeMessage,
-    m_getCoinValueResponse: getCoinValueResponse,
+    m_sendSimpleMessage:sendSimpleMessage,
+    m_sendCoinResponse: sendCoinResponse,
     m_SyncPortfolio: SyncPortfolio,
     m_getTotalPortfolioValue: getTotalPortfolioValue,
     m_callPayLoadFormatMessage:callPayLoadFormatMessage,
-    m_setHttpResponse:setHttpResponse,
-    m_getHttpResponse:getHttpResponse
 }
