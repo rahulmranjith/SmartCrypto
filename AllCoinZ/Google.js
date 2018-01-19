@@ -4,7 +4,7 @@ var gapp;
 
 function sendPortfolioUpdate(message){
 
-gapp.ask("<speak>"+ message+" from the portfolio </speak>")
+gapp.ask("<speak>"+ message+"</speak>")
 
 
 }
@@ -71,6 +71,8 @@ function formatWelcomeMessage(displayName) {
   //     .setImageDisplay('CROPPED')
   //   )
   // );
+
+
 function ResponseMessage(CoinInfo) {
 
     console.log("ResponseMessage")
@@ -115,93 +117,56 @@ function ResponseMessage(CoinInfo) {
       "*Market Cap :* **" + coinInfoinCurrency.MKTCAP + "**<br>" + 
       "*Updated :* **" + coinInfoinCurrency.LASTUPDATE + "**  "
   
-  gapp.ask(gapp.buildRichResponse()
-    // Create a basic card and add it to the rich response
-    .addSimpleResponse(simpleResponse)
-    .addBasicCard(gapp.buildBasicCard(content)
-      .setTitle("💰" +  CoinInfo.CoinFN.toUpperCase() + "💰" )
-      .addButton('View '+ CoinInfo.CoinSN, CoinInfo.CoinURL)
-      .setImage(CoinInfo.CoinImg, CoinInfo.CoinFN)
-      .setImageDisplay('CROPPED')
-    )
-  );
-    
-    
-    
-    
-    
-//     var responseData = {
-
-//         "messages": [getCoinInfo(coinResult), {
-//             "platform": "telegram",
-//             "type": 4,
-//             payload: {
-//                 "telegram": {
-//                     "text": "&#9889;<i> Please select next coin...</i>", //\n\n["+link +"]",,
-//                     //photo:coinResult.CoinImg,
-//                     parse_mode: "HTML",
-//                     disable_web_page_preview: false,
-//                     "title": "AllCoinZ",
-//                     "reply_markup": {
-//                         "keyboard": [
-//                             [{
-//                                 "text": "BTC"
-
-//                             }, {
-//                                 "text": "ETH"
-
-//                             }, {
-//                                 "text": "XRP"
-
-//                             }, {
-//                                 "text": "PINK"
-
-//                             }, {
-//                                 "text": "DOGE"
-//                             }, {
-//                                 "text": "IOTA"
-//                             }],
-//                             [{
-//                                 "text": "ETN"
-//                             }, {
-//                                 "text": "XLM"
-//                             }, {
-//                                 "text": "XVG"
-//                             }, {
-//                                 "text": "ADA"
-//                             }, {
-//                                 "text": "BCH"
-//                             }, {
-//                                 "text": "TRX"
-//                             }],
-//                             [{
-//                                     "text": "C[USD]"
-//                                 }, {
-//                                     "text": "C[INR]"
-//                                 }, {
-//                                     "text": "View Portfolio"
-//                                 }, {
-//                                     "text": "Portfolio Total"
-//                                 },
-//                                 //{
-//                                 //     "text": "CUR[BTC]"
-//                                 // }, {
-//                                 //     "text": "CUR[EUR]"
-//                                 // }
-//                             ]
-
-//                         ],
-//                         resize_keyboard: true
-
-//                     }
-//                 }
-//             }
-//         }]
-
-//     }
-
-//     //console.log(responseData)
-//     return responseData;
+  
+  
+  
+//   content ="hello \n abc"
+//   gapp.ask(gapp.buildRichResponse()
+//     // Create a basic card and add it to the rich response
+//     .addSimpleResponse(simpleResponse)
+//     .addBasicCard(gapp.buildBasicCard(content)
+//       .setTitle("💰" +  CoinInfo.CoinFN.toUpperCase() + "💰" )
+//       .addButton('View '+ CoinInfo.CoinSN, CoinInfo.CoinURL)
+//       .setImage(CoinInfo.CoinImg, CoinInfo.CoinFN)
+//       .setImageDisplay('CROPPED')
+//     )
+//   );
+ 
+  
+  
+  gapp.askWithList(gapp.buildRichResponse()
+      .addSimpleResponse('Alright')
+      .addSuggestions(
+        ['Basic Card', 'List', 'Carousel', 'Suggestions'])
+      
+      ,
+      // Build a list
+      gapp.buildList('Things to learn about')
+      // Add the first item to the list
+      .addItems(gapp.buildOptionItem('MATH_AND_PRIME',
+        ['math', 'math and prime', 'prime numbers', 'prime'])
+        .setTitle('Math & prime numbers')
+        .setDescription('42 is an abundant number because the sum of its ' +
+          'proper divisors 54 is greater…')
+        .setImage('http://example.com/math_and_prime.jpg', 'Math & prime numbers')
+               )
+      // Add the second item to the list
+      .addItems(gapp.buildOptionItem('EGYPT',
+        ['religion', 'egpyt', 'ancient egyptian'])
+        .setTitle('Ancient Egyptian religion')
+        .setDescription('42 gods who ruled on the fate of the dead in the ' +
+          'afterworld. Throughout the under…')
+        .setImage('http://example.com/egypt', 'Egypt')
+      )
+      // Add third item to the list
+      .addItems(gapp.buildOptionItem('RECIPES',
+        ['recipes', 'recipe', '42 recipes'])
+        .setTitle('42 recipes with 42 ingredients')
+        .setDescription('Here\'s a beautifully simple recipe that\'s full ' +
+          'of flavor! All you need is some ginger and…')
+        .setImage('http://example.com/recipe', 'Recipe') )
+    );
+  
 }
 
  
@@ -310,16 +275,33 @@ function getPortfolioInfo(myCoins) {
     var op="";
     for (const coin of Object.keys(myCoins)) {
        
-        op = op + "`" + (+myCoins[coin]).toFixed(3) + " " + coin + "`\n"
+        op = op + "<break time='1s'/>" + (+myCoins[coin]).toFixed(3) + " <say-as interpret-as='characters'>" + coin + "</say-as>"
   
     }
   
-   
+    
 
-    var TelegramPInfo = getPayLoadMessage("*My Portfolio:*\n\n"+op)
+    var TelegramPInfo =  op
     
+   
+  // var content = "*"+CoinInfo.CoinCount + " " + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * currencyPrice).toFixed(5)+ " " +coinInfoinCurrency.TOSYMBOL+"**"+" <br>*"+
+  //     CoinInfo.CoinCount + "" + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * BTCPrice).toFixed(9) + " " + coinInfoinBTC.TOSYMBOL + "** <br> "+
+  //     "*% in 24 Hrs :* **" + coinInfoinCurrency.CHANGEPCT24HOUR + "** <br>  " + 
+  //     "*High Day :* **" + coinInfoinCurrency.HIGHDAY + "** <br>  " +
+  //     "*Low Day :* **" + coinInfoinCurrency.LOWDAY + "**<br>" + 
+  //     "*Market Cap :* **" + coinInfoinCurrency.MKTCAP + "**<br>" + 
+  //     "*Updated :* **" + coinInfoinCurrency.LASTUPDATE + "**  "
+  
+    console.log("<speak>My Portfolio: "+op+"</speak>")
+  gapp.ask(gapp.buildRichResponse()
+    // Create a basic card and add it to the rich response
+    .addSimpleResponse("<speak>My Portfolio: "+op+"</speak>")
+    .addBasicCard(gapp.buildBasicCard(TelegramPInfo)
+      .setTitle("💰My Portfolio💰" )
+    )
+  );
     
-    return TelegramPInfo
+    //sendSimpleMessage( TelegramPInfo)
 
 }
 
