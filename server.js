@@ -37,7 +37,94 @@ const ApiAiApp = require('actions-on-google').DialogflowApp;
 
 let res;
 
+
 server.post('/', function (request, response, next) {
+
+    const DialogflowApp = require('actions-on-google').DialogflowApp;
+    const app = new DialogflowApp({request, response});
+    const WELCOME_INTENT = 'input.welcome';
+    const OPTION_INTENT = 'option.select';
+    
+    function welcomeIntent (app) {
+      console.log("welcomeIntent")
+
+
+
+      app.askWithList(app.buildRichResponse()
+      .addSimpleResponse('Alright')
+      .addSuggestions(
+        ['Basic Card', 'List', 'Carousel', 'Suggestions']),
+      // Build a list
+      app.buildList('Things to learn about')
+      // Add the first item to the list
+      .addItems(app.buildOptionItem('MATH_AND_PRIME',
+        ['math', 'math and prime', 'prime numbers', 'prime'])
+        .setTitle('Math & prime numbers')
+        .setDescription('42 is an abundant number because the sum of its ' +
+          'proper divisors 54 is greater…')
+        .setImage('http://example.com/math_and_prime.jpg', 'Math & prime numbers'))
+      // Add the second item to the list
+      .addItems(app.buildOptionItem('EGYPT',
+        ['religion', 'egpyt', 'ancient egyptian'])
+        .setTitle('Ancient Egyptian religion')
+        .setDescription('42 gods who ruled on the fate of the dead in the ' +
+          'afterworld. Throughout the under…')
+        .setImage('http://example.com/egypt', 'Egypt')
+      )
+      // Add third item to the list
+      .addItems(app.buildOptionItem('RECIPES',
+        ['recipes', 'recipe', '42 recipes'])
+        .setTitle('42 recipes with 42 ingredients')
+        .setDescription('Here\'s a beautifully simple recipe that\'s full ' +
+          'of flavor! All you need is some ginger and…')
+        .setImage('http://example.com/recipe', 'Recipe')
+      )
+    );
+
+
+     app.askWithCarousel('Which of these looks good?',
+        app.buildCarousel()
+         .addItems([
+           app.buildOptionItem("a",
+             ['synonym of KEY_ONE 1', 'synonym of KEY_ONE 2'])
+             .setTitle('Number one'),
+           app.buildOptionItem("b",
+             ['synonym of KEY_TWO 1', 'synonym of KEY_TWO 2'])
+             .setTitle('Number two'),
+         ]));
+
+
+
+         app.ask(app.buildRichResponse()
+         // Create a basic card and add it to the rich response
+         .addSimpleResponse("simplerespon")
+         .addBasicCard(app.buildBasicCard("content")
+           .setTitle("💰setTitle💰" )
+          
+         ))
+
+    }
+    
+    function optionIntent (app) {
+      if (app.getSelectedOption() === 1) {
+        app.tell('Number one is a great choice!');
+      } else {
+        app.tell('Number two is a great choice!');
+      }
+    }
+    
+    const actionMap = new Map();
+    actionMap.set("gethelp", welcomeIntent);
+    actionMap.set(OPTION_INTENT, optionIntent);
+    app.handleRequest(actionMap);
+    
+    
+    
+    
+    })
+
+
+server.post('/2', function (request, response, next) {
 
     //console.log(JSON.stringify(request))
     gapp = new ApiAiApp({ request, response });
