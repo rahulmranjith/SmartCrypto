@@ -1,21 +1,23 @@
 const Util = require('../AllCoinZ/util')
-
+const jsCoin = require('../AllCoinZ/jsonCoin');
 var gapp;
 
 function sendPortfolioUpdate(message){
 
-gapp.ask("<speak>"+ message+" from the portfolio </speak>")
+gapp.ask("<speak>"+ message+"</speak>")
 
 
 }
+function sendSimpleMessage(message){
+
+    sendPortfolioUpdate(message)
+}
+ function setgapp(mgapp){
+       gapp=mgapp
+ }
+
+
 function formatWelcomeMessage(displayName) {
-    console.log("welcome");
-
-    // return "\n Hello *" + displayName + "*     !!!\n\n *💰All CoinZ - Get CryptoCoins' value in local currencies!!!💰*\n\n `Type in any Coin name like` *BTC* `or` *BitCoin* .\n\n *>*` Can ask interactively : `"+
-    //   "\n *   -What's the value of XRP* \n *   -How much is BTC* \n *   -Get me value of ETH and so on..*\n\n *>* `Send` *help* `for help/configuration` \n\n *>*` Set default currency by sending:` \n    -*CUR[USD]* / *CURR BTC* / *CUR IND*"
-    //     //+"\n aaa"
-    //   +"\n \n*>*` Set Portfolio using` :\n   - `To Add send` *B 1.23 BTC* \n   - `To Remove send` *S 1.00 BTC* \n   - `To view current Portfolio send` *VP* \n   - `To view Total Porftolio Value send` *PT*"
-
   var welcomeMessage =""
   const textToSpeech = '<speak>' +
     'Here are <say-as interpret-as="characters">SSML</say-as> samples. ' +
@@ -30,42 +32,14 @@ function formatWelcomeMessage(displayName) {
     '</speak>';
   
   welcomeMessage ='<speak>'+
-  '<emphasis level="moderate">All CoinZ</emphasis> Get CryptoCoins value in fiat currencies!!<break time="1s"/>Say help for options'+
+  '<emphasis level="moderate">Welcome to AllCryptoCoinZ</emphasis><break time="1s"/>Say help anytime. Which coin would you want to select ? '+
   '</speak>'
  
-   
-    
    gapp.ask(welcomeMessage)
-//   gapp.ask({
-//     speech: 'Howdy! I can tell you fun facts about ' +
-//     'almost any number, like 42. What do you have in mind?',
-//     displayText: "\n Hello *" + displayName + "*     !!!\n\n *💰All CoinZ - Get CryptoCoins' value in local currencies!!!💰*\n\n `Type in any Coin name like` *BTC* `or` *BitCoin* .\n\n *>*` Can ask interactively : `"+
-//       "\n *   -What's the value of XRP* \n *   -How much is BTC* \n *   -Get me value of ETH and so on..*\n\n *>* `Send` *help* `for help/configuration` \n\n *>*` Set default currency by sending:` \n    -*CUR[USD]* / *CURR BTC* / *CUR IND*"
-//         //+"\n aaa"
-//       +"\n \n*>*` Set Portfolio using` :\n   - `To Add send` *B 1.23 BTC* \n   - `To Remove send` *S 1.00 BTC* \n   - `To view current Portfolio send` *VP* \n   - `To view Total Porftolio Value send` *PT*"
-
-
-//   });
 }
 
- function setgapp(mgapp){
-       gapp=mgapp
- }
 
 
-
-
- 
-  //   gapp.ask(gapp.buildRichResponse()
-  //   // Create a basic card and add it to the rich response
-  //   .addSimpleResponse('Simple Response')
-  //   .addBasicCard(gapp.buildBasicCard('Basic Card')
-  //     .setTitle('Basica Card Simple Title')
-  //     .addButton('Button', 'https://example.google.com/mathandprimes')
-  //     .setImage('https://www.cryptocompare.com/media/20646/eth.png', 'Ethereum')
-  //     .setImageDisplay('CROPPED')
-  //   )
-  // );
 function ResponseMessage(CoinInfo) {
 
     console.log("ResponseMessage")
@@ -83,24 +57,8 @@ function ResponseMessage(CoinInfo) {
   text = CoinInfo.CoinFN.toUpperCase() +" = " + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL
   
   var sound = '<speak>'+CoinInfo.CoinFN.toUpperCase() +" is " + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL + '</speak>';
-  
-  // gapp.ask(gapp.buildRichResponse()
-  //   // Create a basic card and add it to the rich response
-  //   .addSimpleResponse('Math and prime numbers it is!')
-  //   .addBasicCard(gapp.buildBasicCard('42 is an even composite number. It' +
-  //     'is composed of three distinct prime numbers multiplied together. It' +
-  //     'has a total of eight divisors. 42 is an abundant number, because the' +
-  //     'sum of its proper divisors 54 is greater than itself. To count from' +
-  //     '1 to 42 would take you about twenty-one…')
-  //     .setTitle('Math & prime numbers')
-  //     .addButton('Read more', 'https://example.google.com/mathandprimes')
-  //     .setImage('https://example.google.com/42.png', 'Image alternate text')
-  //     .setImageDisplay('CROPPED')
-  //   )
-  // );
-  
-//' <
-   var  simpleResponse = '<speak> <say-as interpret-as="fraction">'+ CoinInfo.CoinCount + '</say-as> '+ CoinInfo.CoinFN + ' is <emphasis level="moderate"><say-as interpret-as="fraction">'+(CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " +coinInfoinCurrency.TOSYMBOL+'</say-as></emphasis></speak>';
+
+  var  simpleResponse = '<speak> <say-as interpret-as="fraction">'+ CoinInfo.CoinCount + '</say-as> '+ CoinInfo.CoinFN + ' is <emphasis level="moderate"><say-as interpret-as="fraction">'+(CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " +coinInfoinCurrency.TOSYMBOL+'</say-as></emphasis></speak>';
    
   var content = "*"+CoinInfo.CoinCount + " " + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * currencyPrice).toFixed(5)+ " " +coinInfoinCurrency.TOSYMBOL+"**"+" <br>*"+
       CoinInfo.CoinCount + "" + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * BTCPrice).toFixed(9) + " " + coinInfoinBTC.TOSYMBOL + "** <br> "+
@@ -109,97 +67,9 @@ function ResponseMessage(CoinInfo) {
       "*Low Day :* **" + coinInfoinCurrency.LOWDAY + "**<br>" + 
       "*Market Cap :* **" + coinInfoinCurrency.MKTCAP + "**<br>" + 
       "*Updated :* **" + coinInfoinCurrency.LASTUPDATE + "**  "
-  
-  gapp.ask(gapp.buildRichResponse()
-    // Create a basic card and add it to the rich response
-    .addSimpleResponse(simpleResponse)
-    .addBasicCard(gapp.buildBasicCard(content)
-      .setTitle("💰" +  CoinInfo.CoinFN.toUpperCase() + "💰" )
-      .addButton('View '+ CoinInfo.CoinSN, CoinInfo.CoinURL)
-      .setImage(CoinInfo.CoinImg, CoinInfo.CoinFN)
-      .setImageDisplay('CROPPED')
-    )
-  );
-    
-    
-    
-    
-    
-//     var responseData = {
-
-//         "messages": [getCoinInfo(coinResult), {
-//             "platform": "telegram",
-//             "type": 4,
-//             payload: {
-//                 "telegram": {
-//                     "text": "&#9889;<i> Please select next coin...</i>", //\n\n["+link +"]",,
-//                     //photo:coinResult.CoinImg,
-//                     parse_mode: "HTML",
-//                     disable_web_page_preview: false,
-//                     "title": "AllCoinZ",
-//                     "reply_markup": {
-//                         "keyboard": [
-//                             [{
-//                                 "text": "BTC"
-
-//                             }, {
-//                                 "text": "ETH"
-
-//                             }, {
-//                                 "text": "XRP"
-
-//                             }, {
-//                                 "text": "PINK"
-
-//                             }, {
-//                                 "text": "DOGE"
-//                             }, {
-//                                 "text": "IOTA"
-//                             }],
-//                             [{
-//                                 "text": "ETN"
-//                             }, {
-//                                 "text": "XLM"
-//                             }, {
-//                                 "text": "XVG"
-//                             }, {
-//                                 "text": "ADA"
-//                             }, {
-//                                 "text": "BCH"
-//                             }, {
-//                                 "text": "TRX"
-//                             }],
-//                             [{
-//                                     "text": "C[USD]"
-//                                 }, {
-//                                     "text": "C[INR]"
-//                                 }, {
-//                                     "text": "View Portfolio"
-//                                 }, {
-//                                     "text": "Portfolio Total"
-//                                 },
-//                                 //{
-//                                 //     "text": "CUR[BTC]"
-//                                 // }, {
-//                                 //     "text": "CUR[EUR]"
-//                                 // }
-//                             ]
-
-//                         ],
-//                         resize_keyboard: true
-
-//                     }
-//                 }
-//             }
-//         }]
-
-//     }
-
-//     //console.log(responseData)
-//     return responseData;
 }
 
- 
+  
 
 function getPayLoadMessage(message){
 
@@ -249,8 +119,8 @@ function getCoinInfo(CoinInfo) {
 }
 
 
-function formatMyPortfoliowithData(data, myCoins, currency) {
-
+function formatMyPortfoliowithData(data, myCoins,) {
+    var currency =Util.m_myCurrency
     var op = "\n"
     var priceinBTC = 0;
     var priceinCurrency = 0;
@@ -259,18 +129,13 @@ function formatMyPortfoliowithData(data, myCoins, currency) {
     var displayCurrency;
     var displayBTC;
     for (const coin of Object.keys(myCoins)) {
-        //console.log(coin, myCoins[coin]);
-
-        //console.log(data.DISPLAY[coin]["BTC"].PRICE)
-       // console.log(data.DISPLAY[coin][currency].PRICE)
+       
 
         priceinBTC = (Util.m_removeCurrencySymbols(data.DISPLAY[coin]["BTC"]) * myCoins[coin]).toFixed(9)
-        //console.log("priceinINR"+ data.DISPLAY[coin][currency].PRICE)
-
+   
         priceinCurrency = (Util.m_removeCurrencySymbols(data.DISPLAY[coin][currency]) * myCoins[coin]).toFixed(2)
 
-        // op = op + "*" + coin + "(" + (+myCoins[coin]).toFixed(2) + "):*  `" + priceinCurrency + " " + data.DISPLAY[coin][currency].TOSYMBOL + " |" + " " + priceinBTC + " " + data.DISPLAY[coin]["BTC"].TOSYMBOL + "` " +
-        //     "\n"
+    
       
        op = op +"`" + (+myCoins[coin]).toFixed(2) + "` "+ "*[" + coin + "*]=`" + priceinCurrency + "" + data.DISPLAY[coin][currency].TOSYMBOL + " |" + " " + priceinBTC + "" + data.DISPLAY[coin]["BTC"].TOSYMBOL + "` " +
             "\n"
@@ -288,11 +153,79 @@ function formatMyPortfoliowithData(data, myCoins, currency) {
     return op;
 }
 
-function getPortfolioData(myportfolioData, myCoins) {
+function getPortfolioData(data, myCoins) {
+   var currency =Util.m_myCurrency
+    var op="";
   
+    var priceinBTC = 0;
+    var priceinCurrency = 0;
+    var totalBTC = 0;
+    var totalCurrency = 0;
+    var displayCurrency;
+    var displayBTC;
+//     for (const coin of Object.keys(myCoins)) {
+       
+
+//         priceinBTC = (Util.m_removeCurrencySymbols(data.DISPLAY[coin]["BTC"]) * myCoins[coin]).toFixed(9)
+       
+//         priceinCurrency = (Util.m_removeCurrencySymbols(data.DISPLAY[coin][currency]) * myCoins[coin]).toFixed(2)
+
+       
+//        op = op +"`" + (+myCoins[coin]).toFixed(2) + "` "+ "*[" + coin + "*]=`" + priceinCurrency + "" + data.DISPLAY[coin][currency].TOSYMBOL + " |" + " " + priceinBTC + "" + data.DISPLAY[coin]["BTC"].TOSYMBOL + "` " +
+//             "\n"
+
+//         displayCurrency = data.DISPLAY[coin][currency].TOSYMBOL
+//         displayBTC = data.DISPLAY[coin]["BTC"].TOSYMBOL
+
+//         totalBTC = +totalBTC + +priceinBTC
+//         totalCurrency = +totalCurrency + +priceinCurrency
+
+
+//     }
+  
+  
+  
+    var mylist = gapp.buildList('My Portfolio:')
     
-    var TelegramTPV = getPayLoadMessage("*Total Portfolio Value:*\n"+formatMyPortfoliowithData(myportfolioData, myCoins, Util.m_myCurrency)) 
-    return TelegramTPV
+        var BaseLinkUrl = "https://www.cryptocompare.com";
+        var  cryptoCoin ;
+        var link ;
+        var ilink
+    for (const coin of Object.keys(myCoins)){
+    
+       
+        cryptoCoin = jsCoin.m_findCoin(coin.toUpperCase());;
+        console.log("after my "+ BaseLinkUrl + cryptoCoin[0].iu)
+
+      link = BaseLinkUrl + cryptoCoin[0].u;
+      ilink = BaseLinkUrl + cryptoCoin[0].iu;  
+        op = op + "<break time='1s'/>" + (+myCoins[coin]).toFixed(3) + " <say-as interpret-as='characters'>" + coin + "</say-as>"
+  
+      
+        priceinBTC = (Util.m_removeCurrencySymbols(data.DISPLAY[coin]["BTC"]) * myCoins[coin]).toFixed(9)     
+        priceinCurrency = (Util.m_removeCurrencySymbols(data.DISPLAY[coin][currency]) * myCoins[coin]).toFixed(2)
+      
+        mylist.addItems(gapp.buildOptionItem(coin,
+        ['AllCryptoCoinZ'])
+        .setTitle((+myCoins[coin]).toFixed(3) +" "+coin)
+              .setDescription(priceinCurrency + "" + data.DISPLAY[coin][currency].TOSYMBOL + " |" + " " + priceinBTC + "" + data.DISPLAY[coin]["BTC"].TOSYMBOL)
+             .setImage(ilink, coin)
+            )  
+        displayCurrency = data.DISPLAY[coin][currency].TOSYMBOL
+        displayBTC = data.DISPLAY[coin]["BTC"].TOSYMBOL
+
+        totalBTC = +totalBTC + +priceinBTC
+        totalCurrency = +totalCurrency + +priceinCurrency
+     }
+  
+  mylist.title ="My Portfolio Value: " + totalCurrency.toFixed(3) + " " + displayCurrency + " | " + totalBTC.toFixed(9) + " " + displayBTC 
+  console.log(mylist.title)
+
+  console.log("\n*[TPV]:  " + " " + totalCurrency.toFixed(3) + " " + displayCurrency + " | " + totalBTC.toFixed(9) + " " + displayBTC )
+  gapp.askWithList(gapp.buildRichResponse()
+      .addSimpleResponse("<speak>"+"My Portfolio Value: " + totalCurrency.toFixed(3) + " " + displayCurrency + " equalent to " + totalBTC.toFixed(9) + " BTC " +"</speak>")
+      .addSuggestions(['BTC','XRP','ETH','ADA','XVG']),mylist)
+  
 }
 
 
@@ -301,21 +234,26 @@ function getPortfolioData(myportfolioData, myCoins) {
 
 function getPortfolioInfo(myCoins) {
   
-   
-    var op="";
-    for (const coin of Object.keys(myCoins)) {
-       
-        op = op + "`" + (+myCoins[coin]).toFixed(3) + " " + coin + "`\n"
+  var op;
   
-    }
   
+    var mylist = gapp.buildList('My Portfolio:')
+  
+    for (const coin of Object.keys(myCoins)){
+    
+       op = op + "<break time='1s'/>" + (+myCoins[coin]).toFixed(3) + " <say-as interpret-as='characters'>" + coin + "</say-as>"
+  
+        mylist.addItems(gapp.buildOptionItem(coin,
+        ['AllCryptoCoinZ'])
+        .setTitle((+myCoins[coin]).toFixed(3) +" "+coin)
+              .setDescription("description")
+             .setImage("https://assets.pcmag.com/media/images/436663-yahoo-aabaco.jpg", coin))
    
-
-    var TelegramPInfo = getPayLoadMessage("*My Portfolio:*\n\n"+op)
-    
-    
-    return TelegramPInfo
-
+     }
+  gapp.askWithList(gapp.buildRichResponse()
+      .addSimpleResponse("<speak>My Portfolio: "+op+"</speak>")
+      .addSuggestions(
+        ['Total Value']),mylist)
 }
 
 module.exports = {
@@ -325,5 +263,6 @@ module.exports = {
     m_getPortfolioInfo: getPortfolioInfo,
   m_getPayLoadMessage:getPayLoadMessage,
   m_gapp:setgapp,
-  m_sendPortfolioUpdate:sendPortfolioUpdate
+  m_sendPortfolioUpdate:sendPortfolioUpdate,
+  m_sendSimpleMessage:sendSimpleMessage
 }

@@ -14,14 +14,12 @@
     "sqlite3": "*",
     "sequelize": "*",
     "actions-on-google": "*",
-    
-		"body-parser": "^1.15.2",
-		"request": "^2.79.0",
-    "q":"^1.5.1",
-		"es6-map": "^0.1.4",
-		"prettyjson": "^1.2.1",
-		"underscore.string": "^3.3.4",
-    "node-telegram-bot-api":"*"
+    "body-parser": "^1.15.2",
+    "request": "^2.79.0",
+    "q": "^1.5.1",
+    "es6-map": "^0.1.4",
+    "prettyjson": "^1.2.1",
+    "underscore.string": "^3.3.4"
   },
   "engines": {
     "node": "8.1.x"
