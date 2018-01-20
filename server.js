@@ -38,7 +38,7 @@ const ApiAiApp = require('actions-on-google').DialogflowApp;
 let res;
 
 
-server.post('/', function (request, response, next) {
+server.post('/12', function (request, response, next) {
 
     const DialogflowApp = require('actions-on-google').DialogflowApp;
     const app = new DialogflowApp({request, response});
@@ -124,7 +124,7 @@ server.post('/', function (request, response, next) {
     })
 
 
-server.post('/2', function (request, response, next) {
+server.post('/', function (request, response, next) {
 
     //console.log(JSON.stringify(request))
     gapp = new ApiAiApp({ request, response });
