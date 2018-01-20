@@ -5,7 +5,12 @@ const slack = require('../AllCoinZ/slack')
 const Q = require('q')
 const dbAllCoinZ = require('../db/initialize');
 var gUser = dbAllCoinZ.g_User;
+<<<<<<< HEAD
 
+=======
+const myCoins = require('../AllCoinZ/jsonCoin');
+ 
+>>>>>>> origin/glitch
 function getWelcomeMessage(platform, displayName) {
     console.log(Util.m_platform)
     switch (Util.m_platform) {
@@ -39,8 +44,13 @@ function sendSimpleMessage(message){
         default:
             "Hello Welcome to AllCryptoCoinZ"
     } 
+<<<<<<< HEAD
 
 
+=======
+
+
+>>>>>>> origin/glitch
 }
 
 function sendCoinResponse(coinResult) {
@@ -238,13 +248,17 @@ function getTotalPortfolioValue(userInfo, fetchValue) {
 
     getPortfolio(userInfo).then(function (myPortfolio) {
 
-        if (fetchValue) {
-
+        if (fetchValue || Util.m_platform=="google") {
+            console.log('total1')
             var oPortFolioLatestData = getPortFolioCoinData(myPortfolio, Util.m_myCurrency)
 
             oPortFolioLatestData.then(function (myportFolioData) {
 
+<<<<<<< HEAD
             
+=======
+              console.log('total')
+>>>>>>> origin/glitch
                 switch (Util.m_platform) {
                     case "telegram":
                     telegram.m_getPortfolioData(myportFolioData, myPortfolio);

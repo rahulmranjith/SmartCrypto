@@ -19,8 +19,12 @@
     "q": "^1.5.1",
     "es6-map": "^0.1.4",
     "prettyjson": "^1.2.1",
+<<<<<<< HEAD
     "underscore.string": "^3.3.4",
     "node-telegram-bot-api": "*"
+=======
+    "underscore.string": "^3.3.4"
+>>>>>>> origin/glitch
   },
   "engines": {
     "node": "8.1.x"

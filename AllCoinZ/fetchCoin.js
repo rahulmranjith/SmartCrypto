@@ -12,12 +12,21 @@ function updateCoins(optype) {
     var deferred = Q.defer();
     request(coinURL, function (error, response, body) {
 
+<<<<<<< HEAD
 
         var JSONResponse = JSON.parse(response.body);
         p = JSONResponse.Data;
 
         var coinarray = [];
         CollectionEntityJSON = []
+=======
+var  keyv
+        var JSONResponse = JSON.parse(response.body);
+      var  p = JSONResponse.Data;
+
+        var coinarray = [];
+        var CollectionEntityJSON = []
+>>>>>>> origin/glitch
         var csvOp
         for (var key in p) {
             if (p.hasOwnProperty(key)) {
@@ -49,7 +58,11 @@ function updateCoins(optype) {
             "Coins": coinarray
         };
         var BaseLinkUrl = "https://www.cryptocompare.com";
+<<<<<<< HEAD
         console.log(JSON.stringify(jsonCoin));
+=======
+        //console.log(JSON.stringify(jsonCoin));
+>>>>>>> origin/glitch
         var jsonv = JSON.stringify(jsonCoin)
 
         var type = "";

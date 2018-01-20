@@ -32,11 +32,10 @@ var exchange = "CCCAGG"
 var platform;
 
 var gapp;
-
 const ApiAiApp = require('actions-on-google').DialogflowApp;
-
 let res;
 
+<<<<<<< HEAD
 
 server.post('/12', function (request, response, next) {
 
@@ -127,6 +126,14 @@ server.post('/12', function (request, response, next) {
 server.post('/', function (request, response, next) {
 
     //console.log(JSON.stringify(request))
+=======
+
+
+
+server.post('/', function (request, response, next) {
+  
+    console.log(JSON.stringify(request.body))
+>>>>>>> origin/glitch
     gapp = new ApiAiApp({ request, response });
 
     Google.m_gapp(gapp)
@@ -272,6 +279,39 @@ server.listen((process.env.PORT || 8000), function () {
         console.log("Loaded the coin array without errors..")
 
     }, function (error) { console.log(error) })
+<<<<<<< HEAD
+=======
+});
+server.get('/users/:value?', (req, res) => {
+
+    if (req.params.value == "rmr999") {
+        Util.m_getUsers().then(function (useritem) {
+            var users = JSON.stringify(useritem)
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).send(users)
+        })
+
+
+    } else { res.status(400).send("Check the request") }
+
+
+});
+server.get('/rahulmr', (req, res) => {
+    res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n' + new Date()).end();
+});
+
+
+server.get('/updateCoins/:optype?', (req, res) => {
+    var optype = "";
+    optype = req.params.optype
+
+    fetchCoin.m_updateCoins(optype).then(function (success) {
+        console.log(success)
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).send(success)
+
+    }, function (error) { console.log(error); res.status(400).send(error) })
+>>>>>>> origin/glitch
 });
 server.get('/users/:value?', (req, res) => {
 
@@ -303,6 +343,8 @@ server.get('/updateCoins/:optype?', (req, res) => {
 
     }, function (error) { console.log(error); res.status(400).send(error) })
 });
+
+
 
 
 
