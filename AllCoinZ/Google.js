@@ -34,11 +34,11 @@ function getHelp(displayName) {
     if (hasScreen) {
         richresponse = richresponse.addSimpleResponse('<speak><break time="1s"/>AllCryptoCoinZ Help</speak>')
             .addBasicCard(gapp.buildBasicCard(
-                    'To change the default currency say **Set currency to USD or cur INR**' +
-                    'To add a coin to portfolio say **Add 1.23 XRP**' +
-                    'To reduce a coin count from portfolio say **Remove 0.23 BCH**' +
-                    'To delete a coin from portfolio say **Delete 1.23 XRP**' +
-                    'To get the portfolio ask **What\'s my portfolio?**')
+                    '*To change the default currency say* **Set currency to USD or cur INR**' +
+                    '\n\n*To add a coin to portfolio say* **Add 1.23 XRP**' +
+                    '\n\n*To reduce a coin count from portfolio say* **Remove 0.23 BCH**' +
+                    '\n\n*To delete a coin from portfolio say* **Delete 1.23 XRP**' +
+                    '\n\n*To get the portfolio ask* **What\'s my portfolio?**')
                 .setTitle('AllCryptoCoinZ Help')
                 // .addButton('Read more', 'https://example.google.com/mathandprimes')
                 // .setImage('https://example.google.com/42.png', 'Image alternate text')
@@ -142,12 +142,12 @@ function ResponseMessage(CoinInfo) {
 
     var simpleResponse = '<speak> <say-as interpret-as="fraction">' + CoinInfo.CoinCount + '</say-as> ' + CoinInfo.CoinFN + ' is <emphasis level="moderate"><say-as interpret-as="fraction">' + (CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " + coinInfoinCurrency.TOSYMBOL + '</say-as></emphasis></speak>';
 
-    var content = "*" + CoinInfo.CoinCount + " " + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL + "**" + " <br>*" +
-        CoinInfo.CoinCount + "" + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * BTCPrice).toFixed(9) + " " + coinInfoinBTC.TOSYMBOL + "** <br> " +
-        "*% in 24 Hrs :* **" + coinInfoinCurrency.CHANGEPCT24HOUR + "** <br>  " +
-        "*High Day :* **" + coinInfoinCurrency.HIGHDAY + "** <br>  " +
-        "*Low Day :* **" + coinInfoinCurrency.LOWDAY + "**<br>" +
-        "*Market Cap :* **" + coinInfoinCurrency.MKTCAP + "**<br>" +
+    var content = "*" + CoinInfo.CoinCount + " " + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL + "**" + " \n\n*" +
+        CoinInfo.CoinCount + "" + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * BTCPrice).toFixed(9) + " " + coinInfoinBTC.TOSYMBOL + "** \n\n " +
+        "*% in 24 Hrs :* **" + coinInfoinCurrency.CHANGEPCT24HOUR + "** \n\n  " +
+        "*High Day :* **" + coinInfoinCurrency.HIGHDAY + "** \n\n  " +
+        "*Low Day :* **" + coinInfoinCurrency.LOWDAY + "**\n\n" +
+        "*Market Cap :* **" + coinInfoinCurrency.MKTCAP + "**\n\n" +
         "*Updated :* **" + coinInfoinCurrency.LASTUPDATE + "**  "
     gapp.ask(gapp.buildRichResponse()
         // Create a basic card and add it to the rich response
