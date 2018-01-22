@@ -34,15 +34,15 @@ function getHelp(displayName) {
     if (hasScreen) {
         richresponse = richresponse.addSimpleResponse('<speak><break time="1s"/>AllCryptoCoinZ Help</speak>')
             .addBasicCard(gapp.buildBasicCard(
-                    '*To change the default currency say* **Set currency to USD or cur INR**' +
-                    '\n\n*To add a coin to portfolio say* **Add 1.23 XRP**' +
-                    '\n\n*To reduce a coin count from portfolio say* **Remove 0.23 BCH**' +
-                    '\n\n*To delete a coin from portfolio say* **Delete 1.23 XRP**' +
-                    '\n\n*To get the portfolio ask* **What\'s my portfolio?**')
+                '*To change the default currency say* **Set currency to USD or cur INR**' +
+                '\n\n*To add a coin to portfolio say* **Add 1.23 XRP**' +
+                '\n\n*To reduce a coin count from portfolio say* **Remove 0.23 BCH**' +
+                '\n\n*To delete a coin from portfolio say* **Delete 1.23 XRP**' +
+                '\n\n*To get the portfolio ask* **What\'s my portfolio?**')
                 .setTitle('AllCryptoCoinZ Help')
-                // .addButton('Read more', 'https://example.google.com/mathandprimes')
-                // .setImage('https://example.google.com/42.png', 'Image alternate text')
-                // .setImageDisplay('CROPPED')
+            // .addButton('Read more', 'https://example.google.com/mathandprimes')
+            // .setImage('https://example.google.com/42.png', 'Image alternate text')
+            // .setImageDisplay('CROPPED')
             )
     } else {
         richresponse = richresponse.addSimpleResponse('<speak><break time="1s"/>AllCryptoCoinZ Help' +
@@ -66,11 +66,11 @@ function getHelp(displayName) {
     gapp.ask(gapp.buildRichResponse()
         .addSimpleResponse('addSimpleResponse')
         .addBasicCard(gapp.buildBasicCard('<speak><emphasis level="moderate">Welcome to AllCryptoCoinZ</emphasis>' +
-                '<break time="1s"/>To change the default currency say **Set currency to USD or cur INR**' +
-                '<break time="1s"/>To add a coin to portfolio say **Add 1.23 XRP**' +
-                '<break time="1s"/>To reduce a coin count from portfolio say **Remove 0.23 BCH**' +
-                '<break time="1s"/>To delete a coin from portfolio say **Delete 1.23 XRP**' +
-                '<break time="1s"/>To get the portfolio ask **What\'s my portfolio?**</speak>')
+            '<break time="1s"/>To change the default currency say **Set currency to USD or cur INR**' +
+            '<break time="1s"/>To add a coin to portfolio say **Add 1.23 XRP**' +
+            '<break time="1s"/>To reduce a coin count from portfolio say **Remove 0.23 BCH**' +
+            '<break time="1s"/>To delete a coin from portfolio say **Delete 1.23 XRP**' +
+            '<break time="1s"/>To get the portfolio ask **What\'s my portfolio?**</speak>')
             .setTitle('Math & prime numbers')
             .addButton('Read more', 'https://example.google.com/mathandprimes')
             .setImage('https://example.google.com/42.png', 'Image alternate text')
@@ -121,46 +121,6 @@ function formatWelcomeMessage(displayName) {
 }
 
 
-
-function ResponseMessage(CoinInfo) {
-
-    console.log("ResponseMessage")
-    var coinInfoinCurrency = CoinInfo.CoinValue.DISPLAY[CoinInfo.CoinSN][CoinInfo.CoinCurrency]
-    var coinInfoinBTC = CoinInfo.CoinValue.DISPLAY[CoinInfo.CoinSN]["BTC"]
-
-    var currencyPrice = Util.m_removeCurrencySymbols(coinInfoinCurrency)
-    var BTCPrice = Util.m_removeCurrencySymbols(coinInfoinBTC)
-
-    var coinDetail = "💰" + "*" + CoinInfo.CoinFN.toUpperCase() + "*💰\n\n` " + CoinInfo.CoinCount + " " + CoinInfo.CoinSN + "` = *" + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL + "*" + "\n " +
-        "\n` " + CoinInfo.CoinCount + " " + CoinInfo.CoinSN + "` = *" + (CoinInfo.CoinCount * BTCPrice).toFixed(9) + " " + coinInfoinBTC.TOSYMBOL + "* \n\n _ % in 24 Hrs : _ *" + coinInfoinCurrency.CHANGEPCT24HOUR + "* \n " + "_ High Day : _ *" + coinInfoinCurrency.HIGHDAY + "* \n " +
-        "_ Low Day : _ *" + coinInfoinCurrency.LOWDAY + "* \n " + "_ Market Cap : _ *" + coinInfoinCurrency.MKTCAP + "* \n " + "_ Updated : _ *" + coinInfoinCurrency.LASTUPDATE + "* \n "
-    var text;
-
-    text = CoinInfo.CoinFN.toUpperCase() + " = " + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL
-
-    var sound = '<speak>' + CoinInfo.CoinFN.toUpperCase() + " is " + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL + '</speak>';
-
-    var simpleResponse = '<speak> <say-as interpret-as="fraction">' + CoinInfo.CoinCount + '</say-as> ' + CoinInfo.CoinFN + ' is <emphasis level="moderate"><say-as interpret-as="fraction">' + (CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " + coinInfoinCurrency.TOSYMBOL + '</say-as></emphasis></speak>';
-
-    var content = "*" + CoinInfo.CoinCount + " " + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL + "**" + " \n\n*" +
-        CoinInfo.CoinCount + "" + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * BTCPrice).toFixed(9) + " " + coinInfoinBTC.TOSYMBOL + "** \n\n " +
-        "*% in 24 Hrs :* **" + coinInfoinCurrency.CHANGEPCT24HOUR + "** \n\n  " +
-        "*High Day :* **" + coinInfoinCurrency.HIGHDAY + "** \n\n  " +
-        "*Low Day :* **" + coinInfoinCurrency.LOWDAY + "**\n\n" +
-        "*Market Cap :* **" + coinInfoinCurrency.MKTCAP + "**\n\n" +
-        "*Updated :* **" + coinInfoinCurrency.LASTUPDATE + "**  "
-    gapp.ask(gapp.buildRichResponse()
-        // Create a basic card and add it to the rich response
-        .addSimpleResponse(simpleResponse)
-        .addSuggestions(['BTC', 'XRP', 'ETH', 'ADA', 'XVG'])
-        .addBasicCard(gapp.buildBasicCard(content)
-            .setTitle("💰" + CoinInfo.CoinFN.toUpperCase() + "💰")
-            .addButton('View ' + CoinInfo.CoinSN, CoinInfo.CoinURL)
-            .setImage(CoinInfo.CoinImg, CoinInfo.CoinFN)
-            .setImageDisplay('CROPPED')
-        )
-    );
-}
 
 
 
@@ -244,6 +204,89 @@ function formatMyPortfoliowithData(data, myCoins) {
     return op;
 }
 
+
+
+
+function ResponseMessage(CoinInfo) {
+
+    console.log("ResponseMessage")
+    var coinInfoinCurrency = CoinInfo.CoinValue.DISPLAY[CoinInfo.CoinSN][CoinInfo.CoinCurrency]
+    var coinInfoinBTC = CoinInfo.CoinValue.DISPLAY[CoinInfo.CoinSN]["BTC"]
+
+    var currencyPrice = Util.m_removeCurrencySymbols(coinInfoinCurrency)
+    var BTCPrice = Util.m_removeCurrencySymbols(coinInfoinBTC)
+
+    var coinDetail = "💰" + "*" + CoinInfo.CoinFN.toUpperCase() + "*💰\n\n` " + CoinInfo.CoinCount + " " + CoinInfo.CoinSN + "` = *" + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL + "*" + "\n " +
+        "\n` " + CoinInfo.CoinCount + " " + CoinInfo.CoinSN + "` = *" + (CoinInfo.CoinCount * BTCPrice).toFixed(9) + " " + coinInfoinBTC.TOSYMBOL + "* \n\n _ % in 24 Hrs : _ *" + coinInfoinCurrency.CHANGEPCT24HOUR + "* \n " + "_ High Day : _ *" + coinInfoinCurrency.HIGHDAY + "* \n " +
+        "_ Low Day : _ *" + coinInfoinCurrency.LOWDAY + "* \n " + "_ Market Cap : _ *" + coinInfoinCurrency.MKTCAP + "* \n " + "_ Updated : _ *" + coinInfoinCurrency.LASTUPDATE + "* \n "
+    var text;
+
+    text = CoinInfo.CoinFN.toUpperCase() + " = " + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL
+
+    var sound = '<speak>' + CoinInfo.CoinFN.toUpperCase() + " is " + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL + '</speak>';
+
+    var simpleResponse = '<speak> <say-as interpret-as="fraction">' + CoinInfo.CoinCount + '</say-as> ' + CoinInfo.CoinFN + ' is <emphasis level="moderate"><say-as interpret-as="fraction">' + (CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " + coinInfoinCurrency.TOSYMBOL + '</say-as></emphasis><break time="1.5" />, Which coint next ?</speak>';
+
+    var content = "**[** *" + CoinInfo.CoinCount + " " + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL + "]**" +
+        "\n\n **[** *" + CoinInfo.CoinCount + "" + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * BTCPrice).toFixed(9) + " " + coinInfoinBTC.TOSYMBOL + "]**" +
+        "\n\n **[** *% in 24 Hrs :* **" + coinInfoinCurrency.CHANGEPCT24HOUR + "]**" +
+        "\n\n **[** *High Day :* **" + coinInfoinCurrency.HIGHDAY + "]**" +
+        "\n\n **[** *Low Day :* **" + coinInfoinCurrency.LOWDAY + "]**" +
+        "\n\n **[** *Market Cap :* **" + coinInfoinCurrency.MKTCAP + "]**" +
+        "\n\n **[** *Updated :* **" + coinInfoinCurrency.LASTUPDATE + "]**"
+
+    gapp.ask(gapp.buildRichResponse()
+        // Create a basic card and add it to the rich response
+        .addSimpleResponse(simpleResponse)
+
+        .addSuggestions(['BTC', 'XRP', 'ETH', 'ADA', 'XVG'])
+        .addBasicCard(gapp.buildBasicCard(content)
+            .setTitle("💰" + CoinInfo.CoinFN.toUpperCase() + "💰")
+            .addButton('View ' + CoinInfo.CoinSN, CoinInfo.CoinURL)
+            .setImage(CoinInfo.CoinImg, CoinInfo.CoinFN)
+            .setImageDisplay('DEFAULT')
+        )
+    )
+
+    // gapp.askWithCarousel(gapp.buildRichResponse().addSimpleResponse(simpleResponse)
+    //     .addSuggestions(['BTC', 'XRP', 'ETH', 'ADA', 'XVG']),
+
+
+    //     gapp.buildCarousel("💰" + CoinInfo.CoinFN.toUpperCase() + "💰")
+    //         // Add the first item to the carousel
+    //         .addItems(gapp.buildOptionItem('CoinInfo.CoinSN' + "FIAT",
+    //             [CoinInfo.PRICE])
+    //             .setTitle(CoinInfo.CoinCount + " " + CoinInfo.CoinSN + " = " + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL)
+    //             .setDescription(CoinInfo.CoinCount + " " + CoinInfo.CoinSN + " = " + (CoinInfo.CoinCount * BTCPrice).toFixed(9) + " " + coinInfoinBTC.TOSYMBOL
+    //             )
+    //             .setImage(CoinInfo.CoinImg, CoinInfo.CoinFN)
+
+    //         )
+    //         .addItems(gapp.buildOptionItem('CoinInfo.CoinSN' + "PERCENT24",
+    //             [CoinInfo.CHANGEPCT24HOUR])
+    //             .setTitle("% in 24 Hrs: " + coinInfoinCurrency.CHANGEPCT24HOUR)
+    //             .setDescription("% in 12 Hrs: " + coinInfoinCurrency.CHANGEPCTDAY)
+    //             .setImage(CoinInfo.CoinImg, CoinInfo.CoinFN)
+    //         )
+    //         .addItems(gapp.buildOptionItem('CoinInfo.CoinSN' + "HIGHDAY",
+    //             [CoinInfo.HIGHDAY])
+    //             .setTitle("High Day : " + coinInfoinCurrency.HIGHDAY)
+    //             .setDescription("Low Day : " + coinInfoinCurrency.LOWDAY )
+    //             .setImage(CoinInfo.CoinImg, CoinInfo.CoinFN)
+    //         )
+    //         .addItems(gapp.buildOptionItem('CoinInfo.CoinSN' + "MKTCAP",
+    //             [CoinInfo.MKTCAP])
+    //             .setTitle("Market Cap : " + coinInfoinCurrency.MKTCAP)
+    //             .setDescription("Updated : " + coinInfoinCurrency.LASTUPDATE)
+    //             .setImage(CoinInfo.CoinImg, CoinInfo.CoinFN)
+    //         )
+    // );
+
+
+
+
+}
+
 function getPortfolioData(data, myCoins) {
     var currency = Util.m_myCurrency
     var op = "";
@@ -254,27 +297,6 @@ function getPortfolioData(data, myCoins) {
     var totalCurrency = 0;
     var displayCurrency;
     var displayBTC;
-    //     for (const coin of Object.keys(myCoins)) {
-
-
-    //         priceinBTC = (Util.m_removeCurrencySymbols(data.DISPLAY[coin]["BTC"]) * myCoins[coin]).toFixed(9)
-
-    //         priceinCurrency = (Util.m_removeCurrencySymbols(data.DISPLAY[coin][currency]) * myCoins[coin]).toFixed(2)
-
-
-    //        op = op +"`" + (+myCoins[coin]).toFixed(2) + "` "+ "*[" + coin + "*]=`" + priceinCurrency + "" + data.DISPLAY[coin][currency].TOSYMBOL + " |" + " " + priceinBTC + "" + data.DISPLAY[coin]["BTC"].TOSYMBOL + "` " +
-    //             "\n"
-
-    //         displayCurrency = data.DISPLAY[coin][currency].TOSYMBOL
-    //         displayBTC = data.DISPLAY[coin]["BTC"].TOSYMBOL
-
-    //         totalBTC = +totalBTC + +priceinBTC
-    //         totalCurrency = +totalCurrency + +priceinCurrency
-
-
-    //     }
-
-
 
     var mylist = gapp.buildList('My Portfolio:')
 
@@ -354,7 +376,7 @@ function getPortfolioInfo(myCoins) {
     gapp.askWithList(gapp.buildRichResponse()
         .addSimpleResponse("<speak>My Portfolio: " + op + "</speak>")
         .addSuggestions(
-            ['Total Value']), mylist)
+        ['Total Value']), mylist)
 }
 
 function formatFallback() {

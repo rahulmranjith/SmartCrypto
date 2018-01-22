@@ -1,3 +1,5 @@
+
+
 'use strict'; //rahulmr
 
 const express = require('express');
@@ -88,10 +90,17 @@ server.post('/', function (request, response, next) {
     actionMap.set('gethelp', help);
     actionMap.set('GoogleWelcomeContext', googleWelcomeContext)
     actionMap.set('ViewPortfolio-SelectItemAction', portfolioOptionSelect)
+    actionMap.set('getCoinValueOption', getCoinValueOption)
+   
 
     gapp.handleRequest(actionMap);
 
 })
+
+function getCoinValueOption() {
+    console.log("getCoinValueOption")
+    const selectedItem = gapp.getContextArgument('actions_intent_option', 'OPTION').value;
+}
 
 function help() {
     GenProc.m_help(displayName)
@@ -106,14 +115,14 @@ function googleWelcomeContext() {
         dbAllCoinZ.g_UpdateInsert(gUser, {
             uniqID: uniqID
         }, {
-            displayName: userName,
-            uniqID: userID,
-            curr: "USD"
-        }).then(function () {
-            GenProc.m_sendSimpleMessage("Hi " + userName + "  Welcome to AllCryptoCoinZ!!!  Say a coin name ")
-        }, function (error) {
-            console.log(error)
-        })
+                displayName: userName,
+                uniqID: userID,
+                curr: "USD"
+            }).then(function () {
+                GenProc.m_sendSimpleMessage("Hi " + userName + "  Welcome to AllCryptoCoinZ!!!  Say a coin name ")
+            }, function (error) {
+                console.log(error)
+            })
         // gapp.ask("Hi " + userName + " I can already tell you the value of crypto coin. Which coin would you like to select ? ");
     } else {
         GenProc.m_sendSimpleMessage("Hello  Welcome to AllCryptoCoinZ!!!  Say a coin name ")
@@ -169,14 +178,14 @@ function ChangeCurrency() {
     dbAllCoinZ.g_UpdateInsert(gUser, {
         uniqID: uniqID
     }, {
-        displayName: displayName,
-        uniqID: uniqID,
-        curr: userCurrency
-    }).then(function () {
-        GenProc.m_sendSimpleMessage("Default currency has been set to " + userCurrency)
-    }, function (error) {
-        console.log(error)
-    })
+            displayName: displayName,
+            uniqID: uniqID,
+            curr: userCurrency
+        }).then(function () {
+            GenProc.m_sendSimpleMessage("Default currency has been set to " + userCurrency)
+        }, function (error) {
+            console.log(error)
+        })
 }
 
 function DefaultFallbackIntent() {
@@ -274,7 +283,7 @@ server.get('/users/:value?', (req, res) => {
 });
 
 server.get('/users/del/:key?/:value?', (req, res) => {
-  
+
     if (req.params.value == "rmr999") {
         Util.m_deleteUser(req.params.key).then(function (useritem) {
             var users = JSON.stringify(useritem)
