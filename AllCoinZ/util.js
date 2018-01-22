@@ -22,6 +22,19 @@ function removeCurrencySymbols(currency) {
 
 
 
+function deleteUser(id) {
+    var deferred = Q.defer();
+    dbAllCoinZ.g_deleteUser(gUser,id).then(function (item) {
+        deferred.resolve(item)
+    }, function (error) {
+        console.log("Could not fetch" + JSON.stringify(error))
+        deferred.reject("Could not fetch" + JSON.stringify(error))
+
+    })
+
+    return deferred.promise;
+}
+
 function getUsers() {
     var deferred = Q.defer();
     dbAllCoinZ.g_getRecords(gUser).then(function (item) {
@@ -188,6 +201,7 @@ module.exports = {
     m_getCoinObject: getCoinObject,
     m_myCurrency: myCurrency,
     m_getUsers: getUsers,
+    m_deleteUser:deleteUser,
     m_setHttpResponse:setHttpResponse,
     m_getHttpResponse:getHttpResponse,
    

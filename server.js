@@ -1,5 +1,3 @@
-
-
 'use strict'; //rahulmr
 
 const express = require('express');
@@ -41,7 +39,10 @@ let res;
 server.post('/', function (request, response, next) {
 
     console.log(JSON.stringify(request.body))
-    gapp = new ApiAiApp({ request, response });
+    gapp = new ApiAiApp({
+        request,
+        response
+    });
 
     Google.m_gapp(gapp)
     //console.log("GAPP" + JSON.stringify(gapp.body_.originalRequest))
@@ -92,7 +93,7 @@ server.post('/', function (request, response, next) {
 
 })
 
-function help(){
+function help() {
     GenProc.m_help(displayName)
 }
 
@@ -105,17 +106,16 @@ function googleWelcomeContext() {
         dbAllCoinZ.g_UpdateInsert(gUser, {
             uniqID: uniqID
         }, {
-                displayName: userName,
-                uniqID: userID,
-                curr: "USD"
-            }).then(function () {
-                GenProc.m_sendSimpleMessage("Hi " + userName + "  Welcome to AllCryptoCoinZ!!!  Say a coin name ")
-            }, function (error) {
-                console.log(error)
-            })
+            displayName: userName,
+            uniqID: userID,
+            curr: "USD"
+        }).then(function () {
+            GenProc.m_sendSimpleMessage("Hi " + userName + "  Welcome to AllCryptoCoinZ!!!  Say a coin name ")
+        }, function (error) {
+            console.log(error)
+        })
         // gapp.ask("Hi " + userName + " I can already tell you the value of crypto coin. Which coin would you like to select ? ");
-    }
-    else {
+    } else {
         GenProc.m_sendSimpleMessage("Hello  Welcome to AllCryptoCoinZ!!!  Say a coin name ")
     }
 }
@@ -147,8 +147,7 @@ function DefaultWelcomeIntent() {
                 if (!gapp.isPermissionGranted()) {
                     return gapp.askForPermission('To address you by name and for saving portfolio ', gapp.SupportedPermissions.NAME);
                 }
-            }
-            else {
+            } else {
                 GenProc.m_sendSimpleMessage("Hi " + data.displayName + "  Welcome to AllCryptoCoinZ!!!  Say a coin name ")
             }
         })
@@ -170,19 +169,20 @@ function ChangeCurrency() {
     dbAllCoinZ.g_UpdateInsert(gUser, {
         uniqID: uniqID
     }, {
-            displayName: displayName,
-            uniqID: uniqID,
-            curr: userCurrency
-        }).then(function () {
-            GenProc.m_sendSimpleMessage("Default currency has been set to " + userCurrency)
-        }, function (error) {
-            console.log(error)
-        })
+        displayName: displayName,
+        uniqID: uniqID,
+        curr: userCurrency
+    }).then(function () {
+        GenProc.m_sendSimpleMessage("Default currency has been set to " + userCurrency)
+    }, function (error) {
+        console.log(error)
+    })
 }
 
 function DefaultFallbackIntent() {
     GenProc.m_getDefaultFallBack()
 }
+
 function BuySellCoin() {
     GenProc.m_SyncPortfolio({
         displayName,
@@ -220,9 +220,9 @@ function getCoinValue(coinObject, external) {
         }).catch(function (err) {
             console.log("m_getCurrency method failed" + err)
         });
-    }
-    )
+    })
 }
+
 function ViewPortfolio() {
     GenProc.m_getTotalPortfolioValue({
         displayName,
@@ -235,6 +235,7 @@ function ViewPortfolio() {
     //     sendDialogflowResponse(res, error)
     // })
 }
+
 function TotalPortfolioValue() {
     GenProc.m_getTotalPortfolioValue({
         displayName,
@@ -255,7 +256,54 @@ server.listen((process.env.PORT || 8000), function () {
     fetchCoin.m_updateCoins("").then(function (success) {
         console.log("Loaded the coin array without errors..")
 
-    }, function (error) { console.log(error) })
+    }, function (error) {
+        console.log(error)
+    })
+});
+server.get('/users/:value?', (req, res) => {
+
+    if (req.params.value == "rmr999") {
+        Util.m_getUsers().then(function (useritem) {
+            var users = JSON.stringify(useritem)
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).send(users)
+        })
+    } else {
+        res.status(400).send("Check the request")
+    }
+});
+
+server.get('/users/del/:key?/:value?', (req, res) => {
+  
+    if (req.params.value == "rmr999") {
+        Util.m_deleteUser(req.params.key).then(function (useritem) {
+            var users = JSON.stringify(useritem)
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).send(users)
+        })
+    } else {
+        res.status(400).send("Check request")
+    }
+});
+
+server.get('/rahulmr', (req, res) => {
+    res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n' + new Date()).end();
+});
+
+
+server.get('/updateCoins/:optype?', (req, res) => {
+    var optype = "";
+    optype = req.params.optype
+
+    fetchCoin.m_updateCoins(optype).then(function (success) {
+        console.log(success)
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).send(success)
+
+    }, function (error) {
+        console.log(error);
+        res.status(400).send(error)
+    })
 });
 server.get('/users/:value?', (req, res) => {
 
@@ -267,7 +315,9 @@ server.get('/users/:value?', (req, res) => {
         })
 
 
-    } else { res.status(400).send("Check the request") }
+    } else {
+        res.status(400).send("Check the request")
+    }
 
 
 });
@@ -285,37 +335,10 @@ server.get('/updateCoins/:optype?', (req, res) => {
         res.setHeader('Content-Type', 'application/json');
         res.status(200).send(success)
 
-    }, function (error) { console.log(error); res.status(400).send(error) })
-});
-server.get('/users/:value?', (req, res) => {
-
-    if (req.params.value == "rmr999") {
-        Util.m_getUsers().then(function (useritem) {
-            var users = JSON.stringify(useritem)
-            res.setHeader('Content-Type', 'application/json');
-            res.status(200).send(users)
-        })
-
-
-    } else { res.status(400).send("Check the request") }
-
-
-});
-server.get('/rahulmr', (req, res) => {
-    res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n' + new Date()).end();
-});
-
-
-server.get('/updateCoins/:optype?', (req, res) => {
-    var optype = "";
-    optype = req.params.optype
-
-    fetchCoin.m_updateCoins(optype).then(function (success) {
-        console.log(success)
-        res.setHeader('Content-Type', 'application/json');
-        res.status(200).send(success)
-
-    }, function (error) { console.log(error); res.status(400).send(error) })
+    }, function (error) {
+        console.log(error);
+        res.status(400).send(error)
+    })
 });
 
 
@@ -350,4 +373,3 @@ function sendDialogflowResponse(res, result) {
     //   )
     // );
 }
-
