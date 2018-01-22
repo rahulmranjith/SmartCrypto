@@ -217,7 +217,10 @@ function getPortfolioInfo(myCoins) {
 }
 
 
-  
+  function formatFallback(){
+
+    sendSimpleMessage("`Please check the keyword or Coin name .  Check help for keywords`")
+  }
 
 
 module.exports = {
@@ -226,5 +229,6 @@ module.exports = {
     m_getPortfolioData: getPortfolioData,
     m_getPortfolioInfo: getPortfolioInfo,
   m_getPayLoadMessage:getPayLoadMessage,
-  m_sendSimpleMessage:sendSimpleMessage
+  m_sendSimpleMessage:sendSimpleMessage,
+  m_formatFallback:formatFallback
 }

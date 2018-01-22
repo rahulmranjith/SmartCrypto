@@ -198,10 +198,18 @@ function getPortfolioData(myportfolioData, myCoins) {
     var slackTPV = getPayLoadMessage("*Total Portfolio Value:*\n" + formatMyPortfoliowithData(myportfolioData, myCoins, Util.m_myCurrency))
     sendDialogHTTPResponse(slackTPV) 
 }
+
+
+function formatFallback(){
+    sendSimpleMessage("`Please check the keyword or Coin name .  Check help for keywords`")
+  
+
+}
 module.exports = {
     m_formatWelcomeMessage: formatWelcomeMessage,
     m_ResponseMessage: ResponseMessage,
     m_getPortfolioData: getPortfolioData, m_getPortfolioInfo: getPortfolioInfo,
     m_getPayLoadMessage: getPayLoadMessage,
-    m_sendSimpleMessage:sendSimpleMessage
+    m_sendSimpleMessage:sendSimpleMessage,
+    m_formatFallback:formatFallback
 }
