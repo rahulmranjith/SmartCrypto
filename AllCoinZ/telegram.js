@@ -1,20 +1,22 @@
 const Util = require('../AllCoinZ/util')
 
 
+
+function gethelp(displayName){        
+    formatWelcomeMessage(displayName)
+}
+
 function formatWelcomeMessage(displayName) {
-    var cardResponse = Util.m_getDefaultCardMessageResponse(Util.m_platform);
-    var message = "\n Hello *" + displayName + "*     !!!\n\n *💰All CoinZ - Get CryptoCoins' value in local currencies!!!💰*\n\n `Type in any Coin name like` *BTC* `or` *BitCoin* .\n\n *>*` Can ask interactively : `"+
+  
+    var message = "\n Hello *" + displayName + "*     !!!\n\n *💰AllCryptoCoinZ💰* \n *Get CryptoCoins' value in fiat currencies!!!*\n\n `Type in any Coin name like` *BTC* `or` *BitCoin* .\n\n *>*` Can ask interactively : `"+
       "\n *   -What's the value of XRP* \n *   -How much is BTC* \n *   -Get me value of ETH and so on..*\n\n *>* `Send` *help* `for help/configuration` \n\n *>*` Set default currency by sending:` \n    -*CUR[USD]* / *CURR BTC* / *CUR IND*"
-      +"\n\n*>*` Set Portfolio using` :\n   - `To Add send` *B 1.23 BTC* \n   - `To Remove send` *S 1.00 BTC* \n   - `To view current Portfolio send` *VP* \n   - `To view Total Porftolio Value send` *PT*"
-      cardResponse.messages[0].subtitle = message
-      sendDialogHTTPResponse(cardResponse)
+      +"\n\n*>*` Set Portfolio using` :\n   - `To Add send` *A 1.23 BTC* \n   - `To Remove send` *R 1.00 BTC* \n   - `To view current Portfolio send` *VP* \n   - `To view Total Porftolio Value send` *PT*"
+      sendSimpleMessage(getPayLoadMessage(message))
+     
 }
 function sendSimpleMessage(message){
-
     sendDialogHTTPResponse(message)
-
 }
-
 function sendDialogHTTPResponse(result){
     var HttpResponse = Util.m_getHttpResponse();
     HttpResponse.send(result)
@@ -22,9 +24,7 @@ function sendDialogHTTPResponse(result){
 
 
 function ResponseMessage(coinResult) {
-
     var responseData = {
-
         "messages": [getCoinInfo(coinResult), {
             "platform": "telegram",
             "type": 4,
@@ -230,5 +230,6 @@ module.exports = {
     m_getPortfolioInfo: getPortfolioInfo,
   m_getPayLoadMessage:getPayLoadMessage,
   m_sendSimpleMessage:sendSimpleMessage,
-  m_formatFallback:formatFallback
+  m_formatFallback:formatFallback,
+  m_getHelp:gethelp
 }

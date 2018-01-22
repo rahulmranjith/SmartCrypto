@@ -2,20 +2,103 @@ const Util = require('../AllCoinZ/util')
 const jsCoin = require('../AllCoinZ/jsonCoin');
 var gapp;
 
-function sendPortfolioUpdate(message) {
-
-    gapp.ask("<speak>" + message + "</speak>")
-
-
-}
 function sendSimpleMessage(message) {
-
-    sendPortfolioUpdate(message)
+    gapp.ask("<speak>" + message + "</speak>")
 }
+
+function sendPortfolioUpdate(message) {
+    sendSimpleMessage(message)
+}
+
 function setgapp(mgapp) {
     gapp = mgapp
 }
 
+function getHelp(displayName) {
+    // gapp.ask(gapp.buildRichResponse()
+    //     // Create a basic card and add it to the rich response
+    //     .addSimpleResponse('<speak><break time="1s"/>addSimpleResponse</speak>')
+
+    //     .addBasicCard(gapp.buildBasicCard('<speak><emphasis level="moderate">Welcome to AllCryptoCoinZ</emphasis></speak>')
+    //         .setTitle('Math & prime numbers')
+    //         .addButton('Read more', 'https://example.google.com/mathandprimes')
+    //         .setImage('https://example.google.com/42.png', 'Image alternate text')
+    //         .setImageDisplay('CROPPED')
+    //     )
+    // );
+
+    let hasScreen = gapp.hasSurfaceCapability(gapp.SurfaceCapabilities.SCREEN_OUTPUT)
+
+    let richresponse = gapp.buildRichResponse()
+    // Create a basic card and add it to the rich response 
+    if (hasScreen) {
+        richresponse = richresponse.addSimpleResponse('<speak><break time="1s"/>AllCryptoCoinZ Help</speak>')
+            .addBasicCard(gapp.buildBasicCard(
+                    'To change the default currency say **Set currency to USD or cur INR**' +
+                    'To add a coin to portfolio say **Add 1.23 XRP**' +
+                    'To reduce a coin count from portfolio say **Remove 0.23 BCH**' +
+                    'To delete a coin from portfolio say **Delete 1.23 XRP**' +
+                    'To get the portfolio ask **What\'s my portfolio?**')
+                .setTitle('AllCryptoCoinZ Help')
+                // .addButton('Read more', 'https://example.google.com/mathandprimes')
+                // .setImage('https://example.google.com/42.png', 'Image alternate text')
+                // .setImageDisplay('CROPPED')
+            )
+    } else {
+        richresponse = richresponse.addSimpleResponse('<speak><break time="1s"/>AllCryptoCoinZ Help' +
+            '<break time="1s"/>To change the default currency say <break time="1s"/><prosody rate="slow" pitch="-2st">Set currency to USD</prosody>'
+
+            +
+            '<break time="1s"/>To add a coin to portfolio say <break time="1s"/><prosody rate="slow" pitch="-2st"><emphasis level="strong">Add 1.23 XRP</emphasis></prosody>'
+
+            +
+            '<break time="1s"/>To reduce a coin count from portfolio say <break time="1s"/><prosody rate="slow" pitch="-2st"><emphasis level="strong">Remove 0.23 BCH</emphasis></prosody>'
+
+            +
+            '<break time="1s"/>To delete a coin from portfolio say <break time="1s"/><prosody rate="slow" pitch="-2st"><emphasis level="strong">Delete 123 XRP</emphasis></prosody>'
+
+            +
+            '<break time="1s"/>To get the portfolio ask <break time="1s"/><prosody rate="slow" pitch="-2st"><emphasis level="strong">What\'s my portfolio?</emphasis></prosody></speak>')
+    }
+
+    gapp.ask(richresponse)
+
+    gapp.ask(gapp.buildRichResponse()
+        .addSimpleResponse('addSimpleResponse')
+        .addBasicCard(gapp.buildBasicCard('<speak><emphasis level="moderate">Welcome to AllCryptoCoinZ</emphasis>' +
+                '<break time="1s"/>To change the default currency say **Set currency to USD or cur INR**' +
+                '<break time="1s"/>To add a coin to portfolio say **Add 1.23 XRP**' +
+                '<break time="1s"/>To reduce a coin count from portfolio say **Remove 0.23 BCH**' +
+                '<break time="1s"/>To delete a coin from portfolio say **Delete 1.23 XRP**' +
+                '<break time="1s"/>To get the portfolio ask **What\'s my portfolio?**</speak>')
+            .setTitle('Math & prime numbers')
+            .addButton('Read more', 'https://example.google.com/mathandprimes')
+            .setImage('https://example.google.com/42.png', 'Image alternate text')
+            .setImageDisplay('CROPPED')
+
+        ))
+
+    return
+
+
+
+    const textToSpeech = '<speak>' +
+        'Here are <say-as interpret-as="characters">SSML</say-as> samples. ' +
+        'I can pause <break time="3" />. ' +
+        'I can play a sound <audio src="https://www.example.com/MY_WAVE_FILE.wav">your wave file</audio>. ' +
+        'I can speak in cardinals. Your position is <say-as interpret-as="cardinal">10</say-as> in line. ' +
+        'Or I can speak in ordinals. You are <say-as interpret-as="ordinal">10</say-as> in line. ' +
+        'Or I can even speak in digits. Your position in line is <say-as interpret-as="digits">10</say-as>. ' +
+        'I can also substitute phrases, like the <sub alias="World Wide Web Consortium">W3C</sub>. ' +
+        'Finally, I can speak a paragraph with two sentences. ' +
+        '<p><s>This is sentence one.</s><s>This is sentence two.</s></p>' +
+        '</speak>';
+
+    welcomeMessage = '<emphasis level="moderate">Welcome to AllCryptoCoinZ</emphasis>' +
+        '<break time="1s"/>To change the default currency say **Set currency to USD**'
+
+    //sendSimpleMessage(welcomeMessage)
+}
 
 function formatWelcomeMessage(displayName) {
     var welcomeMessage = ""
@@ -31,11 +114,10 @@ function formatWelcomeMessage(displayName) {
         '<p><s>This is sentence one.</s><s>This is sentence two.</s></p>' +
         '</speak>';
 
-    welcomeMessage = '<speak>' +
-        '<emphasis level="moderate">Welcome to AllCryptoCoinZ</emphasis><break time="1s"/>Say help anytime. Which coin would you want to select ? ' +
-        '</speak>'
+    welcomeMessage = '<emphasis level="moderate">Welcome to AllCryptoCoinZ</emphasis><break time="1s"/>Say help anytime. Which coin would you want to select ? ' +
 
-    gapp.ask(welcomeMessage)
+
+        sendSimpleMessage(welcomeMessage)
 }
 
 
@@ -90,11 +172,10 @@ function getPayLoadMessage(message) {
             "platform": "telegram",
             "type": 4,
             payload: {
-                "telegram":
-                    {
-                        "text": message,
-                        parse_mode: "Markdown",
-                    }
+                "telegram": {
+                    "text": message,
+                    parse_mode: "Markdown",
+                }
             }
         }]
     }
@@ -203,7 +284,9 @@ function getPortfolioData(data, myCoins) {
     var ilink
     for (const coin of Object.keys(myCoins)) {
 
-        if (myCoins[coin] <= 0) { continue }
+        if (myCoins[coin] <= 0) {
+            continue
+        }
         cryptoCoin = jsCoin.m_findCoin(coin.toUpperCase());;
         console.log("after my " + BaseLinkUrl + cryptoCoin[0].iu)
 
@@ -215,8 +298,7 @@ function getPortfolioData(data, myCoins) {
         priceinBTC = (Util.m_removeCurrencySymbols(data.DISPLAY[coin]["BTC"]) * myCoins[coin]).toFixed(9)
         priceinCurrency = (Util.m_removeCurrencySymbols(data.DISPLAY[coin][currency]) * myCoins[coin]).toFixed(2)
 
-        mylist.addItems(gapp.buildOptionItem((+myCoins[coin]).toFixed(3) + "#"+ coin,
-            [ coin])
+        mylist.addItems(gapp.buildOptionItem((+myCoins[coin]).toFixed(3) + "#" + coin, [coin])
             .setTitle((+myCoins[coin]).toFixed(3) + " " + coin)
             .setDescription(priceinCurrency + "" + data.DISPLAY[coin][currency].TOSYMBOL + " |" + " " + priceinBTC + "" + data.DISPLAY[coin]["BTC"].TOSYMBOL)
             .setImage(ilink, coin)
@@ -227,8 +309,7 @@ function getPortfolioData(data, myCoins) {
         totalBTC = +totalBTC + +priceinBTC
         totalCurrency = +totalCurrency + +priceinCurrency
     }
-    mylist.addItems(gapp.buildOptionItem("A",
-        ['AllCryptoCoinZ'])
+    mylist.addItems(gapp.buildOptionItem("A", ['AllCryptoCoinZ'])
         .setTitle(" ")
         //.setDescription("B")
         //.setImage(ilink, coin)
@@ -264,8 +345,7 @@ function getPortfolioInfo(myCoins) {
 
         op = op + "<break time='1s'/>" + (+myCoins[coin]).toFixed(3) + " <say-as interpret-as='characters'>" + coin + "</say-as>"
 
-        mylist.addItems(gapp.buildOptionItem(coin,
-            ['AllCryptoCoinZ'])
+        mylist.addItems(gapp.buildOptionItem(coin, ['AllCryptoCoinZ'])
             .setTitle((+myCoins[coin]).toFixed(3) + " " + coin)
             .setDescription("description")
             .setImage("https://assets.pcmag.com/media/images/436663-yahoo-aabaco.jpg", coin))
@@ -274,12 +354,12 @@ function getPortfolioInfo(myCoins) {
     gapp.askWithList(gapp.buildRichResponse()
         .addSimpleResponse("<speak>My Portfolio: " + op + "</speak>")
         .addSuggestions(
-        ['Total Value']), mylist)
+            ['Total Value']), mylist)
 }
 
-function formatFallback(){
+function formatFallback() {
     sendSimpleMessage("I don't understand it.Please check the command or Coin name.")
-  
+
 
 }
 module.exports = {
@@ -291,5 +371,6 @@ module.exports = {
     m_gapp: setgapp,
     m_sendPortfolioUpdate: sendPortfolioUpdate,
     m_sendSimpleMessage: sendSimpleMessage,
-    m_formatFallback:formatFallback
+    m_formatFallback: formatFallback,
+    m_getHelp: getHelp
 }

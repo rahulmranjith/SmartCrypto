@@ -7,7 +7,7 @@ const dbAllCoinZ = require('../db/initialize');
 var gUser = dbAllCoinZ.g_User;
 const myCoins = require('../AllCoinZ/jsonCoin');
 
-function getWelcomeMessage(platform, displayName) {
+function getWelcomeMessage(displayName) {
     console.log(Util.m_platform)
     switch (Util.m_platform) {
         case "telegram":
@@ -40,7 +40,23 @@ function getDefaultFallBack() {
     }
 }
 
+function help(displayName){
 
+    switch (Util.m_platform) {
+        case "telegram":
+            telegram.m_getHelp(displayName);
+            break;
+        case "slack":
+            slack.m_getHelp(displayName);
+            break;
+        case "google":
+            Google.m_getHelp(displayName);
+            break;
+        default:
+            "Hello Welcome to AllCryptoCoinZ"
+    }
+
+}
 
 function sendSimpleMessage(message) {
     console.log(Util.m_platform)
@@ -206,9 +222,9 @@ function getPortfolio(userInfo) {
     dbAllCoinZ.g_getRecord(gUser, {
         uniqID: userInfo.uniqID
     }).then(function (result) {
-        let portfolio;
-        if (result != null) { portfolio = result.portfolio; }
-        if (result == null || portfolio == null) {
+        let myPortfolio;
+        if (result != null) { myPortfolio = result.portfolio; }
+        if (result == null || myPortfolio == null) {
             switch (Util.m_platform) {
                 case "telegram", "slack", "skype":
                     return deferred.reject("`Please create a new portfolio. Check help !!`")
@@ -319,5 +335,6 @@ module.exports = {
     m_SyncPortfolio: SyncPortfolio,
     m_getTotalPortfolioValue: getTotalPortfolioValue,
     m_callPayLoadFormatMessage: callPayLoadFormatMessage,
-    m_getDefaultFallBack: getDefaultFallBack
+    m_getDefaultFallBack: getDefaultFallBack,
+    m_help:help
 }

@@ -84,7 +84,7 @@ server.post('/', function (request, response, next) {
     actionMap.set('setCurrency', ChangeCurrency);
     actionMap.set('input.unknown', DefaultFallbackIntent);
     actionMap.set('BuySellCoin', BuySellCoin);
-    actionMap.set('gethelp', DefaultWelcomeIntent);
+    actionMap.set('gethelp', help);
     actionMap.set('GoogleWelcomeContext', googleWelcomeContext)
     actionMap.set('ViewPortfolio-SelectItemAction', portfolioOptionSelect)
 
@@ -92,6 +92,9 @@ server.post('/', function (request, response, next) {
 
 })
 
+function help(){
+    GenProc.m_help(displayName)
+}
 
 function googleWelcomeContext() {
     if (gapp.isPermissionGranted()) {
@@ -151,7 +154,7 @@ function DefaultWelcomeIntent() {
         })
 
     } else {
-        GenProc.m_getWelcomeMessage(platform, displayName)
+        GenProc.m_getWelcomeMessage(displayName)
     }
 }
 

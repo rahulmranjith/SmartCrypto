@@ -189,5 +189,6 @@ module.exports = {
     m_myCurrency: myCurrency,
     m_getUsers: getUsers,
     m_setHttpResponse:setHttpResponse,
-    m_getHttpResponse:getHttpResponse
+    m_getHttpResponse:getHttpResponse,
+   
 }
