@@ -58,7 +58,7 @@ function help(displayName){
 
 }
 
-function sendSimpleMessage(message) {
+function sendSimpleMessage(message,displayText,title) {
     console.log(Util.m_platform)
     switch (Util.m_platform) {
         case "telegram":
@@ -68,7 +68,7 @@ function sendSimpleMessage(message) {
             slack.m_sendSimpleMessage(callPayLoadFormatMessage(message));
             break;
         case "google":
-            Google.m_sendSimpleMessage(message);
+            Google.m_sendSimpleMessage(message,displayText,title);
             break;
         default:
             "Hello Welcome to AllCryptoCoinZ"
@@ -122,6 +122,7 @@ function SyncPortfolio(userInfo, gapp) {
         var updatetext = "added";
         //console.log("items" + item);
         if (item == null) {
+            updatedQuantity=newQuantity
             userInfoData = {
                 displayName: userInfo.displayName,
                 uniqID: userInfo.uniqID,
@@ -137,7 +138,7 @@ function SyncPortfolio(userInfo, gapp) {
                 if (currentPortfolio[cryptoCoin] == undefined) {
                     currentPortfolio[cryptoCoin] = newQuantity;
                 } else {
-                    var updatedQuantity = 1;
+                    //var updatedQuantity = 1;
                     coinQuantity = currentPortfolio[cryptoCoin]
                     if (gapp.getArgument("BuySell").toUpperCase() == "ADD") {
                         updatetext = "added"
@@ -169,6 +170,10 @@ function SyncPortfolio(userInfo, gapp) {
                 }
             }
         }
+        var currentValue = newQuantity
+        if(updatedQuantity!=undefined){
+            currentValue=updatedQuantity
+        }
         dbAllCoinZ.g_UpdateInsert(gUser, {
             uniqID: userInfo.uniqID
         }, userInfoData).then(function () {
@@ -178,7 +183,9 @@ function SyncPortfolio(userInfo, gapp) {
                     sendSimpleMessage("Portfolio Details\n`" + newQuantity + " " + cryptoCoin + " has been " + updatetext + " successfully !!!`")
                     break;
                 case "google":
-                    sendSimpleMessage(newQuantity + " " + cryptoCoin + " has been " + updatetext + " successfully !!!");
+                    //sendSimpleMessage("**"+newQuantity + " " + cryptoCoin + "** has been " + updatetext + " !!!  \nAvailable "+cryptoCoin+" : "+ updatedQuantity,"","Portfolio Update :");
+                  
+                  sendSimpleMessage("**"+newQuantity + " " + cryptoCoin + "** has been " + updatetext + " !!!  \n*Available "+cryptoCoin+" :* **"+ currentValue+"**  \n  \n","","Portfolio Update :")
                     break;
                 default:
                     "Hello Welcome to AllCoinZ"

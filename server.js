@@ -119,7 +119,7 @@ function googleWelcomeContext() {
                 uniqID: userID,
                 curr: "USD"
             }).then(function () {
-                GenProc.m_sendSimpleMessage("Hi " + userName + "  Welcome to AllCryptoCoinZ!!!  Say a coin name ")
+                GenProc.m_sendSimpleMessage("Hello " + userName + ", Welcome to AllCryptoCoinZ!!! Say a coin name ")
             }, function (error) {
                 console.log(error)
             })
@@ -157,7 +157,7 @@ function DefaultWelcomeIntent() {
                     return gapp.askForPermission('To address you by name and for saving portfolio ', gapp.SupportedPermissions.NAME);
                 }
             } else {
-                GenProc.m_sendSimpleMessage("Hi " + data.displayName + "  Welcome to AllCryptoCoinZ!!!  Say a coin name ")
+                GenProc.m_sendSimpleMessage("Hello **" + data.displayName + "**,  \nWelcome to AllCryptoCoinZ!!!  \n  \n*Say a coin name* ")
             }
         })
 
@@ -262,6 +262,7 @@ function TotalPortfolioValue() {
 
 server.listen((process.env.PORT || 8000), function () {
     //console.log("Server is up and running... ");
+
     fetchCoin.m_updateCoins("").then(function (success) {
         console.log("Loaded the coin array without errors..")
 

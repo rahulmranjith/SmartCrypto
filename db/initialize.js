@@ -119,7 +119,7 @@ var deleteUsers = function (model, id) {
   } else {
     return model.destroy({
       where: {
-        uniqID: id
+        id: id
       }
     });
   }
