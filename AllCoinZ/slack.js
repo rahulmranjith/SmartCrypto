@@ -9,7 +9,7 @@ function formatWelcomeMessage(displayName) {
   
     var message = "\n Hello *" + displayName + "*     !!!\n\n *💰AllCryptoCoinZ💰* \n *Get CryptoCoins' value in fiat currencies!!!*\n\n `Type in any Coin name like` *BTC* `or` *BitCoin* .\n\n *>*` Can ask interactively : `"+
       "\n *   -What's the value of XRP* \n *   -How much is BTC* \n *   -Get me value of ETH and so on..*\n\n *>* `Send` *help* `for help/configuration` \n\n *>*` Set default currency by sending:` \n    -*CUR[USD]* / *CURR BTC* / *CUR IND*"
-      +"\n\n*>*` Set Portfolio using` :\n   - `To Add send` *A 1.23 BTC* \n   - `To Remove send` *R 1.00 BTC* \n   - `To view current Portfolio send` *VP* \n   - `To view Total Porftolio Value send` *PT*"
+      +"\n\n*>*` Set Portfolio using` :\n   - `To Add send` *A 1.23 BTC* \n   - `To Deduct send` *R 1.00 BTC* \n   - `To view current Portfolio send` *VP* \n   - `To view Total Porftolio Value send` *PT*"
       sendSimpleMessage(getPayLoadMessage(message))
      
 }

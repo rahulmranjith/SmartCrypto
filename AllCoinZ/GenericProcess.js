@@ -68,7 +68,7 @@ function sendSimpleMessage(message,displayText,title) {
             slack.m_sendSimpleMessage(callPayLoadFormatMessage(message));
             break;
         case "google":
-            Google.m_sendSimpleMessage(message,displayText,title);
+            Google.m_sendSimpleMessage("**"+message+"**",displayText,title);
             break;
         default:
             "Hello Welcome to AllCryptoCoinZ"
@@ -143,8 +143,8 @@ function SyncPortfolio(userInfo, gapp) {
                     if (gapp.getArgument("BuySell").toUpperCase() == "ADD") {
                         updatetext = "added"
                         updatedQuantity = +newQuantity + +coinQuantity;
-                    } else if (gapp.getArgument("BuySell").toUpperCase() == "REMOVE") {
-                        updatetext = "removed"
+                    } else if (gapp.getArgument("BuySell").toUpperCase() == "DEDUCT") {
+                        updatetext = "deducted"
                         updatedQuantity = +coinQuantity - newQuantity;
                     } else if (gapp.getArgument("BuySell").toUpperCase() == "DELETE") {
                         updatetext = "deleted"

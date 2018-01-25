@@ -17,7 +17,7 @@ function sendSimpleMessage(message, displayText, title,image ) {
             speech: message.split("*").join(""),
             displayText: displayText
         })
-        .addSuggestions(['BTC', 'XRP', 'ETH', 'ADA', 'Buy [+]', 'Sell [-]', 'Del [x]', 'My Portfolio'])
+        .addSuggestions(Util.m_getDefaultSuggestions)
         .addBasicCard(basicards
         )
 
@@ -54,7 +54,7 @@ function getHelp(displayName) {
             .addBasicCard(gapp.buildBasicCard(
                 '  \n  \n*To change the default currency say* **Set currency to USD or cur INR**' +
                 '  \n  \n*To add a coin to portfolio say* **Add 1.23 XRP**' +
-                '  \n  \n*To reduce a coin count from portfolio say* **Remove 0.23 BCH**' +
+                '  \n  \n*To reduce a coin count from portfolio say* **Deduct 0.23 BCH**' +
                 '  \n  \n*To delete a coin from portfolio say* **Delete XRP**' +
                 '  \n  \n*To get the portfolio ask* **What\'s my portfolio?**')
                 .setTitle('AllCryptoCoinZ Help')
@@ -70,7 +70,7 @@ function getHelp(displayName) {
             '<break time="1s"/>To add a coin to portfolio say <break time="1s"/><prosody rate="slow" pitch="-2st"><emphasis level="strong">Add 1.23 XRP</emphasis></prosody>'
 
             +
-            '<break time="1s"/>To reduce a coin count from portfolio say <break time="1s"/><prosody rate="slow" pitch="-2st"><emphasis level="strong">Remove 0.23 BCH</emphasis></prosody>'
+            '<break time="1s"/>To reduce a coin count from portfolio say <break time="1s"/><prosody rate="slow" pitch="-2st"><emphasis level="strong">Deduct 0.23 BCH</emphasis></prosody>'
 
             +
             '<break time="1s"/>To delete a coin from portfolio say <break time="1s"/><prosody rate="slow" pitch="-2st"><emphasis level="strong">Delete 123 XRP</emphasis></prosody>'
@@ -86,7 +86,7 @@ function getHelp(displayName) {
         .addBasicCard(gapp.buildBasicCard('<speak><emphasis level="moderate">Welcome to AllCryptoCoinZ</emphasis>' +
             '<break time="1s"/>To change the default currency say **Set currency to USD or cur INR**' +
             '<break time="1s"/>To add a coin to portfolio say **Add 1.23 XRP**' +
-            '<break time="1s"/>To reduce a coin count from portfolio say **Remove 0.23 BCH**' +
+            '<break time="1s"/>To reduce a coin count from portfolio say **Deduct 0.23 BCH**' +
             '<break time="1s"/>To delete a coin from portfolio say **Delete 1.23 XRP**' +
             '<break time="1s"/>To get the portfolio ask **What\'s my portfolio?**</speak>')
             .setTitle('Math & prime numbers')
@@ -257,7 +257,7 @@ function ResponseMessage(CoinInfo) {
         // Create a basic card and add it to the rich response
         .addSimpleResponse(simpleResponse)
 
-        .addSuggestions(['BTC', 'XRP', 'ETH', 'ADA', 'Buy [+]', 'Sell [-]', 'Del [x]', 'My Portfolio'])
+        .addSuggestions(Util.m_getDefaultSuggestions)
         .addBasicCard(gapp.buildBasicCard(content)
             .setTitle("💰💰💰" + CoinInfo.CoinFN.toUpperCase() + "💰💰💰")
             .addButton('View ' + CoinInfo.CoinSN, CoinInfo.CoinURL)
@@ -369,13 +369,13 @@ function getPortfolioData(data, myCoins) {
 
 
 
-    mylist.title = "My Portfolio Value: " + totalCurrency.toFixed(3) + " " + displayCurrency + " | " + totalBTC.toFixed(9) + " " + displayBTC
+    mylist.title = "My Portfolio Value: " + totalCurrency.toFixed(3) + " " + displayCurrency //+ " | " + totalBTC.toFixed(9) + " " + displayBTC
     console.log(mylist.title)
 
     console.log("\n*[TPV]:  " + " " + totalCurrency.toFixed(3) + " " + displayCurrency + " | " + totalBTC.toFixed(9) + " " + displayBTC)
     gapp.askWithList(gapp.buildRichResponse()
         .addSimpleResponse("<speak>" + "My Portfolio Value: " + totalCurrency.toFixed(3) + " " + displayCurrency + " equivalent to " + totalBTC.toFixed(9) + " BTC " + "</speak>")
-        .addSuggestions(['BTC', 'XRP', 'ETH', 'ADA', 'Buy [+]', 'Sell [-]', 'Del [x]', 'My Portfolio']), mylist)
+        .addSuggestions(Util.m_getDefaultSuggestions), mylist)
 
 
 

@@ -189,7 +189,7 @@ function getCoinObject(coinsCount) {
     return deferred.promise;
 }
 
-
+var defaultSuggestions =['BTC', 'XRP', 'ETH', 'ADA', 'Buy [+]', 'Sell [-]', 'Del [x]', 'My Portfolio','Set Currency']
 
 
 module.exports = {
@@ -204,5 +204,5 @@ module.exports = {
     m_deleteUser:deleteUser,
     m_setHttpResponse:setHttpResponse,
     m_getHttpResponse:getHttpResponse,
-   
+    m_getDefaultSuggestions:defaultSuggestions
 }
