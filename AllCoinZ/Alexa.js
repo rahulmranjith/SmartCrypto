@@ -33,6 +33,7 @@ const handlers = {
 
     },
     'ViewPortfolio': function () {
+        var self = this;
         const uniqID = this.event.context.System.user.userId
         dbAllCoinZ.g_getRecord(gUser, {
             uniqID: uniqID
@@ -46,13 +47,13 @@ const handlers = {
                 Util.m_myCurrency == "INR"
             } else {
                 Util.m_myCurrency = result.curr;
-            }         
-            var jsonPortfolioParse =JSON.parse(myPortfolio)
+            }
+            var jsonPortfolioParse = JSON.parse(myPortfolio)
             var oPortFolioLatestData = GenProc.m_getPortFolioCoinData(jsonPortfolioParse, Util.m_myCurrency)
             oPortFolioLatestData.then(function (myportFolioData) {
                 console.log('total')
 
-                var myCoins= jsonPortfolioParse;
+                var myCoins = jsonPortfolioParse;
                 var currency = Util.m_myCurrency
                 var op = "";
 
@@ -74,55 +75,39 @@ const handlers = {
                         continue
                     }
                     cryptoCoin = jsCoin.m_findCoin(coin.toUpperCase());;
-                    console.log("after my " + BaseLinkUrl + cryptoCoin[0].iu)
+
 
                     link = BaseLinkUrl + cryptoCoin[0].u;
                     ilink = BaseLinkUrl + cryptoCoin[0].iu;
-                    op = op + "<break time='1s'/>" + (+myCoins[coin]).toFixed(3) + " <say-as interpret-as='characters'>" + coin + "</say-as>"
 
 
                     priceinBTC = (myportFolioData.RAW[coin]["BTC"].PRICE * myCoins[coin]).toFixed(9)
                     priceinCurrency = (myportFolioData.RAW[coin][currency].PRICE * myCoins[coin]).toFixed(2)
-                    description = priceinCurrency + "" + myportFolioData.DISPLAY[coin][currency].TOSYMBOL + " |" + " " + priceinBTC + "" + myportFolioData.DISPLAY[coin]["BTC"].TOSYMBOL
+                    //description = priceinCurrency + "" + myportFolioData.DISPLAY[coin][currency].TOSYMBOL + " |" + " " + priceinBTC + "" + myportFolioData.DISPLAY[coin]["BTC"].TOSYMBOL
 
-                    mylist.addItems(gapp.buildOptionItem((+myCoins[coin]).toFixed(3) + "#" + coin, [coin])
-                        .setTitle((+myCoins[coin]).toFixed(3) + " " + coin)
-                        .setDescription(description)
-                        .setImage(ilink, coin)
-                    )
-                    displayCurrency = data.DISPLAY[coin][currency].TOSYMBOL
-                    displayBTC = data.DISPLAY[coin]["BTC"].TOSYMBOL
+                    op = op + "<break time='1s'/>" + (+myCoins[coin]).toFixed(3) + " <say-as interpret-as='characters'>" + coin + "</say-as> is " + priceinCurrency + myportFolioData.DISPLAY[coin][currency].TOSYMBOL + "\n"
+
+
+                    displayCurrency = myportFolioData.DISPLAY[coin][currency].TOSYMBOL
+                    displayBTC = myportFolioData.DISPLAY[coin]["BTC"].TOSYMBOL
 
                     totalBTC = +totalBTC + +priceinBTC
                     totalCurrency = +totalCurrency + +priceinCurrency
                 }
-
-
+                const imageObj = {
+                    smallImageUrl: 'https://i.imgur.com/yXARQuc.png',
+                    largeImageUrl: 'https://i.imgur.com/yXARQuc.png'
+                };
                 if (cryptoCoin == '') {
                     return sendPortfolioUpdate("Please create a new portfolio. Check help !!!");
                 }
 
-                mylist.title = "Portfolio Value: " + totalCurrency.toFixed(3) + " " + displayCurrency //+ "  \n" + totalBTC.toFixed(5) + " " + displayBTC
+                var title = "Total Portfolio Value: " + totalCurrency.toFixed(3) + " " + displayCurrency + " equivalent to " + totalBTC.toFixed(5) + " " + displayBTC + "\n\n"
+                title = title + op;
 
-                if (mylist.items.length < 200) {
-                    mylist.addItems(gapp.buildOptionItem("AllCryptoCoinZ", ['AllCryptoCoinZ'])
-                        .setTitle("[My Portfolio Value]")
-                        .setDescription(totalCurrency.toFixed(3) + " " + displayCurrency + " | " + totalBTC.toFixed(6) + " " + displayBTC)
-                        .setImage("https://i.imgur.com/yXARQuc.png", "AllCryptoCoinZ")
-                    )
-                }
+                self.emit(':askWithCard', title, title, "Portfolio Value:", removeSSML(title), imageObj)
 
-
-
-                mylist.title = "My Portfolio Value: " + totalCurrency.toFixed(3) + " " + displayCurrency //+ " | " + totalBTC.toFixed(9) + " " + displayBTC
-                console.log(mylist.title)
-
-                console.log("\n*[TPV]:  " + " " + totalCurrency.toFixed(3) + " " + displayCurrency + " | " + totalBTC.toFixed(9) + " " + displayBTC)
-                gapp.askWithList(gapp.buildRichResponse()
-                    .addSimpleResponse("<speak>" + "My Portfolio Value: " + totalCurrency.toFixed(3) + " " + displayCurrency + " equivalent to " + totalBTC.toFixed(9) + " BTC " + "</speak>")
-                    .addSuggestions(Util.m_getDefaultSuggestions), mylist)
-
-
+                //console.log("\n*[TPV]:  " + " " + totalCurrency.toFixed(3) + " " + displayCurrency + " | " + totalBTC.toFixed(9) + " " + displayBTC)
 
             }).catch(function (err) {
                 return deferred.reject(false);
@@ -132,162 +117,225 @@ const handlers = {
 
 
     },
-
-    'Help': function () {
-        const imageObj = {
-            smallImageUrl: 'https://i.imgur.com/yXARQuc.png',
-            largeImageUrl: 'https://i.imgur.com/yXARQuc.png'
-        };
-        const help = 'To change the default currency say "Set currency to USD"  ' +
-            '  \n\n  To add a coin to portfolio say  "Add 1.23 XRP"  ' +
-            '  \n\n To reduce a coin count from portfolio say "Deduct 0.23 BCH"  ' +
-            '  \n\n  To delete a coin from portfolio say  "Delete XRP"  ' +
-            '  \n\n  To get the portfolio askWhat\'s my portfolio?  '
-
-        const speechOutput = this.t('LAUNCH_MESSAGE');
-        const repromptOutput = "Please say a coin name or say help"
-
-        this.emit(':askWithCard', help, repromptOutput, this.t('SKILL_NAME'), help, imageObj)
-        //this.emit(':askWithCard', help, repromptOutput, this.t('SKILL_NAME'), removeSSML(speechOutput));
-
-    },
     'BuySellCoin': function () {
-        var portfolio;
-        const cryptoCoin = this.event.request.intent.slots.Coins.value;
-        var inputcount;
-        var decimal;
-        var self = this;
 
-        if (cryptoCoin == undefined) {
+        console.log("dialog state " + this.event.request.dialogState)
+        console.log("confirmation status " + this.event.request.intent.confirmationStatus)
 
-            return self.emit(':askWithCard', "Coin cannot be identified .Please try again.", "Coin cannot be identified .Please try again.", this.t('SKILL_NAME'), "Coin cannot be identified .Please try again.")
-        }else{
+        const intentObj = this.event.request.intent;
+        if (intentObj.confirmationStatus !== 'CONFIRMED') {
+            if (intentObj.confirmationStatus !== 'DENIED') {
+                // Intent is not confirmed
+                if (!intentObj.slots.Coins.value) {
+                    const slotToElicit = 'Coins';
+                    const speechOutput = 'Where coin would you like to use ?';
+                    const repromptSpeech = speechOutput;
+                    return this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech)
 
-            cryptoCoin=cryptoCoin.toUpperCase();
-        }
-        if (this.event.request.intent.slots.Count != undefined) {
-            inputcount = parseInt(this.event.request.intent.slots.Count.value);
-            if (isNaN(inputcount)) {
-                inputcount = 0;
-            } else {
-                inputcount = inputcount
-            }
-        }
-        if (this.event.request.intent.slots.Decimal != undefined) {
-            decimal = parseInt(this.event.request.intent.slots.Decimal.value);
-            if (isNaN(decimal)) {
-                decimal = 0;
-            } else {
-                decimal = '.' + decimal
-            }
-        }
-        inputcount = +inputcount + +decimal;
-
-
-        var BuySell;
-
-        switch (this.event.request.intent.slots.BUYSELL.value.toUpperCase()) {
-            case "ADD":
-            case "BUY [+]":
-            case "ADD[+]":
-            case "ADD COIN":
-            case "B":
-            case "BUY":
-                BuySell = "ADD";
-                break;
-            case "REMOVE":
-            case "DELETE":
-                BuySell = "DELETE";
-                break;
-            case "SELL":
-            case "S":
-            case "DEDUCT[-]":
-                BuySell = "deduct";
-                break;
-            default:
-                break;
-        }
-
-        const uniqID = this.event.context.System.user.userId;
-        const displayName = "";
-        dbAllCoinZ.g_getRecord(gUser, {
-            uniqID: uniqID
-        }).then(function (item) {
-            var coinQuantity;
-            var updatedQuantity
-            var updatetext = "added";
-            //console.log("items" + item);
-            if (item == null) {
-                updatedQuantity = inputcount
-                userInfoData = {
-                    displayName: displayName,
-                    uniqID: uniqID,
-                    curr: "INR",
-                    portfolio: JSON.stringify({
-                        [cryptoCoin]: inputcount
-                    })
                 }
-                //console.log(JSON.stringify(item))
-            } else {
-                var currentPortfolio = JSON.parse(item.portfolio)
-                if (currentPortfolio != null) {
-                    if (currentPortfolio[cryptoCoin] == undefined) {
-                        currentPortfolio[cryptoCoin] = inputcount;
+                var inputcount;
+                var decimal;
+                const coin = this.event.request.intent.slots.Coins.value
+
+
+                if (this.event.request.intent.slots.Count != undefined) {
+                    inputcount = parseInt(this.event.request.intent.slots.Count.value);
+                    if (isNaN(inputcount)) {
+                        inputcount = 0;
                     } else {
-                        //var updatedQuantity = 1;
-                        coinQuantity = currentPortfolio[cryptoCoin]
-                        if (BuySell == "ADD") {
-                            updatetext = "added"
-                            updatedQuantity = +inputcount + +coinQuantity;
-                        } else if (BuySell == "DEDUCT") {
-                            updatetext = "deducted"
-                            updatedQuantity = +coinQuantity - inputcount;
-                        } else if (BuySell == "DELETE") {
-                            updatetext = "deleted"
-                            updatedQuantity = 0;
-                        }
-                        if (updatedQuantity < 0) {
-                            updatedQuantity = 0;
-                        }
-                        currentPortfolio[cryptoCoin] = updatedQuantity
+                        inputcount = inputcount
                     }
-                    userInfoData = {
-                        displayName: item.displayName,
-                        uniqID: item.uniqID,
-                        curr: item.curr,
-                        portfolio: JSON.stringify(currentPortfolio)
+                }
+                if (this.event.request.intent.slots.Decimal != undefined) {
+                    decimal = parseInt(this.event.request.intent.slots.Decimal.value);
+                    if (isNaN(decimal)) {
+                        decimal = 0;
+                    } else {
+                        decimal = '.' + decimal
                     }
+                }
+
+                var buysell = this.event.request.intent.slots.BUYSELL.value.toUpperCase();
+
+                inputcount = +inputcount + +decimal;
+                const speechOutput = 'You would like to ' + buysell + ' ' + inputcount + ' ' +
+                    coin.toUpperCase() + ', is that correct?';
+
+                const cardTitle = "Portfolio Update :";
+                const repromptSpeech = speechOutput;
+                const cardContent = speechOutput;
+                this.emit(':confirmIntentWithCard', speechOutput, repromptSpeech, cardTitle, cardContent);
+            } else {
+                // Users denies the confirmation of intent. May be value of the slots are not correct.
+                //handleIntentConfimationDenial();
+                console.log("denied");
+                this.emit(':askWithCard', "Ok. I am cancelling the portfolio update.Which coin would you like to select next ?", "The portfolio update has been cancelled. Which coin next ?", this.t('SKILL_NAME'), "The portfolio update has been cancelled now. Which coin next ?")
+
+            }
+        } else {
+            console.log("confirmed")
+            var portfolio;
+            var cryptoCoin = this.event.request.intent.slots.Coins.value;
+            var inputcount;
+            var decimal;
+            var self = this;
+
+            if (cryptoCoin == undefined) {
+                return self.emit(':askWithCard', "Coin cannot be identified .Please try again.", "Coin cannot be identified .Please try again.", this.t('SKILL_NAME'), "Coin cannot be identified .Please try again.")
+            } else {
+                var shortName = jsCoin.m_findCoin(cryptoCoin.toUpperCase());
+                if (shortName != undefined && shortName != null) {
+                    if (shortName.length > 0) {
+                        cryptoCoin = shortName[0].n.toUpperCase()
+                    };
+                }
+
+            }
+            if (this.event.request.intent.slots.Count != undefined) {
+                inputcount = parseInt(this.event.request.intent.slots.Count.value);
+                if (isNaN(inputcount)) {
+                    inputcount = 0;
                 } else {
+                    inputcount = inputcount
+                }
+            }
+            if (this.event.request.intent.slots.Decimal != undefined) {
+                decimal = parseInt(this.event.request.intent.slots.Decimal.value);
+                if (isNaN(decimal)) {
+                    decimal = 0;
+                } else {
+                    decimal = '.' + decimal
+                }
+            }
+            inputcount = +inputcount + +decimal;
+
+
+            var BuySell;
+
+            switch (this.event.request.intent.slots.BUYSELL.value.toUpperCase()) {
+                case "ADD":
+                case "BUY [+]":
+                case "ADD[+]":
+                case "ADD COIN":
+                case "B":
+                case "BUY":
+                    BuySell = "ADD";
+                    break;
+                case "REMOVE":
+                case "DELETE":
+                    BuySell = "DELETE";
+                    break;
+                case "SELL":
+                case "S":
+                case "DEDUCT[-]":
+                case "DEDUCT":
+                    BuySell = "DEDUCT";
+                    break;
+                default:
+                    break;
+            }
+
+            const uniqID = this.event.context.System.user.userId;
+            const displayName = "";
+            dbAllCoinZ.g_getRecord(gUser, {
+                uniqID: uniqID
+            }).then(function (item) {
+                var coinQuantity;
+                var updatedQuantity
+                var updatetext = "added";
+                //console.log("items" + item);
+                if (item == null) {
+                    updatedQuantity = inputcount
                     userInfoData = {
-                        displayName: "",
+                        displayName: displayName,
                         uniqID: uniqID,
                         curr: "INR",
                         portfolio: JSON.stringify({
                             [cryptoCoin]: inputcount
                         })
                     }
+                    //console.log(JSON.stringify(item))
+                } else {
+                    var currentPortfolio = JSON.parse(item.portfolio)
+                    if (currentPortfolio != null) {
+                        if (currentPortfolio[cryptoCoin] == undefined) {
+                            currentPortfolio[cryptoCoin] = inputcount;
+                        } else {
+                            //var updatedQuantity = 1;
+                            coinQuantity = currentPortfolio[cryptoCoin]
+                            if (BuySell == "ADD") {
+                                updatetext = "added"
+                                updatedQuantity = +inputcount + +coinQuantity;
+                            } else if (BuySell == "DEDUCT") {
+                                updatetext = "deducted"
+                                updatedQuantity = +coinQuantity - inputcount;
+                            } else if (BuySell == "DELETE") {
+                                updatetext = "deleted"
+                                updatedQuantity = 0;
+                            }
+                            if (updatedQuantity < 0) {
+                                updatedQuantity = 0;
+                            }
+                            currentPortfolio[cryptoCoin] = updatedQuantity
+                        }
+                        userInfoData = {
+                            displayName: item.displayName,
+                            uniqID: item.uniqID,
+                            curr: item.curr,
+                            portfolio: JSON.stringify(currentPortfolio)
+                        }
+                    } else {
+                        userInfoData = {
+                            displayName: "",
+                            uniqID: uniqID,
+                            curr: "INR",
+                            portfolio: JSON.stringify({
+                                [cryptoCoin]: inputcount
+                            })
+                        }
+                    }
                 }
-            }
-            var currentValue = inputcount
-            if (updatedQuantity != undefined) {
-                currentValue = updatedQuantity
-            }
-            dbAllCoinZ.g_UpdateInsert(gUser, {
-                uniqID: uniqID
-            }, userInfoData).then(function () {
+                var currentValue = inputcount
+                if (updatedQuantity != undefined) {
+                    currentValue = updatedQuantity
+                }
+                dbAllCoinZ.g_UpdateInsert(gUser, {
+                    uniqID: uniqID
+                }, userInfoData).then(function () {
 
-                var responsetext = inputcount + " " + cryptoCoin.toUpperCase() + " has been " + updatetext + "!!!\nAvailable " + cryptoCoin.toUpperCase() + ": " + currentValue
+                    var responsetext = inputcount + " " + cryptoCoin.toUpperCase() + " has been " + updatetext + "!!!\nAvailable " + cryptoCoin.toUpperCase() + ": " + currentValue
 
-                return self.emit(':askWithCard', responsetext, responsetext, "Portfolio Update :", responsetext)
-
+                    return self.emit(':askWithCard', responsetext, responsetext, "Portfolio Update :", responsetext)
 
 
-            }, function (error) {
-                //deferred.reject(error)
+
+                }, function (error) {
+                    //deferred.reject(error)
+                })
             })
-        })
-        // return deferred.promise;
+            // return deferred.promise;
 
+        }
+    },
+    'BuySellCoin1': function () {
+
+        // const intentObj = this.event.request.intent;
+        // if (intentObj.confirmationStatus !== 'CONFIRMED') {
+        //     if (intentObj.confirmationStatus !== 'DENIED') {
+        //         // Intent is not confirmed
+        //         const speechOutput = 'You would like to book flight from ' + 'a' + ' to ' +
+        //         'b' + ', is that correct?';
+        //         const cardTitle = 'Booking Summary';
+        //         const repromptSpeech = speechOutput;
+        //         const cardContent = speechOutput;
+        //         this.emit(':confirmIntentWithCard', speechOutput, repromptSpeech, cardTitle, cardContent);
+        //     } else {
+        //         // Users denies the confirmation of intent. May be value of the slots are not correct.
+        //         handleIntentConfimationDenial();
+        //     }
+        // } else {
+        //     processBuySell();
+        // }
     },
 
     'ChangeCurrency': function () {
@@ -303,14 +351,14 @@ const handlers = {
         dbAllCoinZ.g_UpdateInsert(gUser, {
             uniqID: uniqID
         }, {
-            displayName: "",
-            uniqID: uniqID,
-            curr: userCurrency
-        }).then(function () {
-            self.emit(':ask', "Default currency has been set to " + userCurrency + ".")
-        }, function (error) {
-            console.log(error)
-        })
+                displayName: "",
+                uniqID: uniqID,
+                curr: userCurrency
+            }).then(function () {
+                self.emit(':ask', "Default currency has been set to " + userCurrency + ".")
+            }, function (error) {
+                console.log(error)
+            })
 
 
     },
@@ -349,8 +397,12 @@ const handlers = {
             } else {
                 decimal = '.' + decimal
             }
+
         }
         inputcount = +inputcount + +decimal;
+        if (inputcount == 0) {
+            inputcount = 1;
+        }
 
         Util.m_getCurrency(uniqID).then(function () {
 
@@ -433,9 +485,22 @@ const handlers = {
         // }
     },
     'AMAZON.HelpIntent': function () {
-        const speechOutput = this.t('HELP_MESSAGE');
-        const reprompt = this.t('HELP_MESSAGE');
-        this.emit(':ask', speechOutput, reprompt);
+        const imageObj = {
+            smallImageUrl: 'https://i.imgur.com/yXARQuc.png',
+            largeImageUrl: 'https://i.imgur.com/yXARQuc.png'
+        };
+        const help = 'To change the default currency say "Set currency to USD"  ' +
+            '  \n\n  To add a coin to portfolio say  "Add 1.23 XRP"  ' +
+            '  \n\n To reduce a coin count from portfolio say "Deduct 0.23 BCH"  ' +
+            '  \n\n  To delete a coin from portfolio say  "Delete XRP"  ' +
+            '  \n\n  To get the portfolio askWhat\'s my portfolio?  '
+
+        const speechOutput = this.t('LAUNCH_MESSAGE');
+        const repromptOutput = "Please say a coin name or say help"
+
+        this.emit(':askWithCard', help, repromptOutput, this.t('SKILL_NAME'), help, imageObj)
+        //this.emit(':askWithCard', help, repromptOutput, this.t('SKILL_NAME'), removeSSML(speechOutput));
+
     },
     'AMAZON.CancelIntent': function () {
         this.emit(':tell', this.t('STOP_MESSAGE'));
@@ -467,7 +532,7 @@ function ResponseMessage(CoinInfo, self) {
 
 
 
-    var simpleResponse = CoinInfo.CoinCount + " " + CoinInfo.CoinFN + ' is <emphasis level="strong">' + (CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " + coinInfoinCurrency.TOSYMBOL + '</emphasis><break time="2" />, Which coint next ?';
+    var simpleResponse = CoinInfo.CoinCount + " " + CoinInfo.CoinFN + ' is <emphasis level="strong">' + (CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " + coinInfoinCurrency.TOSYMBOL + '</emphasis><break time="2" />, Which coin next ?';
 
     var content = "  \n " + CoinInfo.CoinCount + " " + CoinInfo.CoinSN + " = " + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL + "" +
         "  \n " + CoinInfo.CoinCount + "" + CoinInfo.CoinSN + " = " + (CoinInfo.CoinCount * BTCPrice).toFixed(9) + " " + coinInfoinBTC.TOSYMBOL + "" +
@@ -482,18 +547,15 @@ function ResponseMessage(CoinInfo, self) {
         largeImageUrl: CoinInfo.CoinImg
     };
 
-    var sound = '<say-as interpret-as="interjection">' + CoinInfo.CoinCount + " " + CoinInfo.CoinFN + ' is </say-as><break time="0.6s"/>' + (CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " + coinInfoinCurrency.TOSYMBOL + ' <emphasis level="moderate">, Which coint next ?</emphasis>'
+    var sound = '<say-as interpret-as="interjection">' + CoinInfo.CoinCount + " " + CoinInfo.CoinFN + ' is </say-as><break time="0.6s"/>' + (CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " + coinInfoinCurrency.TOSYMBOL + ' <emphasis level="moderate">, Which coin next ?</emphasis>'
     self.emit(':askWithCard', sound, "hello", self.t('SKILL_NAME'), content, imageObj)
 
 }
-
-function sendResponse(content) {
-
+function processBuySell() {
 
 
 
 }
-
 function removeSSML(s) {
     return s.replace(/<\/?[^>]+(>|$)/g, "");
 };

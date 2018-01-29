@@ -243,7 +243,7 @@ function ResponseMessage(CoinInfo) {
 
     var sound = '<speak>' + CoinInfo.CoinFN.toUpperCase() + " is " + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL + '</speak>';
 
-    var simpleResponse = '<speak> <say-as interpret-as="fraction">' + CoinInfo.CoinCount + '</say-as> ' + CoinInfo.CoinFN + ' is <emphasis level="moderate"><say-as interpret-as="fraction">' + (CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " + coinInfoinCurrency.TOSYMBOL + '</say-as></emphasis><break time="1.5" />, Which coint next ?</speak>';
+    var simpleResponse = '<speak> <say-as interpret-as="fraction">' + CoinInfo.CoinCount + '</say-as> ' + CoinInfo.CoinFN + ' is <emphasis level="moderate"><say-as interpret-as="fraction">' + (CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " + coinInfoinCurrency.TOSYMBOL + '</say-as></emphasis><break time="1.5" />, Which coin next ?</speak>';
 
     var content = "  \n *" + CoinInfo.CoinCount + " " + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * currencyPrice).toFixed(5) + " " + coinInfoinCurrency.TOSYMBOL + "**" +
         "  \n *" + CoinInfo.CoinCount + "" + CoinInfo.CoinSN + "* = **" + (CoinInfo.CoinCount * BTCPrice).toFixed(9) + " " + coinInfoinBTC.TOSYMBOL + "**" +
