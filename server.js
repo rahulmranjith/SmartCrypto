@@ -15,8 +15,10 @@ const GenProc = require('./AllCoinZ/GenericProcess')
 const telegramPush = require('./AllCoinZ/push')
 const fetchCoin = require('./AllCoinZ/fetchCoin');
 const Google = require('./AllCoinZ/Google')
+const Alexa = require('./AllCoinZ/Alexa')
 
 var gUser = dbAllCoinZ.g_User;
+
 
 
 const server = express();
@@ -35,66 +37,79 @@ var gapp;
 const ApiAiApp = require('actions-on-google').DialogflowApp;
 let res;
 
-
+var hanlders = Alexa.handlers
+var languageStrings = Alexa.languageStrings
 
 
 server.post('/', function (request, response, next) {
 
-    console.log(JSON.stringify(request.body))
-    gapp = new ApiAiApp({
-        request,
-        response
-    });
 
-    Google.m_gapp(gapp)
-    //console.log("GAPP" + JSON.stringify(gapp.body_.originalRequest))
+    //console.log(request)
+    //console.log(JSON.stringify(request.body))
 
-
-    res = response;
-    Util.m_setHttpResponse(res)
-    let originalRequest = gapp.body_.originalRequest
-
-    //console.log(originalRequest.source)  
-    switch (originalRequest.source) {
-        case "telegram":
-            platform = "telegram"
-            displayName = originalRequest.data.message.chat.username;
-            uniqID = originalRequest.data.message.chat.id
-            break;
-        case "slack_testbot":
-            displayName = originalRequest.data.user;
-            uniqID = originalRequest.data.user;
-            platform = "slack"
-            break;
-        case "skype":
-            platform = "skype"
-            break;
-        case "google":
-            platform = "google"
-            uniqID = gapp.body_.originalRequest.data.user.userId
-            break;
-        default:
-            platform = "telegram"
+    var reqsession = request.body.session
+    if (reqsession != undefined) {
+        if(reqsession.user !=null){
+        if (reqsession.user.userId.toUpperCase().indexOf('AMZN') > -1) {
+            Alexa.configure(request, response)
+        }
     }
-    Util.m_platform = platform
+    } else {
 
-    let actionMap = new Map();
-    actionMap.set('getCoinValue', getCoinValue);
-    actionMap.set('TotalPortfolioValue', TotalPortfolioValue);
-    actionMap.set('ViewPortfolio', ViewPortfolio);
-    actionMap.set('ViewPortfolio', ViewPortfolio);
-    actionMap.set('input.welcome', DefaultWelcomeIntent);
-    actionMap.set('setCurrency', ChangeCurrency);
-    actionMap.set('input.unknown', DefaultFallbackIntent);
-    actionMap.set('BuySellCoin', BuySellCoin);
-    actionMap.set('gethelp', help);
-    actionMap.set('GoogleWelcomeContext', googleWelcomeContext)
-    actionMap.set('ViewPortfolio-SelectItemAction', portfolioOptionSelect)
-    actionMap.set('getCoinValueOption', getCoinValueOption)
-   
+        gapp = new ApiAiApp({
+            request,
+            response
+        });
 
-    gapp.handleRequest(actionMap);
+        Google.m_gapp(gapp)
+        //console.log("GAPP" + JSON.stringify(gapp.body_.originalRequest))
 
+
+        res = response;
+        Util.m_setHttpResponse(res)
+        let originalRequest = gapp.body_.originalRequest
+
+        //console.log(originalRequest.source)  
+        switch (originalRequest.source) {
+            case "telegram":
+                platform = "telegram"
+                displayName = originalRequest.data.message.chat.username;
+                uniqID = originalRequest.data.message.chat.id
+                break;
+            case "slack_testbot":
+                displayName = originalRequest.data.user;
+                uniqID = originalRequest.data.user;
+                platform = "slack"
+                break;
+            case "skype":
+                platform = "skype"
+                break;
+            case "google":
+                platform = "google"
+                uniqID = gapp.body_.originalRequest.data.user.userId
+                break;
+            default:
+                platform = "telegram"
+        }
+        Util.m_platform = platform
+
+        let actionMap = new Map();
+        actionMap.set('getCoinValue', getCoinValue);
+        actionMap.set('TotalPortfolioValue', TotalPortfolioValue);
+        actionMap.set('ViewPortfolio', ViewPortfolio);
+        actionMap.set('ViewPortfolio', ViewPortfolio);
+        actionMap.set('input.welcome', DefaultWelcomeIntent);
+        actionMap.set('setCurrency', ChangeCurrency);
+        actionMap.set('input.unknown', DefaultFallbackIntent);
+        actionMap.set('BuySellCoin', BuySellCoin);
+        actionMap.set('gethelp', help);
+        actionMap.set('GoogleWelcomeContext', googleWelcomeContext)
+        actionMap.set('ViewPortfolio-SelectItemAction', portfolioOptionSelect)
+        actionMap.set('getCoinValueOption', getCoinValueOption)
+
+
+        gapp.handleRequest(actionMap);
+    }
 })
 
 function getCoinValueOption() {
@@ -119,13 +134,13 @@ function googleWelcomeContext() {
                 uniqID: userID,
                 curr: "USD"
             }).then(function () {
-                GenProc.m_sendSimpleMessage("Hello " + userName + ", Welcome to AllCryptoCoinZ!!! Say a coin name ")
+                GenProc.m_sendSimpleMessage("Hello " + userName + ", Welcome to AllCryptoCoinZ!!! Say help for getting assitance or Say a coin name ")
             }, function (error) {
                 console.log(error)
             })
         // gapp.ask("Hi " + userName + " I can already tell you the value of crypto coin. Which coin would you like to select ? ");
     } else {
-        GenProc.m_sendSimpleMessage("Hello  Welcome to AllCryptoCoinZ!!!  Say a coin name ")
+        GenProc.m_sendSimpleMessage("Hello  Welcome to AllCryptoCoinZ!!! Say help for getting assitance or Say a coin name ")
     }
 }
 

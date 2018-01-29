@@ -343,5 +343,6 @@ module.exports = {
     m_getTotalPortfolioValue: getTotalPortfolioValue,
     m_callPayLoadFormatMessage: callPayLoadFormatMessage,
     m_getDefaultFallBack: getDefaultFallBack,
-    m_help:help
+    m_help:help,
+    m_getPortFolioCoinData:getPortFolioCoinData
 }

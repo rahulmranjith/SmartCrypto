@@ -12,13 +12,15 @@ function updateCoins(optype) {
     var deferred = Q.defer();
     request(coinURL, function (error, response, body) {
 
-var  keyv
+        var keyv
         var JSONResponse = JSON.parse(response.body);
-      var  p = JSONResponse.Data;
+        var p = JSONResponse.Data;
 
         var coinarray = [];
         var CollectionEntityJSON = []
-        var csvOp
+        var csvOp;
+        var alexa=[];
+        var alexajson;
         for (var key in p) {
             if (p.hasOwnProperty(key)) {
                 //console.log(key + " -> " + p[key]);
@@ -36,7 +38,11 @@ var  keyv
                     ]
                 }
                 csvOp = csvOp + "\n" + parse(p[key].Name) + "\"" + "," + "\"" + parse(p[key].CoinName) + "\"" + "," + "\"" + parse(p[key].Name) + "\""
-
+                alexajson = {
+                    "id": null,
+                    "name": entityJSON
+                }
+                alexa.push(alexajson);
                 CollectionEntityJSON.push(entityJSON);
                 coinarray.push(keyv)
             }
@@ -60,46 +66,49 @@ var  keyv
             if (optype.toLowerCase() == "json") {
                 type = JSON.stringify(CollectionEntityJSON)
             }
+            if (optype.toLowerCase() == "alexa") {
+                type = alexa
+            }
             jsCoin.m_setCoins(jsonv)
             return deferred.resolve(type)
         }
 
 
-/*      var fs = require('fs');
-        fs.writeFile("AllCryptoCoinZ/data/coinentityCSV.txt", csvOp, function (err) {
-            if (err) {
-                console.log(err);
-                return deferred.reject(err)
-            }
-            fs.writeFile("AllCryptoCoinZ/data/coinentityJSOns.txt", JSON.stringify(CollectionEntityJSON), function (err) {
-                if (err) {
-                    console.log(err);
-                    return deferred.reject(err)
-                }
-                fs.writeFile("AllCryptoCoinZ/data/coin.txt", jsonv, function (err) {
+        /*      var fs = require('fs');
+                fs.writeFile("AllCryptoCoinZ/data/coinentityCSV.txt", csvOp, function (err) {
                     if (err) {
                         console.log(err);
                         return deferred.reject(err)
                     }
-                    var type = "";
-                    if (optype != undefined) {
-                        if (optype.toLowerCase() == "csv") {
-                            type = csvOp
+                    fs.writeFile("AllCryptoCoinZ/data/coinentityJSOns.txt", JSON.stringify(CollectionEntityJSON), function (err) {
+                        if (err) {
+                            console.log(err);
+                            return deferred.reject(err)
                         }
-                        if (optype.toLowerCase() == "json") {
-                            type = JSON.stringify(CollectionEntityJSON)
-                        }
-                        jsCoin.m_setCoins(jsonv)
-                    }
+                        fs.writeFile("AllCryptoCoinZ/data/coin.txt", jsonv, function (err) {
+                            if (err) {
+                                console.log(err);
+                                return deferred.reject(err)
+                            }
+                            var type = "";
+                            if (optype != undefined) {
+                                if (optype.toLowerCase() == "csv") {
+                                    type = csvOp
+                                }
+                                if (optype.toLowerCase() == "json") {
+                                    type = JSON.stringify(CollectionEntityJSON)
+                                }
+                                jsCoin.m_setCoins(jsonv)
+                            }
 
-                    return deferred.resolve("Succesfully completed the operations\n" + type)
+                            return deferred.resolve("Succesfully completed the operations\n" + type)
+                            console.log("The file was saved!");
+                        });
+                        console.log("The file was saved!");
+                    });
                     console.log("The file was saved!");
                 });
-                console.log("The file was saved!");
-            });
-            console.log("The file was saved!");
-        });
-*/
+        */
 
     })
     return deferred.promise
