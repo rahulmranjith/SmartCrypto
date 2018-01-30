@@ -548,7 +548,7 @@ function ResponseMessage(CoinInfo, self) {
     };
 
     var sound = '<say-as interpret-as="interjection">' + CoinInfo.CoinCount + " " + CoinInfo.CoinFN + ' is </say-as><break time="0.6s"/>' + (CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " + coinInfoinCurrency.TOSYMBOL + ' <emphasis level="moderate">, Which coin next ?</emphasis>'
-    self.emit(':askWithCard', sound, "hello", self.t('SKILL_NAME'), content, imageObj)
+    self.emit(':askWithCard', sound, "Which coin would you want to select next ?", self.t('SKILL_NAME'), content, imageObj)
 
 }
 function processBuySell() {
