@@ -7,6 +7,7 @@ const jsCoin = require('../AllCoinZ/jsonCoin')
 // let gUser = userInfo.m_User;
 
 function fetchCoins() {}
+var alexa = [];
 
 function updateCoins(optype) {
     var deferred = Q.defer();
@@ -19,8 +20,9 @@ function updateCoins(optype) {
         var coinarray = [];
         var CollectionEntityJSON = []
         var csvOp;
-        var alexa=[];
+
         var alexajson;
+        var notUpdate = optype != undefined && optype != "update"
         for (var key in p) {
             if (p.hasOwnProperty(key)) {
                 //console.log(key + " -> " + p[key]);
@@ -30,26 +32,43 @@ function updateCoins(optype) {
                     n: p[key].Name,
                     c: p[key].CoinName
                 }
-
-                var entityJSON = {
-                    "value": parse(p[key].Name),
-                    "synonyms": [
-                        parse(p[key].CoinName) + "," + parse(p[key].Name)
-                    ]
-                }
-                csvOp = csvOp + "\n" + parse(p[key].Name) + "\"" + "," + "\"" + parse(p[key].CoinName) + "\"" + "," + "\"" + parse(p[key].Name) + "\""
-                alexajson = {
-                    "id": null,
-                    "name": entityJSON
-                }
-                alexa.push(alexajson);
-                CollectionEntityJSON.push(entityJSON);
                 coinarray.push(keyv)
+                if (notUpdate) {
+
+                    csvOp = csvOp + "\n" + parse(p[key].Name) + "\"" + "," + "\"" + parse(p[key].CoinName) + "\"" + "," + "\"" + parse(p[key].Name) + "\""
+                    var entityJSON = {
+                        "value": parse(p[key].Name),
+                        "synonyms": [
+                            parse(p[key].CoinName) + "," + parse(p[key].Name)
+                        ]
+                    }
+                    CollectionEntityJSON.push(entityJSON);
+
+                    if (!isDuplicate(parse(p[key].CoinName))) {
+                        alexa.push({
+                            "id": null,
+                            "name": {
+                                "value": parse(p[key].CoinName),
+                                //"synonyms": [parse(p[key].Name) + ',' + parse(p[key].CoinName)]
+                            }
+                        });
+                    }
+                    if (!isDuplicate(parse(p[key].Name))) {
+                        alexa.push({
+                            "id": null,
+                            "name": {
+                                "value": parse(p[key].Name),
+                                // "synonyms": [parse(p[key].CoinName) + ',' + parse(p[key].Name)]
+                            }
+                        });
+                    }
+                }
+
             }
 
         }
 
-        csvOp = csvOp.split('undefined').join('')
+
 
         var jsonCoin = {
             "Coins": coinarray
@@ -59,8 +78,9 @@ function updateCoins(optype) {
         var jsonv = JSON.stringify(jsonCoin)
 
         var type = "";
-        if (optype != undefined) {
+        if (optype != undefined && optype != "update") {
             if (optype.toLowerCase() == "csv") {
+                csvOp = csvOp.split('undefined').join('')
                 type = csvOp
             }
             if (optype.toLowerCase() == "json") {
@@ -69,10 +89,10 @@ function updateCoins(optype) {
             if (optype.toLowerCase() == "alexa") {
                 type = alexa
             }
-            jsCoin.m_setCoins(jsonv)
+
             return deferred.resolve(type)
         }
-
+        jsCoin.m_setCoins(jsonv)
 
         /*      var fs = require('fs');
                 fs.writeFile("AllCryptoCoinZ/data/coinentityCSV.txt", csvOp, function (err) {
@@ -112,6 +132,14 @@ function updateCoins(optype) {
 
     })
     return deferred.promise
+}
+
+function isDuplicate(CoinName) {
+
+    return (alexa.find(function (coin) {
+        return ((coin.name.value.toLowerCase()).trim() == (CoinName.toLowerCase()).trim())
+    }) != undefined)
+
 }
 
 function parse(coin) {

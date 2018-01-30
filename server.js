@@ -1,5 +1,3 @@
-
-
 'use strict'; //rahulmr
 
 const express = require('express');
@@ -49,11 +47,11 @@ server.post('/', function (request, response, next) {
 
     var reqsession = request.body.session
     if (reqsession != undefined) {
-        if(reqsession.user !=null){
-        if (reqsession.user.userId.toUpperCase().indexOf('AMZN') > -1) {
-            Alexa.configure(request, response)
+        if (reqsession.user != null) {
+            if (reqsession.user.userId.toUpperCase().indexOf('AMZN') > -1) {
+                Alexa.configure(request, response)
+            }
         }
-    }
     } else {
 
         gapp = new ApiAiApp({
@@ -130,14 +128,14 @@ function googleWelcomeContext() {
         dbAllCoinZ.g_UpdateInsert(gUser, {
             uniqID: uniqID
         }, {
-                displayName: userName,
-                uniqID: userID,
-                curr: "USD"
-            }).then(function () {
-                GenProc.m_sendSimpleMessage("Hello " + userName + ", Welcome to AllCryptoCoinZ!!! Say help for getting assitance or Say a coin name ")
-            }, function (error) {
-                console.log(error)
-            })
+            displayName: userName,
+            uniqID: userID,
+            curr: "USD"
+        }).then(function () {
+            GenProc.m_sendSimpleMessage("Hello " + userName + ", Welcome to AllCryptoCoinZ!!! Say help for getting assitance or Say a coin name ")
+        }, function (error) {
+            console.log(error)
+        })
         // gapp.ask("Hi " + userName + " I can already tell you the value of crypto coin. Which coin would you like to select ? ");
     } else {
         GenProc.m_sendSimpleMessage("Hello  Welcome to AllCryptoCoinZ!!! Say help for getting assitance or Say a coin name ")
@@ -193,14 +191,14 @@ function ChangeCurrency() {
     dbAllCoinZ.g_UpdateInsert(gUser, {
         uniqID: uniqID
     }, {
-            displayName: displayName,
-            uniqID: uniqID,
-            curr: userCurrency
-        }).then(function () {
-            GenProc.m_sendSimpleMessage("Default currency has been set to " + userCurrency)
-        }, function (error) {
-            console.log(error)
-        })
+        displayName: displayName,
+        uniqID: uniqID,
+        curr: userCurrency
+    }).then(function () {
+        GenProc.m_sendSimpleMessage("Default currency has been set to " + userCurrency)
+    }, function (error) {
+        console.log(error)
+    })
 }
 
 function DefaultFallbackIntent() {
@@ -242,10 +240,12 @@ function getCoinValue(coinObject, external) {
             GenProc.m_sendCoinResponse(coinResult)
 
         }).catch(function (err) {
-            console.log("m_getCurrency method failed" + err)
+            console.log("m_getCoinObject method failed" + err)
         });
     })
 }
+
+
 
 function ViewPortfolio() {
     GenProc.m_getTotalPortfolioValue({
@@ -278,16 +278,16 @@ function TotalPortfolioValue() {
 server.listen((process.env.PORT || 8000), function () {
     //console.log("Server is up and running... ");
 
-    fetchCoin.m_updateCoins("").then(function (success) {
+    fetchCoin.m_updateCoins("update").then(function (success) {
         console.log("Loaded the coin array without errors..")
 
     }, function (error) {
         console.log(error)
     })
 });
-server.get('/users/:value?', (req, res) => {
+server.get('/users/:secret?', (req, res) => {
 
-    if (req.params.value == "rmr999") {
+    if (req.params.secret == "rmr999") {
         Util.m_getUsers().then(function (useritem) {
             var users = JSON.stringify(useritem)
             res.setHeader('Content-Type', 'application/json');
@@ -298,9 +298,9 @@ server.get('/users/:value?', (req, res) => {
     }
 });
 
-server.get('/users/del/:key?/:value?', (req, res) => {
+server.get('/users/del/:key?/:secret?', (req, res) => {
 
-    if (req.params.value == "rmr999") {
+    if (req.params.secret == "rmr999") {
         Util.m_deleteUser(req.params.key).then(function (useritem) {
             var users = JSON.stringify(useritem)
             res.setHeader('Content-Type', 'application/json');
@@ -330,14 +330,43 @@ server.get('/updateCoins/:optype?', (req, res) => {
         res.status(400).send(error)
     })
 });
-server.get('/users/:value?', (req, res) => {
+server.get('/users/:secret?', (req, res) => {
 
-    if (req.params.value == "rmr999") {
+    if (req.params.secret == "rmr999") {
         Util.m_getUsers().then(function (useritem) {
             var users = JSON.stringify(useritem)
             res.setHeader('Content-Type', 'application/json');
             res.status(200).send(users)
         })
+
+
+    } else {
+        res.status(400).send("Check the request")
+    }
+});
+server.get('/cv/:coin?', (req, res) => {
+
+    if (req.params.coin != "") {
+
+        var oCoin
+        oCoin = Util.m_getCoinObject({
+            Count: 1,
+            CryptoCoin: req.params.coin,
+            currency: "INR"
+        })
+
+        oCoin.then(function (CoinInfo) {
+
+            var coinDetail = "💰" + "" + CoinInfo.CoinFN.toUpperCase() + "💰\n\n " + 1 + " " + CoinInfo.CoinSN + " = " + CoinInfo.CoinValue.RAW[CoinInfo.CoinSN][CoinInfo.CoinCurrency].PRICE.toFixed(5) + "\n "
+
+
+            res.setHeader('Content-Type', 'application/text');
+            res.status(200).send(coinDetail)
+
+        }).catch(function (err) {
+            console.log("m_getCoinObject method failed" + err)
+        });
+
 
 
     } else {
