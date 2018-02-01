@@ -118,6 +118,21 @@ const handlers = {
 
     },
     'BuySellCoin': function () {
+        if (this.event.request.dialogState == "STARTED" || this.event.request.dialogState == "IN_PROGRESS") {
+            this.emit(':delegate')
+        }else{
+
+            //this.emit(':askWithCard', "Ok. Completed", "The portfolio update has been cancelled. Which coin next ?", this.t('SKILL_NAME'), "The portfolio update has been cancelled now. Which coin next ?")
+
+            const slotToElicit = 'Coins';
+            const speechOutput = 'Where coin would you like to use ?';
+            const repromptSpeech = speechOutput;
+            return this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech)
+        }
+    },
+
+
+    'BuySellCoin1': function () {
 
         console.log("dialog state " + this.event.request.dialogState)
         console.log("confirmation status " + this.event.request.intent.confirmationStatus)
@@ -305,7 +320,7 @@ const handlers = {
 
                     var responsetext = inputcount + " " + cryptoCoin.toUpperCase() + " has been " + updatetext + "!!!\nAvailable " + cryptoCoin.toUpperCase() + ": " + currentValue
 
-                    return self.emit(':askWithCard', responsetext, responsetext, "Portfolio Update :", responsetext)
+                    return self.emit(':askWithCard', responsetext, "Which coin next ?", "Portfolio Update :", responsetext)
 
 
 
