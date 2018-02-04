@@ -231,6 +231,7 @@ var startSearchHandlers = Alexa.CreateStateHandler(states.SEARCHMODE, {
 function GetCoinValueByCountIntentHandler() {
 	var cryptoCoin = isSlotValid(this.event.request, "Coins");
 	var inputcount = isSlotValid(this.event.request, "Count");
+	var decimal = isSlotValid(this.event.request, "Decimal");
 
 	const uniqID = this.event.context.System.user.userId;
 	var self = this;
@@ -245,6 +246,14 @@ function GetCoinValueByCountIntentHandler() {
 	if (inputcount == false) {
 		inputcount = 1;
 	}
+	if (decimal != false) {
+		if (isNaN(decimal)) {
+			decimal = 0;
+		} else {
+			decimal = '.' + decimal
+		}
+	}
+	inputcount = +inputcount + +decimal;
 
 	Util.m_getCurrency(uniqID).then(function () {
 		var count = 1;
@@ -737,76 +746,81 @@ function searchByCityIntentHandler() {
 }
 
 function GetCoinValueByDecimalIntentHandler() {
-	var slots = this.event.request.intent.slots;
-	var firstName = isSlotValid(this.event.request, "firstName");
-	var lastName = isSlotValid(this.event.request, "lastName");
-	var cityName = isSlotValid(this.event.request, "cityName");
-	var infoType = isSlotValid(this.event.request, "infoType");
 
-	var canSearch = figureOutWhichSlotToSearchBy(firstName, lastName, cityName);
-	console.log("canSearch is set to = " + canSearch);
+	this.handler.state = states.SEARCHMODE;
+	this.emitWithState("GetCoinValueByCountIntent");
 
-	if (canSearch) {
-		var searchQuery = slots[canSearch].value;
-		var searchResults = searchDatabase(data, searchQuery, canSearch);
+	return
+	// var slots = this.event.request.intent.slots;
+	// var firstName = isSlotValid(this.event.request, "firstName");
+	// var lastName = isSlotValid(this.event.request, "lastName");
+	// var cityName = isSlotValid(this.event.request, "cityName");
+	// var infoType = isSlotValid(this.event.request, "infoType");
 
-		//saving lastSearch results to the current session
-		var lastSearch = this.attributes.lastSearch = searchResults;
-		var output;
+	// var canSearch = figureOutWhichSlotToSearchBy(firstName, lastName, cityName);
+	// console.log("canSearch is set to = " + canSearch);
 
-		//saving last intent to session attributes
-		this.attributes.lastSearch.lastIntent = "GetCoinValueByCountIntent";
+	// if (canSearch) {
+	// 	var searchQuery = slots[canSearch].value;
+	// 	var searchResults = searchDatabase(data, searchQuery, canSearch);
 
-		if (searchResults.count > 1) { //multiple results found
-			console.log("multiple results were found");
-			var listOfPeopleFound = loopThroughArrayOfObjects(lastSearch.results);
-			output = generateSearchResultsMessage(searchQuery, searchResults.results) + listOfPeopleFound + ". Who would you like to learn more about?";
-			this.handler.state = states.MULTIPLE_RESULTS; // change state to MULTIPLE_RESULTS
-			this.attributes.lastSearch.lastSpeech = output;
-			this.response.speak(output).listen(output);
-		} else if (searchResults.count == 1) { //one result found
-			this.handler.state = states.RESULTS; // change state to description
-			console.log("one match was found");
-			if (infoType) {
-				//if a specific infoType was requested, redirect to specificInfoIntent
-				console.log("infoType was provided as well");
-				var person = this.attributes.lastSearch.results[0];
-				var cardContent = generateCard(person);
-				var speechOutput = generateSpecificInfoMessage(slots, person);
-				var repromptSpeech = "Would you like to find another evangelist? Say yes or no";
-				this.attributes.lastSearch.lastSpeech = speechOutput;
-				this.handler.state = states.SEARCHMODE;
-				this.response.cardRenderer(cardContent.title, cardContent.body, cardContent.image);
-				this.response.speak(speechOutput).listen(repromptSpeech);
-				// this.emitWithState("TellMeThisIntent");
-			}
-			else {
-				console.log("no infoType was provided.");
-				output = generateSearchResultsMessage(searchQuery, searchResults.results);
-				this.attributes.lastSearch.lastSpeech = output;
-				// this.emit(":ask", generateSearchResultsMessage(searchQuery,searchResults.results));
-				this.response.speak(output).listen(output);
-			}
-		}
-		else {//no match found
-			console.log("no match found");
-			console.log("searchQuery was  = " + searchQuery);
-			console.log("searchResults.results was  = " + searchResults);
-			output = generateSearchResultsMessage(searchQuery, searchResults.results);
-			this.attributes.lastSearch.lastSpeech = output;
-			// this.emit(":ask", generateSearchResultsMessage(searchQuery,searchResults.results));
-			this.response.speak(output).listen(output);
-		}
-	}
-	else {
-		console.log("no searchable slot was provided");
-		console.log("searchQuery was  = " + searchQuery);
-		console.log("searchResults.results was  = " + searchResults);
+	// 	//saving lastSearch results to the current session
+	// 	var lastSearch = this.attributes.lastSearch = searchResults;
+	// 	var output;
 
-		this.response.speak(generateSearchResultsMessage(searchQuery, false)).listen(generateSearchResultsMessage(searchQuery, false));
-	}
+	// 	//saving last intent to session attributes
+	// 	this.attributes.lastSearch.lastIntent = "GetCoinValueByCountIntent";
 
-	this.emit(':responseReady');
+	// 	if (searchResults.count > 1) { //multiple results found
+	// 		console.log("multiple results were found");
+	// 		var listOfPeopleFound = loopThroughArrayOfObjects(lastSearch.results);
+	// 		output = generateSearchResultsMessage(searchQuery, searchResults.results) + listOfPeopleFound + ". Who would you like to learn more about?";
+	// 		this.handler.state = states.MULTIPLE_RESULTS; // change state to MULTIPLE_RESULTS
+	// 		this.attributes.lastSearch.lastSpeech = output;
+	// 		this.response.speak(output).listen(output);
+	// 	} else if (searchResults.count == 1) { //one result found
+	// 		this.handler.state = states.RESULTS; // change state to description
+	// 		console.log("one match was found");
+	// 		if (infoType) {
+	// 			//if a specific infoType was requested, redirect to specificInfoIntent
+	// 			console.log("infoType was provided as well");
+	// 			var person = this.attributes.lastSearch.results[0];
+	// 			var cardContent = generateCard(person);
+	// 			var speechOutput = generateSpecificInfoMessage(slots, person);
+	// 			var repromptSpeech = "Would you like to find another evangelist? Say yes or no";
+	// 			this.attributes.lastSearch.lastSpeech = speechOutput;
+	// 			this.handler.state = states.SEARCHMODE;
+	// 			this.response.cardRenderer(cardContent.title, cardContent.body, cardContent.image);
+	// 			this.response.speak(speechOutput).listen(repromptSpeech);
+	// 			// this.emitWithState("TellMeThisIntent");
+	// 		}
+	// 		else {
+	// 			console.log("no infoType was provided.");
+	// 			output = generateSearchResultsMessage(searchQuery, searchResults.results);
+	// 			this.attributes.lastSearch.lastSpeech = output;
+	// 			// this.emit(":ask", generateSearchResultsMessage(searchQuery,searchResults.results));
+	// 			this.response.speak(output).listen(output);
+	// 		}
+	// 	}
+	// 	else {//no match found
+	// 		console.log("no match found");
+	// 		console.log("searchQuery was  = " + searchQuery);
+	// 		console.log("searchResults.results was  = " + searchResults);
+	// 		output = generateSearchResultsMessage(searchQuery, searchResults.results);
+	// 		this.attributes.lastSearch.lastSpeech = output;
+	// 		// this.emit(":ask", generateSearchResultsMessage(searchQuery,searchResults.results));
+	// 		this.response.speak(output).listen(output);
+	// 	}
+	// }
+	// else {
+	// 	console.log("no searchable slot was provided");
+	// 	console.log("searchQuery was  = " + searchQuery);
+	// 	console.log("searchResults.results was  = " + searchResults);
+
+	// 	this.response.speak(generateSearchResultsMessage(searchQuery, false)).listen(generateSearchResultsMessage(searchQuery, false));
+	// }
+
+	// this.emit(':responseReady');
 
 }
 // =====================================================================================================
