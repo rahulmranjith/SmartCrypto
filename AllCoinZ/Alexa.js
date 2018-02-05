@@ -33,24 +33,141 @@ const APP_ID = undefined;
 //TODO: Replace this data with your own.
 //======================================================================================================
 
-const data = [
-	{ firstName: "dave", lastName: "isbitski", title: "Chief Alexa evangelist", cityName: "philadelphia", twitter: "thedavedev", saytwitter: "the dave dev", github: "disbitski", saygithub: "d, isbitski", linkedin: "https://www.linkedin.com/in/davidisbitski", saylinkedin: "david isbitski", joinDate: "October 2015", gender: "m" },
-	{ firstName: "paul", lastName: "cutsinger", title: "Head of Voice Design Education on Amazon Alexa", cityName: "seattle", twitter: "paulcutsinger", saytwitter: "paul cutsinger", github: "paulcutsinger", saygithub: "paulcutsinger", linkedin: "https://www.linkedin.com/in/paulcutsinger", saylinkedin: "paul cutsinger", joinDate: "January 2016", gender: "m" },
-	{ firstName: "amit", lastName: "jotwani", title: "an Alexa AI and machine learning evangelist", cityName: "new york", twitter: "amit", saytwitter: "amit", github: "ajot", saygithub: "a, jot", linkedin: "https://www.linkedin.com/in/ajotwani", saylinkedin: "a jotwani", joinDate: "February 2016", gender: "m" },
-	{ firstName: "jeff", lastName: "blankenburg", title: "an Alexa evangelist", cityName: "columbus", twitter: "jeffblankenburg", saytwitter: "jeff blankenburg", github: "jeffblankenburg", saygithub: "jeffblankenburg", linkedin: "https://www.linkedin.com/in/jeffblankenburg", saylinkedin: "jeff blankenburg", joinDate: "September 2016", gender: "m" },
-	{ firstName: "rob", lastName: "mccauley", title: "a Solutions Architect on the Alexa Skills Team", cityName: "boston", twitter: "robmccauley", saytwitter: "rob mccauley", github: "robm26", saygithub: "rob m 26", linkedin: "https://www.linkedin.com/in/robm26", saylinkedin: "rob m 26", joinDate: "February 2016", gender: "m" },
-	{ firstName: "memo", lastName: "doring", title: "a Solutions Architect on the Alexa Skills Team", cityName: "seattle", twitter: "memodoring", saytwitter: "memo doring", github: "memodoring", saygithub: "memo doring", linkedin: "https://www.linkedin.com/in/guillermodoring", saylinkedin: "guillermo doring", joinDate: "April 2016", gender: "m" },
-	{ firstName: "jen", lastName: "gilbert", title: "a Marketing Manager on the Alexa Skills team", cityName: "seattle", twitter: "thejengil", saytwitter: "the jengil", github: "jengilbert", saygithub: "jen gilbert", linkedin: "https://www.linkedin.com/in/jenpaullgilbert/", saylinkedin: "jen paull gilbert", joinDate: "June 2016", gender: "f" }
+const data = [{
+		firstName: "dave",
+		lastName: "isbitski",
+		title: "Chief Alexa evangelist",
+		cityName: "philadelphia",
+		twitter: "thedavedev",
+		saytwitter: "the dave dev",
+		github: "disbitski",
+		saygithub: "d, isbitski",
+		linkedin: "https://www.linkedin.com/in/davidisbitski",
+		saylinkedin: "david isbitski",
+		joinDate: "October 2015",
+		gender: "m"
+	},
+	{
+		firstName: "paul",
+		lastName: "cutsinger",
+		title: "Head of Voice Design Education on Amazon Alexa",
+		cityName: "seattle",
+		twitter: "paulcutsinger",
+		saytwitter: "paul cutsinger",
+		github: "paulcutsinger",
+		saygithub: "paulcutsinger",
+		linkedin: "https://www.linkedin.com/in/paulcutsinger",
+		saylinkedin: "paul cutsinger",
+		joinDate: "January 2016",
+		gender: "m"
+	},
+	{
+		firstName: "amit",
+		lastName: "jotwani",
+		title: "an Alexa AI and machine learning evangelist",
+		cityName: "new york",
+		twitter: "amit",
+		saytwitter: "amit",
+		github: "ajot",
+		saygithub: "a, jot",
+		linkedin: "https://www.linkedin.com/in/ajotwani",
+		saylinkedin: "a jotwani",
+		joinDate: "February 2016",
+		gender: "m"
+	},
+	{
+		firstName: "jeff",
+		lastName: "blankenburg",
+		title: "an Alexa evangelist",
+		cityName: "columbus",
+		twitter: "jeffblankenburg",
+		saytwitter: "jeff blankenburg",
+		github: "jeffblankenburg",
+		saygithub: "jeffblankenburg",
+		linkedin: "https://www.linkedin.com/in/jeffblankenburg",
+		saylinkedin: "jeff blankenburg",
+		joinDate: "September 2016",
+		gender: "m"
+	},
+	{
+		firstName: "rob",
+		lastName: "mccauley",
+		title: "a Solutions Architect on the Alexa Skills Team",
+		cityName: "boston",
+		twitter: "robmccauley",
+		saytwitter: "rob mccauley",
+		github: "robm26",
+		saygithub: "rob m 26",
+		linkedin: "https://www.linkedin.com/in/robm26",
+		saylinkedin: "rob m 26",
+		joinDate: "February 2016",
+		gender: "m"
+	},
+	{
+		firstName: "memo",
+		lastName: "doring",
+		title: "a Solutions Architect on the Alexa Skills Team",
+		cityName: "seattle",
+		twitter: "memodoring",
+		saytwitter: "memo doring",
+		github: "memodoring",
+		saygithub: "memo doring",
+		linkedin: "https://www.linkedin.com/in/guillermodoring",
+		saylinkedin: "guillermo doring",
+		joinDate: "April 2016",
+		gender: "m"
+	},
+	{
+		firstName: "jen",
+		lastName: "gilbert",
+		title: "a Marketing Manager on the Alexa Skills team",
+		cityName: "seattle",
+		twitter: "thejengil",
+		saytwitter: "the jengil",
+		github: "jengilbert",
+		saygithub: "jen gilbert",
+		linkedin: "https://www.linkedin.com/in/jenpaullgilbert/",
+		saylinkedin: "jen paull gilbert",
+		joinDate: "June 2016",
+		gender: "f"
+	}
 ];
 
-//======================================================================================================
-//TODO: Replace these text strings to edit the welcome and help messages
-//======================================================================================================
 
 const skillName = "AllCryptoCoinZ";
 
+const COIN_SELECT_MESSAGE = [{
+	MSG: 'Which coin would you like to select next ?'
+}, {
+	MSG: 'Name of the coin you want to try out next'
+}, {
+	MSG: 'Which coin value you need next ?'
+}, {
+	MSG: 'Which coin you need to try next '
+}, {
+	MSG: 'Please tell me next coin name'
+}]
+
+var SAMPLE_COINS = [{
+	CoinName: "Bitcoin"
+}, {
+	CoinName: "Ripple"
+}, {
+	CoinName: "Ethereum"
+}, {
+	CoinName: "Cardano"
+}]
+var SAMPLE_CURRENCIES = [{
+	Currency: "INR"
+}, {
+	Currency: "USD"
+}, {
+	Currency: "EURO"
+}, {
+	Currency: "CNY"
+}]
 //This is the welcome message for when a user starts the skill without a specific intent.
-const WELCOME_MESSAGE = "Welcome to " + skillName + "Get crypto currency values and  manage portfolios . For example, " + getGenericHelpMessage(data);
+const WELCOME_MESSAGE = "Welcome to " + skillName + " !! \nGet crypto currency values and  manage portfolios . For example, " + getGenericHelpMessage(data);
 
 //This is the message a user will hear when they ask Alexa for help in your skill.
 const HELP_MESSAGE = "I can help you find the value of a crypto coin or manage your portfolio.";
@@ -78,7 +195,7 @@ const EXIT_SKILL_MESSAGE = "Ok.";
 //======================================================================================================
 
 const states = {
-	SEARCHMODE: "_SEARCHMODE",
+	SearchUpdateMODE: "_SearchUpdateMODE",
 	RESULTS: "_RESULTS",
 	MULTIPLE_RESULTS: "_MULTIPLE_RESULTS",
 	UPDATE: "_UPDATE"
@@ -86,34 +203,42 @@ const states = {
 
 const newSessionHandlers = {
 	"LaunchRequest": function () {
-		this.handler.state = states.SEARCHMODE;
+		this.handler.state = states.SearchUpdateMODE;
 		this.response.speak(WELCOME_MESSAGE).listen(getGenericHelpMessage(data));
 		this.emit(':responseReady');
 	},
 	"GetCoinValueByCountIntent": function () {
 		console.log("SEARCH INTENT");
-		this.handler.state = states.SEARCHMODE;
+		this.handler.state = states.SearchUpdateMODE;
 		this.emitWithState("GetCoinValueByCountIntent");
 	},
 	"GetCoinValueByDecimalIntent": function () {
-		this.handler.state = states.SEARCHMODE;
+		this.handler.state = states.SearchUpdateMODE;
 		this.emitWithState("GetCoinValueByDecimalIntent");
 	},
 	"UpdateCoinByCountIntent": function () {
-		this.handler.state = states.SEARCHMODE;
+		this.handler.state = states.SearchUpdateMODE;
 		this.emitWithState("UpdateCoinByCountIntent");
 	},
 	"UpdateCoinByDecimalIntent": function () {
-		this.handler.state = states.SEARCHMODE;
+		this.handler.state = states.SearchUpdateMODE;
 		this.emitWithState("UpdateCoinByDecimalIntent");
 	},
+	"ChangeCurrencyIntent": function () {
+		this.handler.state = states.SearchUpdateMODE;
+		this.emitWithState("ChangeCurrencyIntent");
+	},
+	"PortfolioIntent": function () {
+		this.handler.state = states.SearchUpdateMODE;
+		this.emitWithState("PortfolioIntent");
+	},
 	"TellMeMoreIntent": function () {
-		this.handler.state = states.SEARCHMODE;
+		this.handler.state = states.SearchUpdateMODE;
 		this.response.speak(WELCOME_MESSAGE).listen(getGenericHelpMessage(data));
 		this.emit(':responseReady');
 	},
-	"TellMeThisIntent": function () {
-		this.handler.state = states.SEARCHMODE;
+	"TellCoinValueIntent": function () {
+		this.handler.state = states.SearchUpdateMODE;
 		this.emitWithState("GetCoinValueByCountIntent");
 	},
 
@@ -138,7 +263,7 @@ const newSessionHandlers = {
 		this.emit(':responseReady');
 	},
 	"AMAZON.StartOverIntent": function () {
-		this.handler.state = states.SEARCHMODE;
+		this.handler.state = states.SearchUpdateMODE;
 		var output = "Ok, starting over." + getGenericHelpMessage(data);
 		this.response.speak(output).listen(output);
 		this.emit(':responseReady');
@@ -151,11 +276,11 @@ const newSessionHandlers = {
 		this.emit("AMAZON.StopIntent");
 	},
 	"Unhandled": function () {
-		this.handler.state = states.SEARCHMODE;
+		this.handler.state = states.SearchUpdateMODE;
 		this.emitWithState("GetCoinValueByCountIntent");
 	}
 };
-var startSearchHandlers = Alexa.CreateStateHandler(states.SEARCHMODE, {
+var searchUpdateHandlers = Alexa.CreateStateHandler(states.SearchUpdateMODE, {
 	"AMAZON.YesIntent": function () {
 		this.response.speak(NEW_SEARCH_MESSAGE).listen(NEW_SEARCH_MESSAGE);
 		this.emit(':responseReady');
@@ -168,11 +293,8 @@ var startSearchHandlers = Alexa.CreateStateHandler(states.SEARCHMODE, {
 		var output;
 		if (this.attributes.lastSearch) {
 			output = this.attributes.lastSearch.lastSpeech;
-			console.log("repeating last speech");
-		}
-		else {
+		} else {
 			output = getGenericHelpMessage(data);
-			console.log("no last speech availble. outputting standard help message.");
 		}
 		this.emit(":ask", output, output);
 	},
@@ -188,13 +310,29 @@ var startSearchHandlers = Alexa.CreateStateHandler(states.SEARCHMODE, {
 	"UpdateCoinByDecimalIntent": function () {
 		UpdateCoinByDecimalIntentHandler.call(this);
 	},
-	"SearchByCityIntent": function () {
-		searchByCityIntentHandler.call(this);
-	},
 
-	"TellMeThisIntent": function () {
+
+	"ChangeCurrencyIntent": function () {
+		ChangeCurrencyIntentHandler.call(this);
+	},
+	"PortfolioIntent": function () {
+		PortfolioHandler.call(this);
+	},
+	"TellChangeCurrencyIntent": function () {
 		this.handler.state = states.RESULTS;
-		this.emitWithState("TellMeThisIntent");
+		this.emitWithState("TellChangeCurrencyIntent");
+	},
+	"TellPortfolioIntent": function () {
+		this.handler.state = states.RESULTS;
+		this.emitWithState("TellPortfolioIntent");
+	},
+	"TellCoinUpdateIntent": function () {
+		this.handler.state = states.RESULTS;
+		this.emitWithState("TellCoinUpdateIntent");
+	},
+	"TellCoinValueIntent": function () {
+		this.handler.state = states.RESULTS;
+		this.emitWithState("TellCoinValueIntent");
 	},
 	"TellMeMoreIntent": function () {
 		this.handler.state = states.RESULTS;
@@ -213,7 +351,7 @@ var startSearchHandlers = Alexa.CreateStateHandler(states.SEARCHMODE, {
 		this.emit(':responseReady');
 	},
 	"AMAZON.StartOverIntent": function () {
-		this.handler.state = states.SEARCHMODE;
+		this.handler.state = states.SearchUpdateMODE;
 		var output = "Ok, starting over." + getGenericHelpMessage(data);
 		this.response.speak(output).listen(output);
 		this.emit(':responseReady');
@@ -227,6 +365,337 @@ var startSearchHandlers = Alexa.CreateStateHandler(states.SEARCHMODE, {
 		this.emit(':responseReady');
 	}
 });
+
+
+function PortfolioHandler() {
+
+	var self = this;
+	const uniqID = this.event.context.System.user.userId
+
+	dbAllCoinZ.g_getRecord(gUser, {
+		uniqID: uniqID
+	}).then(function (result) {
+		let myPortfolio;
+		if (result != null) {
+			myPortfolio = result.portfolio;
+		}
+		if (result == null || myPortfolio == null) {
+			this.emit(':askWithCard', "Please create a new portfolio. Check help !!!", "Please create a new portfolio. Check help !!!", this.t('SKILL_NAME'), "Please create a new portfolio. Check help !!!");
+		}
+		if (result.curr == null) {
+			Util.m_myCurrency == "INR"
+		} else {
+			Util.m_myCurrency = result.curr;
+		}
+		var jsonPortfolioParse = JSON.parse(myPortfolio)
+		var oPortFolioLatestData = GenProc.m_getPortFolioCoinData(jsonPortfolioParse, Util.m_myCurrency)
+		oPortFolioLatestData.then(function (myportFolioData) {
+			console.log('total')
+
+			var myCoins = jsonPortfolioParse;
+			var currency = Util.m_myCurrency
+			var TotalDetails = "";
+
+			var priceinBTC = 0;
+			var priceinCurrency = 0;
+			var totalBTC = 0;
+			var totalCurrency = 0;
+			var displayCurrency;
+			var displayBTC;
+
+			var BaseLinkUrl = "https://www.cryptocompare.com";
+			var cryptoCoin = "";
+			var link;
+			var ilink
+			var description;
+			for (const coin of Object.keys(myCoins)) {
+
+				if (myCoins[coin] <= 0) {
+					continue
+				}
+				cryptoCoin = jsCoin.m_findCoin(coin.toUpperCase());;
+
+
+				link = BaseLinkUrl + cryptoCoin[0].u;
+				ilink = BaseLinkUrl + cryptoCoin[0].iu;
+
+
+				priceinBTC = (myportFolioData.RAW[coin]["BTC"].PRICE * myCoins[coin]).toFixed(9)
+				priceinCurrency = (myportFolioData.RAW[coin][currency].PRICE * myCoins[coin]).toFixed(2)
+				//description = priceinCurrency + "" + myportFolioData.DISPLAY[coin][currency].TOSYMBOL + " |" + " " + priceinBTC + "" + myportFolioData.DISPLAY[coin]["BTC"].TOSYMBOL
+
+				TotalDetails = TotalDetails + "<break time='1s'/>" + (+myCoins[coin]).toFixed(3) + " <say-as interpret-as='characters'>" + coin + "</say-as> is " + priceinCurrency + myportFolioData.DISPLAY[coin][currency].TOSYMBOL + "\n"
+
+
+				displayCurrency = myportFolioData.DISPLAY[coin][currency].TOSYMBOL
+				displayBTC = myportFolioData.DISPLAY[coin]["BTC"].TOSYMBOL
+
+				totalBTC = +totalBTC + +priceinBTC
+				totalCurrency = +totalCurrency + +priceinCurrency
+			}
+			const imageObj = {
+				smallImageUrl: 'https://i.imgur.com/yXARQuc.png',
+				largeImageUrl: 'https://i.imgur.com/yXARQuc.png'
+			};
+			if (cryptoCoin == '') {
+				return sendPortfolioUpdate("Please create a new portfolio. Check help !!!");
+			}
+
+			var summaryDetails = "Total Portfolio Value: " + totalCurrency.toFixed(3) + " " + displayCurrency + " equivalent to " + totalBTC.toFixed(5) + " " + displayBTC + "\n\n"
+			//summaryDetails = summaryDetails + TotalDetails;
+
+			var lastSearch = self.attributes.lastSearch = {
+				summaryDetails: summaryDetails,
+				TotalDetails: TotalDetails
+			}
+			self.attributes.lastSearch.lastIntent = "PortfolioIntent";
+			self.emitWithState("TellPortfolioIntent");
+
+			//console.log("\n*[TPV]:  " + " " + totalCurrency.toFixed(3) + " " + displayCurrency + " | " + totalBTC.toFixed(9) + " " + displayBTC)
+
+		}).catch(function (err) {
+			return deferred.reject(false);
+		})
+
+	})
+
+
+}
+
+function ChangeCurrencyIntentHandler() {
+
+	var userCurrency = isSlotValid(this.event.request, "myCurrency");
+	const uniqID = this.event.context.System.user.userId;
+
+	var self = this;
+	if (userCurrency == false) {
+		this.emit(':ask', 'Currency could not be identified.No changes are made.')
+
+		return;
+	}
+	userCurrency = userCurrency.toUpperCase();
+	dbAllCoinZ.g_UpdateInsert(gUser, {
+		uniqID: uniqID
+	}, {
+		displayName: "",
+		uniqID: uniqID,
+		curr: userCurrency
+	}).then(function () {
+
+		var lastSearch = self.attributes.lastSearch = "Default currency has been set to " + userCurrency + "."
+		self.attributes.lastSearch.lastIntent = "TellChangeCurrencyIntent";
+		self.emitWithState("TellChangeCurrencyIntent");
+
+	}, function (error) {
+		console.log(error)
+	})
+
+
+}
+
+function UpdateCoinByDecimalIntentHandler() {
+
+	this.emitWithState("UpdateCoinByCountIntentHandler");
+}
+
+function UpdateCoinByCountIntentHandler() {
+
+	var cryptoCoinValue = isSlotValid(this.event.request, "Coins");
+	var inputcountSlotValue = isSlotValid(this.event.request, "Count");
+	var decimalSlotValue = isSlotValid(this.event.request, "Decimal");
+	var buySellSlotValue = isSlotValid(this.event.request, "BuySell");
+
+	const intentObj = this.event.request.intent;
+	if (false) { //intentObj.confirmationStatus !== 'CONFIRMED'
+		if (intentObj.confirmationStatus !== 'DENIED') {
+			// Intent is not confirmed
+			if (!intentObj.slots.Coins.value) {
+				const slotToElicit = 'Coins';
+				const speechOutput = 'Where coin would you like to use ?';
+				const repromptSpeech = speechOutput;
+				return this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech)
+
+			}
+			var inputcountSlotValue;
+			var decimalSlotValue;
+			const coin = this.event.request.intent.slots.Coins.value
+
+
+			if (this.event.request.intent.slots.Count != undefined) {
+				inputcountSlotValue = parseInt(this.event.request.intent.slots.Count.value);
+				if (isNaN(inputcountSlotValue)) {
+					inputcountSlotValue = 0;
+				} else {
+					inputcountSlotValue = inputcountSlotValue
+				}
+			}
+			if (this.event.request.intent.slots.Decimal != undefined) {
+				decimalSlotValue = parseInt(this.event.request.intent.slots.Decimal.value);
+				if (isNaN(decimalSlotValue)) {
+					decimalSlotValue = 0;
+				} else {
+					decimalSlotValue = '.' + decimalSlotValue
+				}
+			}
+
+			var buysell = this.event.request.intent.slots.BUYSELL.value.toUpperCase();
+
+			inputcountSlotValue = +inputcountSlotValue + +decimalSlotValue;
+			const speechOutput = 'You would like to ' + buysell + ' ' + inputcountSlotValue + ' ' +
+				coin.toUpperCase() + ', is that correct?';
+
+			const cardTitle = "Portfolio Update :";
+			const repromptSpeech = speechOutput;
+			const cardContent = speechOutput;
+			this.emit(':confirmIntentWithCard', speechOutput, repromptSpeech, cardTitle, cardContent);
+		} else {
+			// Users denies the confirmation of intent. May be value of the slots are not correct.
+			//handleIntentConfimationDenial();
+			console.log("denied");
+			this.emit(':askWithCard', "Ok. I am cancelling the portfolio update." + getRandomValues(COIN_SELECT_MESSAGE, "MSG") + " The portfolio update has been cancelled. Which coin next ?", this.t('SKILL_NAME'), "The portfolio update has been cancelled now. Which coin next ?")
+
+		}
+	} else {
+		console.log("confirmed")
+		var UsrePortfolio;
+
+		var inputcountSlotValue;
+		var decimalSlotValue;
+		var self = this;
+
+		if (cryptoCoinValue == false) {
+			return self.emit(':askWithCard', "Coin cannot be identified .Please try again.", "Coin cannot be identified .Please try again.", this.t('SKILL_NAME'), "Coin cannot be identified .Please try again.")
+		} else {
+			var coinShortName = jsCoin.m_findCoin(cryptoCoinValue.toUpperCase());
+			if (coinShortName != undefined && coinShortName != null) {
+				if (coinShortName.length > 0) {
+					cryptoCoinValue = coinShortName[0].n.toUpperCase()
+				};
+			}
+
+		}
+		if (inputcountSlotValue != false) {
+			inputcountSlotValue = parseInt(inputcountSlotValue);
+			if (isNaN(inputcountSlotValue)) {
+				inputcountSlotValue = 0;
+			}
+		}
+		if (decimalSlotValue != false) {
+			decimalSlotValue = parseInt(decimalSlotValue);
+			if (isNaN(decimalSlotValue)) {
+				decimalSlotValue = 0;
+			} else {
+				decimalSlotValue = '.' + decimalSlotValue
+			}
+		}
+
+		inputcountSlotValue = +inputcountSlotValue + +decimalSlotValue;
+
+		var userRequestedOption;
+		switch (buySellSlotValue.toUpperCase()) {
+			case "ADD":
+			case "BUY [+]":
+			case "ADD[+]":
+			case "ADD COIN":
+			case "B":
+			case "BUY":
+				userRequestedOption = "ADD";
+				break;
+			case "REMOVE":
+			case "DELETE":
+				userRequestedOption = "DELETE";
+				break;
+			case "SELL":
+			case "S":
+			case "DEDUCT[-]":
+			case "DEDUCT":
+				userRequestedOption = "DEDUCT";
+				break;
+			default:
+				break;
+		}
+
+		const uniqID = this.event.context.System.user.userId;
+		const displayName = "";
+		dbAllCoinZ.g_getRecord(gUser, {
+			uniqID: uniqID
+		}).then(function (item) {
+			var coinQuantity;
+			var updatedQuantity
+			var updatetext = "added";
+			if (item == null) {
+				updatedQuantity = inputcountSlotValue
+				userInfoData = {
+					displayName: displayName,
+					uniqID: uniqID,
+					curr: "INR",
+					portfolio: JSON.stringify({
+						[cryptoCoinValue]: inputcountSlotValue
+					})
+				}
+			} else {
+				var currentPortfolio = JSON.parse(item.portfolio)
+				if (currentPortfolio != null) {
+					if (currentPortfolio[cryptoCoinValue] == undefined) {
+						currentPortfolio[cryptoCoinValue] = inputcountSlotValue;
+					} else {
+						//var updatedQuantity = 1;
+						coinQuantity = currentPortfolio[cryptoCoinValue]
+						if (userRequestedOption == "ADD") {
+							updatetext = "added"
+							updatedQuantity = +inputcountSlotValue + +coinQuantity;
+						} else if (userRequestedOption == "DEDUCT") {
+							updatetext = "deducted"
+							updatedQuantity = +coinQuantity - inputcountSlotValue;
+						} else if (userRequestedOption == "DELETE") {
+							updatetext = "deleted"
+							updatedQuantity = 0;
+						}
+						if (updatedQuantity < 0) {
+							updatedQuantity = 0;
+						}
+						currentPortfolio[cryptoCoinValue] = updatedQuantity
+					}
+					userInfoData = {
+						displayName: item.displayName,
+						uniqID: item.uniqID,
+						curr: item.curr,
+						portfolio: JSON.stringify(currentPortfolio)
+					}
+				} else {
+					userInfoData = {
+						displayName: "",
+						uniqID: uniqID,
+						curr: "INR",
+						portfolio: JSON.stringify({
+							[cryptoCoinValue]: inputcountSlotValue
+						})
+					}
+				}
+			}
+			var currentValue = inputcountSlotValue
+			if (updatedQuantity != undefined) {
+				currentValue = updatedQuantity
+			}
+			dbAllCoinZ.g_UpdateInsert(gUser, {
+				uniqID: uniqID
+			}, userInfoData).then(function () {
+
+				var portfolioUpdateText = inputcountSlotValue + " " + cryptoCoinValue.toUpperCase() + " has been " + updatetext + " !!!\nAvailable " + cryptoCoinValue.toUpperCase() + " : " + currentValue;
+				var lastSearch = self.attributes.lastSearch = portfolioUpdateText
+				self.attributes.lastSearch.lastIntent = "UpdateCoinByCountIntent";
+				self.emitWithState("TellCoinUpdateIntent");
+
+			}, function (error) {
+				//deferred.reject(error)
+			})
+		})
+		// return deferred.promise;
+
+	}
+
+
+}
 
 function GetCoinValueByCountIntentHandler() {
 	var cryptoCoin = isSlotValid(this.event.request, "Coins");
@@ -268,12 +737,14 @@ function GetCoinValueByCountIntentHandler() {
 		oCoin.then(function (coinResult) {
 			var result = [];
 			result.push(coinResult)
-			var lastSearch = self.attributes.lastSearch = { results: result };
+			var lastSearch = self.attributes.lastSearch = {
+				results: result
+			};
 			var output;
 
 			//saving last intent to session attributes
 			self.attributes.lastSearch.lastIntent = "GetCoinValueByCountIntent";
-			self.emitWithState("TellMeThisIntent");
+			self.emitWithState("TellCoinValueIntent");
 			//ResponseMessage(coinResult, self)
 
 		}).catch(function (err) {
@@ -313,7 +784,7 @@ function GetCoinValueByCountIntentHandler() {
 	// 		if (infoType) {
 	// 			//if a specific infoType was requested, redirect to specificInfoIntent
 	// 			console.log("infoType was provided as well");
-	// 			this.emitWithState("TellMeThisIntent");
+	// 			this.emitWithState("TellCoinValueIntent");
 	// 		}
 	// 		else {
 	// 			console.log("no infoType was provided.");
@@ -347,7 +818,7 @@ function GetCoinValueByCountIntentHandler() {
 var multipleSearchResultsHandlers = Alexa.CreateStateHandler(states.MULTIPLE_RESULTS, {
 
 	"AMAZON.StartOverIntent": function () {
-		this.handler.state = states.SEARCHMODE;
+		this.handler.state = states.SearchUpdateMODE;
 		var output = "Ok, starting over." + getGenericHelpMessage(data);
 		this.response.speak(output).listen(output);
 		this.emit(':responseReady');
@@ -409,10 +880,7 @@ var multipleSearchResultsHandlers = Alexa.CreateStateHandler(states.MULTIPLE_RES
 		}
 		this.emit(':responseReady');
 	},
-	"SearchByCityIntent": function () {
-		this.handler.state = states.SEARCHMODE;
-		this.emitWithState("SearchByCityIntent");
-	},
+
 	"AMAZON.HelpIntent": function () {
 		this.response.speak(MULTIPLE_RESULTS_STATE_HELP_MESSAGE).listen(MULTIPLE_RESULTS_STATE_HELP_MESSAGE);
 		this.emit(':responseReady');
@@ -436,33 +904,61 @@ var multipleSearchResultsHandlers = Alexa.CreateStateHandler(states.MULTIPLE_RES
 });
 var descriptionHandlers = Alexa.CreateStateHandler(states.RESULTS, {
 	"TellMeMoreIntent": function () {
-		var person;
 		var speechOutput;
 		var repromptSpeech;
 		var cardContent;
-
-		if (this.attributes.lastSearch) {
-			person = this.attributes.lastSearch.results[0];
-			cardContent = generateCard(person); //calling the helper function to generate the card content that will be sent to the Alexa app.
-			speechOutput = generateTellMeMoreMessage(person);
-			repromptSpeech = "Would you like to find another evangelist? Say yes or no";
-
-			console.log("the contact you're trying to find more info about is " + person.firstName);
-			this.handler.state = states.SEARCHMODE;
+		if (this.attributes.lastSearch.lastIntent.toUpperCase() == "PORTFOLIOINTENT") {
+			var speechOutput = this.attributes.lastSearch.TotalDetails;
+			this.handler.state = states.SearchUpdateMODE;
 			this.attributes.lastSearch.lastSpeech = speechOutput;
-			this.response.cardRenderer(cardContent.title, cardContent.body, cardContent.image);
-			this.response.speak(speechOutput).listen(repromptSpeech);
-		}
-		else {
+			repromptSpeech = getRandomValues(COIN_SELECT_MESSAGE, "MSG");
+			this.response.speak(speechOutput + "<break time ='1s'/> " + repromptSpeech).listen(repromptSpeech).cardRenderer("My Portfolio Detailed View :", removeSSML(responseMessage))
+			this.emit(':responseReady')
+
+		} else {
 			speechOutput = getGenericHelpMessage(data);
 			repromptSpeech = getGenericHelpMessage(data);
-			this.handler.state = states.SEARCHMODE;
+			this.handler.state = states.SearchUpdateMODE;
 			this.response.speak(speechOutput).listen(repromptSpeech);
 		}
 
 		this.emit(':responseReady');
 	},
-	"TellMeThisIntent": function () {
+	"TellPortfolioIntent": function () {
+		var responseMessage = this.attributes.lastSearch.summaryDetails;
+		this.handler.state = states.RESULTS;
+		this.attributes.lastSearch.lastSpeech = responseMessage + ". Would you like to hear the split wise details ?";
+		this.response.speak(responseMessage + ". Would you like to hear the split wise details ?").listen("Would you like to hear split wise details or Say a coin name.").cardRenderer("My Portfolio :", removeSSML(responseMessage))
+		this.emit(':responseReady')
+
+
+	},
+	"TellChangeCurrencyIntent": function () {
+		var responseMessage = this.attributes.lastSearch;
+		this.handler.state = states.SearchUpdateMODE;
+		this.attributes.lastSearch.lastSpeech = responseMessage;
+		var repromptSpeech = getRandomValues(COIN_SELECT_MESSAGE, "MSG");
+
+		this.response.speak(responseMessage).listen(repromptSpeech).cardRenderer("Currency Update :", responseMessage)
+		this.emit(':responseReady');
+
+	},
+
+	"TellCoinUpdateIntent": function () {
+
+			var responseMessage = this.attributes.lastSearch;
+			this.handler.state = states.SearchUpdateMODE;
+			this.attributes.lastSearch.lastSpeech = responseMessage;
+			var repromptSpeech = getRandomValues(COIN_SELECT_MESSAGE, "MSG");
+
+			this.response.speak(responseMessage).listen(repromptSpeech).cardRenderer("Portfolio Update :", responseMessage)
+			this.emit(':responseReady');
+
+
+		}
+
+		,
+	"TellCoinValueIntent": function () {
 
 		var CoinInfo = this.attributes.lastSearch.results[0];
 		var infoType = isSlotValid(this.event.request, "infoType");
@@ -473,38 +969,16 @@ var descriptionHandlers = Alexa.CreateStateHandler(states.RESULTS, {
 		cardContent = generateCoinCard(CoinInfo)
 		speechOutput = generateCoinMessage(CoinInfo)
 		repromptSpeech = "Would you like to selet another coin? Say yes or no";
-		this.handler.state = states.SEARCHMODE;
+		this.handler.state = states.SearchUpdateMODE;
 		this.attributes.lastSearch.lastSpeech = speechOutput;
 		this.response.cardRenderer(cardContent.title, cardContent.body, cardContent.image);
 		this.response.speak(speechOutput).listen(repromptSpeech);
-
-		console.log(isInfoTypeValid("github"));
-
-		// if (this.attributes.lastSearch && isInfoTypeValid(infoType)) {
-		// 	person = this.attributes.lastSearch.results[0];
-		// 	cardContent = generateCard(person);
-		// 	speechOutput = generateSpecificInfoMessage(slots, person);
-		// 	repromptSpeech = "Would you like to find another evangelist? Say yes or no";
-		// 	this.handler.state = states.SEARCHMODE;
-		// 	this.attributes.lastSearch.lastSpeech = speechOutput;
-		// 	this.response.cardRenderer(cardContent.title, cardContent.body, cardContent.image);
-		// 	this.response.speak(speechOutput).listen(repromptSpeech);
-		// } else {
-		// 	//not a valid slot. no card needs to be set up. respond with simply a voice response.
-		// 	speechOutput = generateSearchHelpMessage(person.gender);
-		// 	repromptSpeech = "You can ask me - what's " + genderize("his-her", person.gender) + " twitter, or give me " + genderize("his-her", person.gender) + " git-hub username";
-		// 	this.attributes.lastSearch.lastSpeech = speechOutput;
-		// 	this.handler.state = states.SEARCHMODE;
-		// 	this.response.speak(speechOutput).listen(repromptSpeech);
-		// }
 		this.emit(':responseReady');
 	},
 	"GetCoinValueByCountIntent": function () {
 		GetCoinValueByCountIntentHandler.call(this);
 	},
-	"SearchByCityIntent": function () {
-		searchByCityIntentHandler.call(this);
-	},
+
 	"AMAZON.HelpIntent": function () {
 		var person = this.attributes.lastSearch.results[0];
 		this.response.speak(generateNextPromptMessage(person, "current")).listen(generateNextPromptMessage(person, "current"));
@@ -523,14 +997,15 @@ var descriptionHandlers = Alexa.CreateStateHandler(states.RESULTS, {
 		this.emit(':responseReady');
 	},
 	"AMAZON.YesIntent": function () {
-		this.emit("TellMeMoreIntent");
+		this.handler.state = states.RESULTS;
+		this.emitWithState("TellMeMoreIntent");
 	},
 	"AMAZON.RepeatIntent": function () {
 		this.response.speak(this.attributes.lastSearch.lastSpeech).listen(this.attributes.lastSearch.lastSpeech);
 		this.emit(':responseReady');
 	},
 	"AMAZON.StartOverIntent": function () {
-		this.handler.state = states.SEARCHMODE;
+		this.handler.state = states.SearchUpdateMODE;
 		var output = "Ok, starting over." + getGenericHelpMessage(data);
 		this.response.speak(output).listen(output);
 		this.emit(':responseReady');
@@ -580,10 +1055,11 @@ function generateCoinMessage(CoinInfo) {
 	var currencyPrice = Util.m_removeCurrencySymbols(coinInfoinCurrency);
 	var BTCPrice = Util.m_removeCurrencySymbols(coinInfoinBTC);
 
-	var soundop = '<say-as interpret-as="interjection">' + CoinInfo.CoinCount + " " + CoinInfo.CoinFN + ' is </say-as><break time="0.6s"/>' + (CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " + coinInfoinCurrency.TOSYMBOL + ' <emphasis level="moderate">, Which coin next ?</emphasis>'
+	var soundop = '<say-as interpret-as="interjection">' + CoinInfo.CoinCount + " " + CoinInfo.CoinFN + ' is </say-as><break time="0.6s"/>' + (CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " + coinInfoinCurrency.TOSYMBOL + ' <emphasis level="moderate">, ' + getRandomValues(COIN_SELECT_MESSAGE, "MSG") + '</emphasis>'
 	return soundop;
 
 }
+
 function searchDatabase(dataset, searchQuery, searchType) {
 	var matchFound = false;
 	var results = [];
@@ -612,16 +1088,13 @@ function figureOutWhichSlotToSearchBy(firstName, lastName, cityName) {
 	if (lastName) {
 		console.log("search by lastName");
 		return "lastName";
-	}
-	else if (!lastName && firstName) {
+	} else if (!lastName && firstName) {
 		console.log("search by firstName");
 		return "firstName";
-	}
-	else if (!lastName && !firstName && cityName) {
+	} else if (!lastName && !firstName && cityName) {
 		console.log("search by cityName");
 		return "cityName";
-	}
-	else {
+	} else {
 		console.log("no valid slot provided. can't search.");
 		return false;
 	}
@@ -660,16 +1133,14 @@ function GetCoinValueByCountIntentHandler1() {
 			if (infoType) {
 				//if a specific infoType was requested, redirect to specificInfoIntent
 				console.log("infoType was provided as well");
-				this.emitWithState("TellMeThisIntent");
-			}
-			else {
+				this.emitWithState("TellCoinValueIntent");
+			} else {
 				console.log("no infoType was provided.");
 				output = generateSearchResultsMessage(searchQuery, searchResults.results);
 				this.attributes.lastSearch.lastSpeech = output;
 				this.response.speak(output).listen(output);
 			}
-		}
-		else {//no match found
+		} else { //no match found
 			console.log("no match found");
 			console.log("searchQuery was  = " + searchQuery);
 			console.log("searchResults.results was  = " + searchResults);
@@ -678,8 +1149,7 @@ function GetCoinValueByCountIntentHandler1() {
 			// this.emit(":ask", generateSearchResultsMessage(searchQuery,searchResults.results));
 			this.response.speak(output).listen(output);
 		}
-	}
-	else {
+	} else {
 		console.log("no searchable slot was provided");
 		console.log("searchQuery was  = " + searchQuery);
 		console.log("searchResults.results was  = " + searchResults);
@@ -690,137 +1160,12 @@ function GetCoinValueByCountIntentHandler1() {
 	this.emit(':responseReady');
 }
 
-function searchByCityIntentHandler() {
-	var slots = this.event.request.intent.slots;
-	var cityName = isSlotValid(this.event.request, "cityName");
 
-	if (cityName) {
-		var searchQuery = slots.cityName.value;
-		console.log("will begin search with  " + slots.cityName.value + " in cityName");
-		var searchResults = searchDatabase(data, searchQuery, "cityName");
-
-		//saving lastSearch results to the current session
-		var lastSearch = this.attributes.lastSearch = searchResults;
-		var output;
-
-		//saving last intent to session attributes
-		this.attributes.lastSearch.lastIntent = "GetCoinValueByCountIntent";
-
-		if (searchResults.count > 1) { //multiple results found
-			console.log("Search compvared by city. Multiple results were found");
-			var listOfPeopleFound = loopThroughArrayOfObjects(lastSearch.results);
-			output = generateSearchResultsMessage(searchQuery, searchResults.results) + listOfPeopleFound + ". Who would you like to learn more about?";
-			this.handler.state = states.MULTIPLE_RESULTS; // change state to MULTIPLE_RESULTS
-			this.attributes.lastSearch.lastSpeech = output;
-			this.response.speak(output).listen(output);
-		} else if (searchResults.count == 1) { //one result found
-			console.log("one match found");
-			this.handler.state = states.RESULTS; // change state to description
-			output = generateSearchResultsMessage(searchQuery, searchResults.results);
-			this.attributes.lastSearch.lastSpeech = output;
-			// this.emit(":ask", generateSearchResultsMessage(searchQuery,searchResults.results));
-			this.response.speak(output).listen(output);
-
-		}
-		else {//no match found
-			console.log("no match found");
-			console.log("searchQuery was  = " + searchQuery);
-			console.log("searchResults.results was  = " + searchResults);
-			output = generateSearchResultsMessage(searchQuery, searchResults.results);
-			this.attributes.lastSearch.lastSpeech = output;
-			// this.emit(":ask", generateSearchResultsMessage(searchQuery,searchResults.results));
-			this.response.speak(output).listen(output);
-
-		}
-	}
-	else {
-		console.log("no searchable slot was provided");
-		console.log("searchQuery was  = " + searchQuery);
-		console.log("searchResults.results was  = " + searchResults);
-
-		this.response.speak(generateSearchResultsMessage(searchQuery, false)).listen(generateSearchResultsMessage(searchQuery, false));
-	}
-
-	this.emit(':responseReady');
-
-}
 
 function GetCoinValueByDecimalIntentHandler() {
 
-	this.handler.state = states.SEARCHMODE;
+	this.handler.state = states.SearchUpdateMODE;
 	this.emitWithState("GetCoinValueByCountIntent");
-
-	return
-	// var slots = this.event.request.intent.slots;
-	// var firstName = isSlotValid(this.event.request, "firstName");
-	// var lastName = isSlotValid(this.event.request, "lastName");
-	// var cityName = isSlotValid(this.event.request, "cityName");
-	// var infoType = isSlotValid(this.event.request, "infoType");
-
-	// var canSearch = figureOutWhichSlotToSearchBy(firstName, lastName, cityName);
-	// console.log("canSearch is set to = " + canSearch);
-
-	// if (canSearch) {
-	// 	var searchQuery = slots[canSearch].value;
-	// 	var searchResults = searchDatabase(data, searchQuery, canSearch);
-
-	// 	//saving lastSearch results to the current session
-	// 	var lastSearch = this.attributes.lastSearch = searchResults;
-	// 	var output;
-
-	// 	//saving last intent to session attributes
-	// 	this.attributes.lastSearch.lastIntent = "GetCoinValueByCountIntent";
-
-	// 	if (searchResults.count > 1) { //multiple results found
-	// 		console.log("multiple results were found");
-	// 		var listOfPeopleFound = loopThroughArrayOfObjects(lastSearch.results);
-	// 		output = generateSearchResultsMessage(searchQuery, searchResults.results) + listOfPeopleFound + ". Who would you like to learn more about?";
-	// 		this.handler.state = states.MULTIPLE_RESULTS; // change state to MULTIPLE_RESULTS
-	// 		this.attributes.lastSearch.lastSpeech = output;
-	// 		this.response.speak(output).listen(output);
-	// 	} else if (searchResults.count == 1) { //one result found
-	// 		this.handler.state = states.RESULTS; // change state to description
-	// 		console.log("one match was found");
-	// 		if (infoType) {
-	// 			//if a specific infoType was requested, redirect to specificInfoIntent
-	// 			console.log("infoType was provided as well");
-	// 			var person = this.attributes.lastSearch.results[0];
-	// 			var cardContent = generateCard(person);
-	// 			var speechOutput = generateSpecificInfoMessage(slots, person);
-	// 			var repromptSpeech = "Would you like to find another evangelist? Say yes or no";
-	// 			this.attributes.lastSearch.lastSpeech = speechOutput;
-	// 			this.handler.state = states.SEARCHMODE;
-	// 			this.response.cardRenderer(cardContent.title, cardContent.body, cardContent.image);
-	// 			this.response.speak(speechOutput).listen(repromptSpeech);
-	// 			// this.emitWithState("TellMeThisIntent");
-	// 		}
-	// 		else {
-	// 			console.log("no infoType was provided.");
-	// 			output = generateSearchResultsMessage(searchQuery, searchResults.results);
-	// 			this.attributes.lastSearch.lastSpeech = output;
-	// 			// this.emit(":ask", generateSearchResultsMessage(searchQuery,searchResults.results));
-	// 			this.response.speak(output).listen(output);
-	// 		}
-	// 	}
-	// 	else {//no match found
-	// 		console.log("no match found");
-	// 		console.log("searchQuery was  = " + searchQuery);
-	// 		console.log("searchResults.results was  = " + searchResults);
-	// 		output = generateSearchResultsMessage(searchQuery, searchResults.results);
-	// 		this.attributes.lastSearch.lastSpeech = output;
-	// 		// this.emit(":ask", generateSearchResultsMessage(searchQuery,searchResults.results));
-	// 		this.response.speak(output).listen(output);
-	// 	}
-	// }
-	// else {
-	// 	console.log("no searchable slot was provided");
-	// 	console.log("searchQuery was  = " + searchQuery);
-	// 	console.log("searchResults.results was  = " + searchResults);
-
-	// 	this.response.speak(generateSearchResultsMessage(searchQuery, false)).listen(generateSearchResultsMessage(searchQuery, false));
-	// }
-
-	// this.emit(':responseReady');
 
 }
 // =====================================================================================================
@@ -868,8 +1213,7 @@ function generateSearchResultsMessage(searchQuery, results) {
 				sentence = "I found " + results.length + " matching results";
 				break;
 		}
-	}
-	else {
+	} else {
 		sentence = "Sorry, I didn't quite get that. " + getGenericHelpMessage(data);
 	}
 	return sentence;
@@ -877,26 +1221,24 @@ function generateSearchResultsMessage(searchQuery, results) {
 
 function getGenericHelpMessage(data) {
 	//'You can ask me to tell value of crypto coin, or, you can say exit... What can I help you with?',
-	var coin = [{ CoinName: "Bitcoin" }, { CoinName: "Ripple" }, { CoinName: "Ethereum" }, { CoinName: "Cardano" }]
-	var currency = [{ Currency: "INR" }, { Currency: "USD" }, { Currency: "EURO" }, { Currency: "CNY" }]
 
-	var sentences = ["ask - What's the value of " + getRandomCoin(coin),
-	"say - Add 1.23 " + getRandomCoin(coin),
+	var sentences = ["ask - What's the value of " + getRandomValues(SAMPLE_COINS, "CoinName"),
+		"say - Add 1.23 " + getRandomValues(SAMPLE_COINS),
 		"say - What's my portfolio",
-	"say - Change currency to " + getRandomCurrency(currency)]
-	//var sentences = ["ask - who is " + getRandomName(data), "say - find an evangelist in " + getRandomCity(data)];
+		"say - Change currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency"),
+		"say - Set Currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency")
 
+	]
 	return "You can " + sentences[getRandom(0, sentences.length - 1)];
 }
-function getRandomCurrency(arrayOfStrings) {
+
+
+function getRandomValues(arrayOfStrings, itemName) {
 	var randomNumber = getRandom(0, arrayOfStrings.length - 1);
-	return arrayOfStrings[randomNumber].Currency;
+	return arrayOfStrings[randomNumber][itemName];
 }
 
-function getRandomCoin(arrayOfStrings) {
-	var randomNumber = getRandom(0, arrayOfStrings.length - 1);
-	return arrayOfStrings[randomNumber].CoinName;
-}
+
 function generateSearchHelpMessage(gender) {
 	var sentence = "Sorry, I don't know that. You can ask me - what's " + genderize("his-her", gender) + " twitter, or give me " + genderize("his-her", gender) + " git-hub username";
 	return sentence;
@@ -906,6 +1248,7 @@ function generateTellMeMoreMessage(person) {
 	var sentence = person.firstName + " joined the Alexa team in " + person.joinDate + ". " + genderize("his-her", person.gender) + " Twitter handle is " + person.saytwitter + " . " + generateSendingCardToAlexaAppMessage(person, "general");
 	return sentence;
 }
+
 function generateSpecificInfoMessage(slots, person) {
 	var infoTypeValue;
 	var sentence;
@@ -913,8 +1256,7 @@ function generateSpecificInfoMessage(slots, person) {
 	if (slots.infoType.value == "git hub") {
 		infoTypeValue = "github";
 		console.log("resetting gith hub to github");
-	}
-	else {
+	} else {
 		console.log("no reset required for github");
 		infoTypeValue = slots.infoType.value;
 	}
@@ -979,8 +1321,16 @@ function loopThroughArrayOfObjects(arrayOfStrings) {
 
 function genderize(type, gender) {
 	var pronouns = {
-		"m": { "he-she": "he", "his-her": "his", "him-her": "him" },
-		"f": { "he-she": "she", "his-her": "her", "him-her": "her" }
+		"m": {
+			"he-she": "he",
+			"his-her": "his",
+			"him-her": "him"
+		},
+		"f": {
+			"he-she": "she",
+			"his-her": "her",
+			"him-her": "her"
+		}
 	};
 	return pronouns[gender][type];
 }
@@ -1041,7 +1391,9 @@ const handlers = {
 			uniqID: uniqID
 		}).then(function (result) {
 			let myPortfolio;
-			if (result != null) { myPortfolio = result.portfolio; }
+			if (result != null) {
+				myPortfolio = result.portfolio;
+			}
 			if (result == null || myPortfolio == null) {
 				this.emit(':askWithCard', "Please create a new portfolio. Check help !!!", "Please create a new portfolio. Check help !!!", this.t('SKILL_NAME'), "Please create a new portfolio. Check help !!!");
 			}
@@ -1186,7 +1538,7 @@ const handlers = {
 				// Users denies the confirmation of intent. May be value of the slots are not correct.
 				//handleIntentConfimationDenial();
 				console.log("denied");
-				this.emit(':askWithCard', "Ok. I am cancelling the portfolio update.Which coin would you like to select next ?", "The portfolio update has been cancelled. Which coin next ?", this.t('SKILL_NAME'), "The portfolio update has been cancelled now. Which coin next ?")
+				this.emit(':askWithCard', "Ok. I am cancelling the portfolio update " + getRandomValues(COIN_SELECT_MESSAGE, "MSG") + " The portfolio update has been cancelled. Which coin next ?", this.t('SKILL_NAME'), "The portfolio update has been cancelled now. Which coin next ?")
 
 			}
 		} else {
@@ -1368,14 +1720,14 @@ const handlers = {
 		dbAllCoinZ.g_UpdateInsert(gUser, {
 			uniqID: uniqID
 		}, {
-				displayName: "",
-				uniqID: uniqID,
-				curr: userCurrency
-			}).then(function () {
-				self.emit(':ask', "Default currency has been set to " + userCurrency + ".")
-			}, function (error) {
-				console.log(error)
-			})
+			displayName: "",
+			uniqID: uniqID,
+			curr: userCurrency
+		}).then(function () {
+			self.emit(':ask', "Default currency has been set to " + userCurrency + ".")
+		}, function (error) {
+			console.log(error)
+		})
 
 
 	},
@@ -1554,15 +1906,16 @@ function ResponseMessage(CoinInfo, self) {
 		largeImageUrl: CoinInfo.CoinImg
 	};
 	var sound = '<say-as interpret-as="interjection">' + CoinInfo.CoinCount + " " + CoinInfo.CoinFN + ' is </say-as><break time="0.6s"/>' + (CoinInfo.CoinCount * currencyPrice).toFixed(2) + " " + coinInfoinCurrency.TOSYMBOL + ' <emphasis level="moderate">, Which coin next ?</emphasis>'
-	//self.emit(':askWithCard', sound, "Which coin would you want to select next ?", self.t('SKILL_NAME'), content, imageObj)
-	self.response.speak(sound).listen("Which coin would you like to select next ?").cardRenderer(self.t('SKILL_NAME'), content, imageObj)
+	self.response.speak(sound).listen(getRandomValues(COIN_SELECT_MESSAGE, "MSG")).cardRenderer(self.t('SKILL_NAME'), content, imageObj)
 	self.emit(':responseReady');
 }
+
 function processBuySell() {
 
 
 
 }
+
 function removeSSML(s) {
 	return s.replace(/<\/?[^>]+(>|$)/g, "");
 };
@@ -1584,7 +1937,7 @@ function configure(request, response) {
 	var alexa = Alexa.handler(request.body, context);
 	alexa.resources = languageStrings;
 	//alexa.registerHandlers(handlers);
-	alexa.registerHandlers(newSessionHandlers, startSearchHandlers, descriptionHandlers, multipleSearchResultsHandlers);
+	alexa.registerHandlers(newSessionHandlers, searchUpdateHandlers, descriptionHandlers, multipleSearchResultsHandlers);
 	alexa.execute();
 }
 
