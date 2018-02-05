@@ -167,16 +167,16 @@ var SAMPLE_CURRENCIES = [{
 	Currency: "CNY"
 }]
 //This is the welcome message for when a user starts the skill without a specific intent.
-const WELCOME_MESSAGE = "Welcome to " + skillName + " !! \nGet crypto currency values and  manage portfolios . For example, " + getGenericHelpMessage(data);
+var WELCOME_MESSAGE = "Welcome to " + skillName + " !! \nGet crypto currency values and  manage portfolios . For example, " + getGenericHelpMessage(data);
 
 //This is the message a user will hear when they ask Alexa for help in your skill.
-const HELP_MESSAGE = "I can help you find the value of a crypto coin or manage your portfolio.";
+var HELP_MESSAGE = "I can help you find the value of a crypto coin or manage your portfolio.";
 
 //This is the message a user will hear when they begin a new search
-const NEW_SEARCH_MESSAGE = getGenericHelpMessage(data);
+var NEW_SEARCH_MESSAGE = getGenericHelpMessage(data);
 
 //This is the message a user will hear when they ask Alexa for help while in the SEARCH state
-const SEARCH_STATE_HELP_MESSAGE = getGenericHelpMessage(data);
+var SEARCH_STATE_HELP_MESSAGE = getGenericHelpMessage(data);
 
 const DESCRIPTION_STATE_HELP_MESSAGE = "Here are some things you can say: Tell me more, or give me his or her contact info";
 
@@ -366,6 +366,11 @@ var searchUpdateHandlers = Alexa.CreateStateHandler(states.SearchUpdateMODE, {
 	}
 });
 
+
+
+function help(){
+	
+}
 
 function PortfolioHandler() {
 
@@ -912,7 +917,7 @@ var descriptionHandlers = Alexa.CreateStateHandler(states.RESULTS, {
 			this.handler.state = states.SearchUpdateMODE;
 			this.attributes.lastSearch.lastSpeech = speechOutput;
 			repromptSpeech = getRandomValues(COIN_SELECT_MESSAGE, "MSG");
-			this.response.speak(speechOutput + "<break time ='1s'/> " + repromptSpeech).listen(repromptSpeech).cardRenderer("My Portfolio Detailed View :", removeSSML(responseMessage))
+			this.response.speak(speechOutput + "<break time ='1s'/> " + repromptSpeech).listen(repromptSpeech).cardRenderer("My Portfolio Detailed View :", removeSSML(speechOutput))
 			this.emit(':responseReady')
 
 		} else {
@@ -1223,13 +1228,14 @@ function getGenericHelpMessage(data) {
 	//'You can ask me to tell value of crypto coin, or, you can say exit... What can I help you with?',
 
 	var sentences = ["ask - What's the value of " + getRandomValues(SAMPLE_COINS, "CoinName"),
-		"say - Add 1.23 " + getRandomValues(SAMPLE_COINS),
+		"say - Add 1.23 " + getRandomValues(SAMPLE_COINS, "CoinName"),
 		"say - What's my portfolio",
 		"say - Change currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency"),
 		"say - Set Currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency")
 
 	]
-	return "You can " + sentences[getRandom(0, sentences.length - 1)];
+	const randomMessage = "You can " + sentences[getRandom(0, sentences.length - 1)];
+	return randomMessage
 }
 
 
