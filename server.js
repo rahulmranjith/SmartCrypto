@@ -112,6 +112,7 @@ app.post('/', function (request, response, next) {
         actionMap.set('GoogleWelcomeContext', googleWelcomeContext)
         actionMap.set('ViewPortfolio-SelectItemAction', portfolioOptionSelect)
         actionMap.set('getCoinValueOption', getCoinValueOption)
+        actionMap.set('ViewPortfolio.FollowBuySell', ViewPortfolioFollowBuySell)
 
 
         gapp.handleRequest(actionMap);
@@ -136,18 +137,26 @@ function googleWelcomeContext() {
         dbAllCoinZ.g_UpdateInsert(gUser, {
             uniqID: uniqID
         }, {
-            displayName: userName,
-            uniqID: userID,
-            curr: "USD"
-        }).then(function () {
-            GenProc.m_sendSimpleMessage("Hello " + userName + ", Welcome to AllCryptoCoinZ!!! Say help for getting assitance or Say a coin name ")
-        }, function (error) {
-            console.log(error)
-        })
+                displayName: userName,
+                uniqID: userID,
+                curr: "USD"
+            }).then(function () {
+                GenProc.m_sendSimpleMessage("Hello " + userName + ", Welcome to AllCryptoCoinZ!!! Say help for getting assitance or Say a coin name ")
+            }, function (error) {
+                console.log(error)
+            })
         // gapp.ask("Hi " + userName + " I can already tell you the value of crypto coin. Which coin would you like to select ? ");
     } else {
         GenProc.m_sendSimpleMessage("Hello  Welcome to AllCryptoCoinZ!!! Say help for getting assitance or Say a coin name ")
     }
+}
+
+
+function ViewPortfolioFollowBuySell() {
+
+    var a;
+    a = 1;
+
 }
 
 
@@ -199,14 +208,14 @@ function ChangeCurrency() {
     dbAllCoinZ.g_UpdateInsert(gUser, {
         uniqID: uniqID
     }, {
-        displayName: displayName,
-        uniqID: uniqID,
-        curr: userCurrency
-    }).then(function () {
-        GenProc.m_sendSimpleMessage("Default currency has been set to " + userCurrency)
-    }, function (error) {
-        console.log(error)
-    })
+            displayName: displayName,
+            uniqID: uniqID,
+            curr: userCurrency
+        }).then(function () {
+            GenProc.m_sendSimpleMessage("Default currency has been set to " + userCurrency)
+        }, function (error) {
+            console.log(error)
+        })
 }
 
 function DefaultFallbackIntent() {

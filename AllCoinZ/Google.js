@@ -2,15 +2,15 @@ const Util = require('../AllCoinZ/util')
 const jsCoin = require('../AllCoinZ/jsonCoin');
 var gapp;
 
-function sendSimpleMessage(message, displayText, title,image ) {
+function sendSimpleMessage(message, displayText, title, image) {
 
     if (title == undefined) { title = "AllCryptoCoinZ" }
     if (displayText == undefined) { displayText = "" }
     var basicards = gapp.buildBasicCard(message).setTitle(title)
-    if(image==null){
+    if (image == null) {
         basicards.setImage("https://i.imgur.com/5hFARdc.jpg", "AllCryptoCoinZ")
-        .setImageDisplay("DEFAULT")
-        
+            .setImageDisplay("DEFAULT")
+
     }
     gapp.ask(gapp.buildRichResponse()
         .addSimpleResponse({
@@ -360,7 +360,7 @@ function getPortfolioData(data, myCoins) {
     mylist.title = "Portfolio Value: " + totalCurrency.toFixed(3) + " " + displayCurrency //+ "  \n" + totalBTC.toFixed(5) + " " + displayBTC
 
     if (mylist.items.length < 200) {
-        mylist.addItems(gapp.buildOptionItem("AllCryptoCoinZ", ['AllCryptoCoinZ'])
+        mylist.addItems(gapp.buildOptionItem("My Portfolio", ['My Portfolio'])
             .setTitle("[My Portfolio Value]")
             .setDescription(totalCurrency.toFixed(3) + " " + displayCurrency + " | " + totalBTC.toFixed(6) + " " + displayBTC)
             .setImage("https://i.imgur.com/yXARQuc.png", "AllCryptoCoinZ")
@@ -375,7 +375,8 @@ function getPortfolioData(data, myCoins) {
     console.log("\n*[TPV]:  " + " " + totalCurrency.toFixed(3) + " " + displayCurrency + " | " + totalBTC.toFixed(9) + " " + displayBTC)
     gapp.askWithList(gapp.buildRichResponse()
         .addSimpleResponse("<speak>" + "My Portfolio Value: " + totalCurrency.toFixed(3) + " " + displayCurrency + " equivalent to " + totalBTC.toFixed(9) + " BTC " + "</speak>")
-        .addSuggestions(Util.m_getDefaultSuggestions), mylist)
+        //.addSuggestions(Util.m_getDefaultSuggestions)
+        , mylist)
 
 
 
