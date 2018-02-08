@@ -23,7 +23,7 @@ var alexaRouter = express.Router()
 app.use('/', alexaRouter)
 
 
-alexaRouter.use(verifier)
+//alexaRouter.use(verifier)
 
 alexaRouter.use(bodyParser.urlencoded({
     extended: true

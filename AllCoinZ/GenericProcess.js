@@ -40,7 +40,7 @@ function getDefaultFallBack() {
     }
 }
 
-function help(displayName){
+function help(displayName) {
 
     switch (Util.m_platform) {
         case "telegram":
@@ -58,7 +58,7 @@ function help(displayName){
 
 }
 
-function sendSimpleMessage(message,displayText,title) {
+function sendSimpleMessage(message, displayText, title) {
     console.log(Util.m_platform)
     switch (Util.m_platform) {
         case "telegram":
@@ -68,7 +68,7 @@ function sendSimpleMessage(message,displayText,title) {
             slack.m_sendSimpleMessage(callPayLoadFormatMessage(message));
             break;
         case "google":
-            Google.m_sendSimpleMessage("**"+message+"**",displayText,title);
+            Google.m_sendSimpleMessage(message, displayText, title);
             break;
         default:
             "Hello Welcome to AllCryptoCoinZ"
@@ -122,7 +122,7 @@ function SyncPortfolio(userInfo, gapp) {
         var updatetext = "added";
         //console.log("items" + item);
         if (item == null) {
-            updatedQuantity=newQuantity
+            updatedQuantity = newQuantity
             userInfoData = {
                 displayName: userInfo.displayName,
                 uniqID: userInfo.uniqID,
@@ -150,7 +150,9 @@ function SyncPortfolio(userInfo, gapp) {
                         updatetext = "deleted"
                         updatedQuantity = 0;
                     }
-                    if (updatedQuantity < 0) { updatedQuantity = 0; }
+                    if (updatedQuantity < 0) {
+                        updatedQuantity = 0;
+                    }
                     currentPortfolio[cryptoCoin] = updatedQuantity
                 }
                 userInfoData = {
@@ -171,8 +173,8 @@ function SyncPortfolio(userInfo, gapp) {
             }
         }
         var currentValue = newQuantity
-        if(updatedQuantity!=undefined){
-            currentValue=updatedQuantity
+        if (updatedQuantity != undefined) {
+            currentValue = updatedQuantity
         }
         dbAllCoinZ.g_UpdateInsert(gUser, {
             uniqID: userInfo.uniqID
@@ -184,8 +186,8 @@ function SyncPortfolio(userInfo, gapp) {
                     break;
                 case "google":
                     //sendSimpleMessage("**"+newQuantity + " " + cryptoCoin + "** has been " + updatetext + " !!!  \nAvailable "+cryptoCoin+" : "+ updatedQuantity,"","Portfolio Update :");
-                  
-                  sendSimpleMessage("**"+newQuantity + " " + cryptoCoin + "** has been " + updatetext + " !!!  \n*Available "+cryptoCoin+" :* **"+ currentValue+"**  \n  \n","","Portfolio Update :")
+
+                    sendSimpleMessage("**" + newQuantity + " " + cryptoCoin + "** has been " + updatetext + " !!!  \n*Available " + cryptoCoin + " :* **" + currentValue + "**  \n  \n", "", "Portfolio Update :")
                     break;
                 default:
                     "Hello Welcome to AllCoinZ"
@@ -230,7 +232,9 @@ function getPortfolio(userInfo) {
         uniqID: userInfo.uniqID
     }).then(function (result) {
         let myPortfolio;
-        if (result != null) { myPortfolio = result.portfolio; }
+        if (result != null) {
+            myPortfolio = result.portfolio;
+        }
         if (result == null || myPortfolio == null) {
             switch (Util.m_platform) {
                 case "telegram", "slack", "skype":
@@ -244,11 +248,11 @@ function getPortfolio(userInfo) {
             }
         }
         Util.m_myCurrency = result.curr;
-        if (myPortfolio == null) { } else {
+        if (myPortfolio == null) {} else {
             //console.log(JSON.parse(myPortfolio));
             deferred.resolve(JSON.parse(myPortfolio), result.curr);
         }
-    }, function (error) { })
+    }, function (error) {})
     return deferred.promise;
 }
 
@@ -343,6 +347,6 @@ module.exports = {
     m_getTotalPortfolioValue: getTotalPortfolioValue,
     m_callPayLoadFormatMessage: callPayLoadFormatMessage,
     m_getDefaultFallBack: getDefaultFallBack,
-    m_help:help,
-    m_getPortFolioCoinData:getPortFolioCoinData
+    m_help: help,
+    m_getPortFolioCoinData: getPortFolioCoinData
 }
