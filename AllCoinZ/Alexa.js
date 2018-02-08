@@ -28,13 +28,9 @@ const skillName = "AllCryptoCoinZ";
 const COIN_SELECT_MESSAGE = [{
 	MSG: 'Which coin would you like to select next ?'
 }, {
-	MSG: 'Name of the coin you want to try out next'
+	MSG: 'Which coin would you like to try next'
 }, {
-	MSG: 'Which coin value you need next ?'
-}, {
-	MSG: 'Which coin you need to try next '
-}, {
-	MSG: 'Please tell me next coin name'
+	MSG: 'Which crypto coin next ?'
 }]
 
 var SAMPLE_COINS = [{
@@ -56,12 +52,12 @@ var SAMPLE_CURRENCIES = [{
 	Currency: "CNY"
 }]
 
-var WELCOME_MESSAGE = "Welcome to " + skillName + " !! \nGet crypto currency values and  manage portfolios . For example, " + getGenericHelpMessage();
+var WELCOME_MESSAGE = "Welcome to " + skillName + " !! \n <break time='1s'/>Get crypto currency values in local currencies and manage portfolios . <break time='0.4s'/>For example, " + getGenericHelpMessage() + "<break time='0.5s'/> or <break time='1s'/> Say help for available commands ";
 var HELP_MESSAGE = "I can help you find the value of a crypto coin or manage your portfolio.";
 var NEW_SEARCH_MESSAGE = getGenericHelpMessage();
 var SEARCH_STATE_HELP_MESSAGE = getGenericHelpMessage();
-const SHUTDOWN_MESSAGE = "Ok.";
-const EXIT_SKILL_MESSAGE = "Ok.";
+const SHUTDOWN_MESSAGE = "Ok. Thank you for using " + skillName + " Wish you a good day ";
+const EXIT_SKILL_MESSAGE = "Ok. Thank you for using " + skillName + " Wish you a good day "
 
 
 const states = {
@@ -137,9 +133,22 @@ const newSessionHandlers = {
 		this.response.speak(output).listen(output);
 		this.emit(':responseReady');
 	},
-	"AMAZON.HelpIntent": function () {
-		this.response.speak(HELP_MESSAGE + getGenericHelpMessage()).listen(getGenericHelpMessage());
-		this.emit(':responseReady');
+	'AMAZON.HelpIntent': function () {
+		const imageObj = {
+			smallImageUrl: 'https://i.imgur.com/yXARQuc.png',
+			largeImageUrl: 'https://i.imgur.com/yXARQuc.png'
+		};
+		const help = 'To change the default currency <break time ="0.2s"/> say <break time ="0.5s"/> "Set currency to USD"  ' +
+			'  \n\n  <break time ="0.4s"/>To add a coin to portfolio <break time ="0.2s"/>say  <break time ="0.5s"/> "Add 1.23 XRP"  ' +
+			'  \n\n <break time ="0.4s"/>To reduce a coin count from portfolio <break time ="0.2s"/>say <break time ="0.5s"/> "Deduct 0.23 BCH"  ' +
+			'  \n\n  <break time ="0.4s"/>To delete a coin from portfolio <break time ="0.2s"/>say <break time ="0.5s"/>  "Delete 2 XRP"  ' +
+			'  \n\n  <break time ="0.4s"/>To get the portfolio <break time ="0.2s"/> ask <break time ="0.5s"/> What\'s my portfolio?  '
+
+		const speechOutput = this.t('LAUNCH_MESSAGE');
+		const repromptOutput = "Please say a coin name or say help"
+
+		this.emit(':askWithCard', help, repromptOutput, this.t('SKILL_NAME'), removeSSML(help), imageObj)
+		//this.emit(':askWithCard', help, repromptOutput, this.t('SKILL_NAME'), removeSSML(speechOutput));
 	},
 	"SessionEndedRequest": function () {
 		this.emit("AMAZON.StopIntent");
@@ -205,9 +214,22 @@ var searchUpdateHandlers = Alexa.CreateStateHandler(states.SearchUpdateMODE, {
 		this.handler.state = states.RESULTS;
 		this.emitWithState("TellMeMoreIntent");
 	},
-	"AMAZON.HelpIntent": function () {
-		this.response.speak(getGenericHelpMessage()).listen(getGenericHelpMessage());
-		this.emit(':responseReady');
+	'AMAZON.HelpIntent': function () {
+		const imageObj = {
+			smallImageUrl: 'https://i.imgur.com/yXARQuc.png',
+			largeImageUrl: 'https://i.imgur.com/yXARQuc.png'
+		};
+		const help = 'To change the default currency <break time ="0.2s"/> say <break time ="0.5s"/> "Set currency to USD"  ' +
+			'  \n\n  <break time ="0.4s"/>To add a coin to portfolio <break time ="0.2s"/>say  <break time ="0.5s"/> "Add 1.23 XRP"  ' +
+			'  \n\n <break time ="0.4s"/>To reduce a coin count from portfolio <break time ="0.2s"/>say <break time ="0.5s"/> "Deduct 0.23 BCH"  ' +
+			'  \n\n  <break time ="0.4s"/>To delete a coin from portfolio <break time ="0.2s"/>say <break time ="0.5s"/>  "Delete 2 XRP"  ' +
+			'  \n\n  <break time ="0.4s"/>To get the portfolio <break time ="0.2s"/> ask <break time ="0.5s"/> What\'s my portfolio?  '
+
+		const speechOutput = this.t('LAUNCH_MESSAGE');
+		const repromptOutput = "Please say a coin name or say help"
+
+		this.emit(':askWithCard', help, repromptOutput, this.t('SKILL_NAME'), removeSSML(help), imageObj)
+		//this.emit(':askWithCard', help, repromptOutput, this.t('SKILL_NAME'), removeSSML(speechOutput));
 	},
 	"AMAZON.StopIntent": function () {
 		this.response.speak(EXIT_SKILL_MESSAGE);
@@ -246,7 +268,7 @@ function PortfolioHandler() {
 			myPortfolio = result.portfolio;
 		}
 		if (result == null || myPortfolio == null) {
-			this.emit(':askWithCard', "Please create a new portfolio. Check help !!!", "Please create a new portfolio. Check help !!!", this.t('SKILL_NAME'), "Please create a new portfolio. Check help !!!");
+			self.emit(':askWithCard', "Please create a new portfolio. Check help for commands !!!", "Please create a new portfolio. Check help !!!", self.t('SKILL_NAME'), "Please create a new portfolio. Check help for commands !!!");
 		}
 		if (result.curr == null) {
 			Util.m_myCurrency == "INR"
@@ -315,6 +337,7 @@ function PortfolioHandler() {
 				TotalDetails: TotalDetails
 			}
 			self.attributes.lastSearch.lastIntent = "PortfolioIntent";
+			self.attributes.lastSearch.lastIntentStatus = "PortfolioIntentPending"
 			self.emitWithState("TellPortfolioIntent");
 
 			//console.log("\n*[TPV]:  " + " " + totalCurrency.toFixed(3) + " " + displayCurrency + " | " + totalBTC.toFixed(9) + " " + displayBTC)
@@ -326,90 +349,49 @@ function PortfolioHandler() {
 	})
 }
 
+const availablecurrencies = ['TRY', 'KRW', 'SGD', 'VND', 'INR', 'RSD', 'QAR', 'JMD', 'UAH', 'TZS', 'RUB', 'BHD', 'SEK', 'UYU', 'IRR', 'USD', 'NZD', 'BAM', 'TOP', 'JPY', 'BYR', 'TWD', 'HRK', 'ILS', 'GBP', 'HNL', 'PLN', 'XAF', 'GHS', 'CZK', 'CUC', 'ETB', 'NGN', 'SZL', 'LKR', 'CHF', 'BBD', 'DOP', 'NAD', 'EUR', 'KHR', 'SBD', 'MZN', 'HKD', 'ARS', 'PEN', 'MWK', 'LBP', 'MOP', 'JPY', 'RWF', 'CLP', 'PYG', 'BTN', 'MGA', 'MAD', 'PGK', 'KGS', 'HUF', 'SVC', 'USD', 'MVR', 'MMK', 'GIP', 'AED', 'CHF', 'CAD', 'MXN', 'AUD', 'BGN', 'LSL', 'THB', 'NPR', 'ISK', 'RON', 'PKR', 'TTD', 'DZD', 'PHP', 'PAB', 'BIF', 'NOK', 'MYR', 'MUR', 'NIO', 'VUV', 'GTQ', 'EUR', 'CRC', 'OMR', 'UGX', 'AZN', 'EGP']
+
+function isInArray(value, array) {
+	return array.indexOf(value) > -1;
+}
+
 function ChangeCurrencyIntentHandler() {
 	var userCurrency = isSlotValid(this.event.request, "myCurrency");
 	const uniqID = this.event.context.System.user.userId;
 
 	var self = this;
+
+
+
 	if (userCurrency == false) {
 		this.emit(':ask', 'Currency could not be identified.No changes are made.')
 		return;
 	}
 	userCurrency = userCurrency.toUpperCase();
+	isValidCurrency = isInArray(userCurrency, availablecurrencies)
+	if (isValidCurrency == false) {
+
+		this.emit(':ask', 'Currency could not be identified. <break time ="0.5s"/> Please say currencies short name like <break time ="0.4s"/><say-as interpret-as="characters">USD</say-as> <break time ="0.2s"/>or <break time ="0.4s"/><say-as interpret-as="characters">EUR</say-as> <break time ="0.2s"/>or <break time ="0.4s"/><say-as interpret-as="characters">INR</say-as> <break time ="0.2s"/>or <break time ="0.4s"/><say-as interpret-as="characters">AUD</say-as> ')
+		return;
+	}
+
 	dbAllCoinZ.g_UpdateInsert(gUser, {
 		uniqID: uniqID
 	}, {
-			displayName: "",
-			uniqID: uniqID,
-			curr: userCurrency
-		}).then(function () {
-			var lastSearch = self.attributes.lastSearch = "Default currency has been set to " + userCurrency + "."
-			self.attributes.lastSearch.lastIntent = "TellChangeCurrencyIntent";
-			self.emitWithState("TellChangeCurrencyIntent");
+		displayName: "",
+		uniqID: uniqID,
+		curr: userCurrency
+	}).then(function () {
+		var lastSearch = self.attributes.lastSearch = "Default currency has been set to " + userCurrency + "."
+		self.attributes.lastSearch.lastIntent = "TellChangeCurrencyIntent";
+		self.emitWithState("TellChangeCurrencyIntent");
 
-		}, function (error) {
-			console.log(error)
-		})
+	}, function (error) {
+		console.log(error)
+	})
 }
 
 
-function confirmPortfolioUpdate() {
-	var cryptoCoinValue = isSlotValid(this.event.request, "Coins");
-	var inputcountSlotValue = isSlotValid(this.event.request, "Count");
-	var decimalSlotValue = isSlotValid(this.event.request, "Decimal");
-	var buySellSlotValue = isSlotValid(this.event.request, "BuySell");
-
-	var slotsFilled = cryptoCoinValue && inputcountSlotValue && buySellSlotValue
-	if (slotsFilled != false) {
-		if (cryptoCoinValue == false) {
-			return self.emit(':askWithCard', "Coin cannot be identified .Please try again.", "Coin cannot be identified .Please try again.", this.t('SKILL_NAME'), "Coin cannot be identified .Please try again.")
-		} else {
-			var coinShortName = jsCoin.m_findCoin(cryptoCoinValue.toUpperCase());
-			if (coinShortName != undefined && coinShortName != null) {
-				if (coinShortName.length > 0) {
-					cryptoCoinValue = coinShortName[0].n.toUpperCase()
-				};
-			}
-		}
-		if (inputcountSlotValue != false) {
-			inputcountSlotValue = parseInt(inputcountSlotValue);
-			if (isNaN(inputcountSlotValue)) {
-				inputcountSlotValue = 0;
-			}
-		}
-		if (decimalSlotValue != false) {
-			decimalSlotValue = parseInt(decimalSlotValue);
-			if (isNaN(decimalSlotValue)) {
-				decimalSlotValue = 0;
-			} else {
-				decimalSlotValue = '.' + decimalSlotValue
-			}
-		}
-
-		inputcountSlotValue = +inputcountSlotValue + +decimalSlotValue;
-		var buysell = buySellSlotValue.toUpperCase();
-
-		if (buysell.indexOf('DEL') > -1) {
-			inputcountSlotValue = "";
-		}
-		const speechOutput = 'You would like to ' + buysell + ' ' + inputcountSlotValue + ' ' +
-			cryptoCoinValue.toUpperCase() + ', is that correct?';
-
-		var lastSearch = this.attributes.lastSearch = {
-			speechOutput: this.event.request,
-		}
-
-		this.attributes.lastSearch.lastIntent = "UpdateCoinByCountIntent";
-		this.attributes.lastSearch.lastIntentStatus = "UpdateCoinByCountIntentPending"
-
-
-		this.response.speak(speechOutput).listen(speechOutput);
-		this.handler.state = states.RESULTS;
-		this.emit(':responseReady');
-
-
-	}
-}
 
 function UpdateCoinByCountIntentHandler() {
 	var cryptoCoinValue = isSlotValid(this.attributes.lastSearch.speechOutput, "Coins");
@@ -467,7 +449,7 @@ function UpdateCoinByCountIntentHandler() {
 			break;
 		case "SELL":
 		case "S":
-		case "DEDUCT[-]":
+		case "REDUCE":
 		case "DEDUCT":
 			userRequestedOption = "DEDUCT";
 			break;
@@ -543,7 +525,7 @@ function UpdateCoinByCountIntentHandler() {
 
 			var responseMessage = inputcountSlotValue + " " + cryptoCoinValue.toUpperCase() + " has been " + updatetext + " !!!\nAvailable " + cryptoCoinValue.toUpperCase() + " : " + currentValue;;
 			self.handler.state = states.SearchUpdateMODE;
-			self.attributes.lastSearch = {}//.lastSpeech = responseMessage;
+			self.attributes.lastSearch = {} //.lastSpeech = responseMessage;
 			var repromptSpeech = getRandomValues(COIN_SELECT_MESSAGE, "MSG");
 
 			self.response.speak(responseMessage).listen(repromptSpeech).cardRenderer("Portfolio Update :", responseMessage)
@@ -556,14 +538,103 @@ function UpdateCoinByCountIntentHandler() {
 
 }
 
+function confirmPortfolioUpdate() {
+	var cryptoCoinValue = isSlotValid(this.event.request, "Coins");
+	var inputcountSlotValue = isSlotValid(this.event.request, "Count");
+	var decimalSlotValue = isSlotValid(this.event.request, "Decimal");
+	var buySellSlotValue = isSlotValid(this.event.request, "BuySell");
+
+
+
+	var slotsFilled = cryptoCoinValue && inputcountSlotValue && buySellSlotValue
+	if (slotsFilled != false) {
+		if (cryptoCoinValue == false) {
+			return self.emit(':askWithCard', "Coin cannot be identified .Please try again.", "Coin cannot be identified .Please try again.", this.t('SKILL_NAME'), "Coin cannot be identified .Please try again.")
+		} else {
+			var coinShortName = jsCoin.m_findCoin(cryptoCoinValue.toUpperCase());
+			if (coinShortName != undefined && coinShortName != null) {
+				if (coinShortName.length > 0) {
+					cryptoCoinValue = coinShortName[0].n.toUpperCase()
+				};
+			}
+		}
+		if (inputcountSlotValue != false) {
+			inputcountSlotValue = parseInt(inputcountSlotValue);
+			if (isNaN(inputcountSlotValue)) {
+				inputcountSlotValue = 0;
+			}
+		}
+		if (decimalSlotValue != false) {
+			decimalSlotValue = parseInt(decimalSlotValue);
+			if (isNaN(decimalSlotValue)) {
+				decimalSlotValue = 0;
+			} else {
+				decimalSlotValue = '.' + decimalSlotValue
+			}
+		}
+
+		inputcountSlotValue = +inputcountSlotValue + +decimalSlotValue;
+		var buysell = buySellSlotValue.toUpperCase();
+
+		if (buysell.indexOf('DEL') > -1) {
+			inputcountSlotValue = "";
+		}
+		const speechOutput = 'You would like to ' + buysell + ' ' + inputcountSlotValue + ' ' +
+			cryptoCoinValue.toUpperCase() + ', is that correct?';
+
+		var lastSearch = this.attributes.lastSearch = {
+			speechOutput: this.event.request,
+		}
+
+		this.attributes.lastSearch.lastIntent = "UpdateCoinByCountIntent";
+		this.attributes.lastSearch.lastIntentStatus = "UpdateCoinByCountIntentPending"
+
+
+		this.response.speak(speechOutput).listen(speechOutput);
+		this.handler.state = states.RESULTS;
+		this.emit(':responseReady');
+
+
+	} else {
+
+		if (buySellSlotValue != false) {
+			speechOutput = "You can say <break time ='0.5s'/><emphasis level='moderate'>" + buySellSlotValue + " 10 BITCOIN </emphasis><break time ='0.5s'/> or <break time ='0.5s'/><emphasis level='moderate'>" + buySellSlotValue + " 10 Ripple </emphasis><break time ='0.5s'/> or <break time ='0.5s'/> say cancel "
+
+		} else {
+			speechOutput = "Unknown command.<break time ='1s'/> Please try with the available commands or say a valid coin name."
+		}
+		this.handler.state = states.SearchUpdateMODE;
+		this.response.speak(speechOutput).listen(speechOutput);
+
+		this.emit(':responseReady');
+	}
+}
+
+
+function repeatSlot() {
+
+
+
+}
+
 function GetCoinValueByCountIntentHandler() {
 
 	if (this.attributes.lastSearch != undefined) {
 		if (this.attributes.lastSearch.lastIntentStatus != undefined) {
-			if (this.attributes.lastSearch.lastIntentStatus = "UpdateCoinByCountIntentPending") {
+			if (this.attributes.lastSearch.lastIntentStatus.toUpperCase() == "UpdateCoinByCountIntentPending") {
+				this.attributes.lastSearch.lastIntentStatus = ""
 				UpdateCoinByCountIntentHandler.call(this);
 				return;
 			}
+			if (this.attributes.lastSearch.lastIntentStatus.toUpperCase() == "PORTFOLIOINTENTPENDING") {
+				this.attributes.lastSearch.lastIntentStatus = ""
+				this.handler.state = states.RESULTS;
+				this.emitWithState("TellMeMoreIntent")
+
+			}
+
+
+
 		}
 	}
 
@@ -578,9 +649,13 @@ function GetCoinValueByCountIntentHandler() {
 	var inputcount;
 	var decimal;
 
-	if (cryptoCoin == false) {
-		var output = "Coin cannot be identified .Please try again."
+	if (cryptoCoin != false) {
+		cryptoCoin = jsCoin.m_findCoin(cryptoCoin.toUpperCase());
+	}
+	if (cryptoCoin == false || cryptoCoin == undefined) {
+		var output = "Coin cannot be identified Please try again."
 		this.response.speak(output).listen(output);
+		return this.emit(':responseReady');
 		//return self.emit(':askWithCard', "Coin cannot be identified .Please try again.", "Coin cannot be identified .Please try again.", this.t('SKILL_NAME'), "Coin cannot be identified .Please try again.")
 	}
 	if (inputcount == false) {
@@ -603,20 +678,42 @@ function GetCoinValueByCountIntentHandler() {
 		var oCoin;
 		oCoin = Util.m_getCoinObject({
 			count: count,
-			CryptoCoin: cryptoCoin
+			CryptoCoin: cryptoCoin,
+			found: true
 		});
 		oCoin.then(function (coinResult) {
 			var result = [];
 			result.push(coinResult)
 			var lastSearch = self.attributes.lastSearch = {
-				results: result
+				//results: result
 			};
 			var output;
 
-			//saving last intent to session attributes
-			self.attributes.lastSearch.lastIntent = "GetCoinValueByCountIntent";
-			self.emitWithState("TellCoinValueIntent");
-			//ResponseMessage(coinResult, self)
+
+			//self.attributes.lastSearch.lastIntent = "GetCoinValueByCountIntent";
+			//self.emitWithState("TellCoinValueIntent");
+
+
+
+
+			var CoinInfo = coinResult;
+
+			var speechOutput;
+			var repromptSpeech;
+			var cardContent;
+
+			cardContent = generateCoinCard(CoinInfo)
+			speechOutput = generateCoinMessage(CoinInfo)
+			repromptSpeech = "Would you like to selet another coin ? Say yes or no";
+			self.handler.state = states.SearchUpdateMODE;
+			self.attributes.lastSearch.lastSpeech = speechOutput;
+			self.response.cardRenderer(cardContent.title, cardContent.body, cardContent.image);
+			self.response.speak(speechOutput).listen(repromptSpeech);
+			self.emit(':responseReady');
+
+
+
+
 
 		}).catch(function (err) {
 			console.log("m_getCurrency method failed" + err)
@@ -688,17 +785,16 @@ var descriptionHandlers = Alexa.CreateStateHandler(states.RESULTS, {
 
 	"TellCoinUpdateIntent": function () {
 
-		var responseMessage = this.attributes.lastSearch;
-		this.handler.state = states.SearchUpdateMODE;
-		this.attributes.lastSearch.lastSpeech = responseMessage;
-		var repromptSpeech = getRandomValues(COIN_SELECT_MESSAGE, "MSG");
-		this.response.speak(responseMessage).listen(repromptSpeech).cardRenderer("Portfolio Update :", responseMessage)
-		this.emit(':responseReady');
-	}
+			var responseMessage = this.attributes.lastSearch;
+			this.handler.state = states.SearchUpdateMODE;
+			this.attributes.lastSearch.lastSpeech = responseMessage;
+			var repromptSpeech = getRandomValues(COIN_SELECT_MESSAGE, "MSG");
+			this.response.speak(responseMessage).listen(repromptSpeech).cardRenderer("Portfolio Update :", responseMessage)
+			this.emit(':responseReady');
+		}
 
-	,
+		,
 	"TellCoinValueIntent": function () {
-
 		var CoinInfo = this.attributes.lastSearch.results[0];
 		var infoType = isSlotValid(this.event.request, "infoType");
 		var speechOutput;
@@ -718,10 +814,22 @@ var descriptionHandlers = Alexa.CreateStateHandler(states.RESULTS, {
 		GetCoinValueByCountIntentHandler.call(this);
 	},
 
-	"AMAZON.HelpIntent": function () {
-		var person = this.attributes.lastSearch.results[0];
-		this.response.speak(generateNextPromptMessage(person, "current")).listen(generateNextPromptMessage(person, "current"));
-		this.emit(':responseReady');
+	'AMAZON.HelpIntent': function () {
+		const imageObj = {
+			smallImageUrl: 'https://i.imgur.com/yXARQuc.png',
+			largeImageUrl: 'https://i.imgur.com/yXARQuc.png'
+		};
+		const help = 'To change the default currency <break time ="0.2s"/> say <break time ="0.5s"/> "Set currency to USD"  ' +
+			'  \n\n  <break time ="0.4s"/>To add a coin to portfolio <break time ="0.2s"/>say  <break time ="0.5s"/> "Add 1.23 XRP"  ' +
+			'  \n\n <break time ="0.4s"/>To reduce a coin count from portfolio <break time ="0.2s"/>say <break time ="0.5s"/> "Deduct 0.23 BCH"  ' +
+			'  \n\n  <break time ="0.4s"/>To delete a coin from portfolio <break time ="0.2s"/>say <break time ="0.5s"/>  "Delete 2 XRP"  ' +
+			'  \n\n  <break time ="0.4s"/>To get the portfolio <break time ="0.2s"/> ask <break time ="0.5s"/> What\'s my portfolio?  '
+
+		const speechOutput = this.t('LAUNCH_MESSAGE');
+		const repromptOutput = "Please say a coin name or say help"
+
+		this.emit(':askWithCard', help, repromptOutput, this.t('SKILL_NAME'), removeSSML(help), imageObj)
+		//this.emit(':askWithCard', help, repromptOutput, this.t('SKILL_NAME'), removeSSML(speechOutput));
 	},
 	"AMAZON.StopIntent": function () {
 		this.response.speak(EXIT_SKILL_MESSAGE);
@@ -809,10 +917,10 @@ function getGenericHelpMessage() {
 	//'You can ask me to tell value of crypto coin, or, you can say exit... What can I help you with?',
 
 	var sentences = ["ask - What's the value of " + getRandomValues(SAMPLE_COINS, "CoinName"),
-	"say - Add 1.23 " + getRandomValues(SAMPLE_COINS, "CoinName"),
+		"say - Add 1.23 " + getRandomValues(SAMPLE_COINS, "CoinName"),
 		"say - What's my portfolio",
-	"say - Change currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency"),
-	"say - Set Currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency")
+		"say - Change currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency"),
+		"say - Set Currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency")
 
 	]
 	const randomMessage = "You can " + sentences[getRandom(0, sentences.length - 1)];
@@ -822,7 +930,7 @@ function getGenericHelpMessage() {
 
 function getRandomValues(arrayOfStrings, itemName) {
 	var randomNumber = getRandom(0, arrayOfStrings.length - 1);
-	return arrayOfStrings[randomNumber][itemName];
+	return "<break time='0.6s'/>" + arrayOfStrings[randomNumber][itemName];
 }
 
 function getRandom(min, max) {
@@ -851,6 +959,7 @@ function isSlotValid(request, slotName) {
 function removeSSML(s) {
 	return s.replace(/<\/?[^>]+(>|$)/g, "");
 };
+
 function configure(request, response) {
 
 	//amazon alexa context
@@ -870,128 +979,6 @@ function configure(request, response) {
 	alexa.registerHandlers(newSessionHandlers, searchUpdateHandlers, descriptionHandlers);
 	alexa.execute();
 }
-
-/////old
-const handlers = {
-	'LaunchRequest': function () {
-		const speechOutput = this.t('LAUNCH_MESSAGE');
-		const repromptOutput = this.t('LAUNCH_MESSAGE_REPROMPT');
-		this.emit(':askWithCard', speechOutput, repromptOutput, this.t('SKILL_NAME'), removeSSML(speechOutput));
-
-	},
-	'DefaultWelcomeIntent': function () {
-		const speechOutput = this.t('LAUNCH_MESSAGE');
-		const repromptOutput = this.t('LAUNCH_MESSAGE_REPROMPT');
-		this.emit(':askWithCard', speechOutput, repromptOutput, this.t('SKILL_NAME'), removeSSML(speechOutput));
-
-	},
-	'ViewPortfolio': function () {
-		var self = this;
-		const uniqID = this.event.context.System.user.userId
-		dbAllCoinZ.g_getRecord(gUser, {
-			uniqID: uniqID
-		}).then(function (result) {
-			let myPortfolio;
-			if (result != null) {
-				myPortfolio = result.portfolio;
-			}
-			if (result == null || myPortfolio == null) {
-				this.emit(':askWithCard', "Please create a new portfolio. Check help !!!", "Please create a new portfolio. Check help !!!", this.t('SKILL_NAME'), "Please create a new portfolio. Check help !!!");
-			}
-			if (result.curr == null) {
-				Util.m_myCurrency == "INR"
-			} else {
-				Util.m_myCurrency = result.curr;
-			}
-			var jsonPortfolioParse = JSON.parse(myPortfolio)
-			var oPortFolioLatestData = GenProc.m_getPortFolioCoinData(jsonPortfolioParse, Util.m_myCurrency)
-			oPortFolioLatestData.then(function (myportFolioData) {
-				console.log('total')
-
-				var myCoins = jsonPortfolioParse;
-				var currency = Util.m_myCurrency
-				var op = "";
-
-				var priceinBTC = 0;
-				var priceinCurrency = 0;
-				var totalBTC = 0;
-				var totalCurrency = 0;
-				var displayCurrency;
-				var displayBTC;
-
-				var BaseLinkUrl = "https://www.cryptocompare.com";
-				var cryptoCoin = "";
-				var link;
-				var ilink
-				var description;
-				for (const coin of Object.keys(myCoins)) {
-
-					if (myCoins[coin] <= 0) {
-						continue
-					}
-					cryptoCoin = jsCoin.m_findCoin(coin.toUpperCase());;
-
-
-					link = BaseLinkUrl + cryptoCoin[0].u;
-					ilink = BaseLinkUrl + cryptoCoin[0].iu;
-
-
-					priceinBTC = (myportFolioData.RAW[coin]["BTC"].PRICE * myCoins[coin]).toFixed(9)
-					priceinCurrency = (myportFolioData.RAW[coin][currency].PRICE * myCoins[coin]).toFixed(2)
-					//description = priceinCurrency + "" + myportFolioData.DISPLAY[coin][currency].TOSYMBOL + " |" + " " + priceinBTC + "" + myportFolioData.DISPLAY[coin]["BTC"].TOSYMBOL
-
-					op = op + "<break time='1s'/>" + (+myCoins[coin]).toFixed(3) + " <say-as interpret-as='characters'>" + coin + "</say-as> is " + priceinCurrency + myportFolioData.DISPLAY[coin][currency].TOSYMBOL + "\n"
-
-
-					displayCurrency = myportFolioData.DISPLAY[coin][currency].TOSYMBOL
-					displayBTC = myportFolioData.DISPLAY[coin]["BTC"].TOSYMBOL
-
-					totalBTC = +totalBTC + +priceinBTC
-					totalCurrency = +totalCurrency + +priceinCurrency
-				}
-				const imageObj = {
-					smallImageUrl: 'https://i.imgur.com/yXARQuc.png',
-					largeImageUrl: 'https://i.imgur.com/yXARQuc.png'
-				};
-				if (cryptoCoin == '') {
-					return sendPortfolioUpdate("Please create a new portfolio. Check help !!!");
-				}
-
-				var title = "Total Portfolio Value: " + totalCurrency.toFixed(3) + " " + displayCurrency + " equivalent to " + totalBTC.toFixed(5) + " " + displayBTC + "\n\n"
-				title = title + op;
-
-				self.emit(':askWithCard', title, title, "Portfolio Value:", removeSSML(title), imageObj)
-
-				//console.log("\n*[TPV]:  " + " " + totalCurrency.toFixed(3) + " " + displayCurrency + " | " + totalBTC.toFixed(9) + " " + displayBTC)
-
-			}).catch(function (err) {
-				return deferred.reject(false);
-			})
-
-		})
-
-
-	},
-
-	'AMAZON.HelpIntent': function () {
-		const imageObj = {
-			smallImageUrl: 'https://i.imgur.com/yXARQuc.png',
-			largeImageUrl: 'https://i.imgur.com/yXARQuc.png'
-		};
-		const help = 'To change the default currency say "Set currency to USD"  ' +
-			'  \n\n  To add a coin to portfolio say  "Add 1.23 XRP"  ' +
-			'  \n\n To reduce a coin count from portfolio say "Deduct 0.23 BCH"  ' +
-			'  \n\n  To delete a coin from portfolio say  "Delete XRP"  ' +
-			'  \n\n  To get the portfolio askWhat\'s my portfolio?  '
-
-		const speechOutput = this.t('LAUNCH_MESSAGE');
-		const repromptOutput = "Please say a coin name or say help"
-
-		this.emit(':askWithCard', help, repromptOutput, this.t('SKILL_NAME'), help, imageObj)
-		//this.emit(':askWithCard', help, repromptOutput, this.t('SKILL_NAME'), removeSSML(speechOutput));
-
-	},
-};
 
 
 module.exports = {

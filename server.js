@@ -14,16 +14,24 @@ const telegramPush = require('./AllCoinZ/push')
 const fetchCoin = require('./AllCoinZ/fetchCoin');
 const Google = require('./AllCoinZ/Google')
 const Alexa = require('./AllCoinZ/Alexa')
-
+const verifier = require('alexa-verifier-middleware')
 var gUser = dbAllCoinZ.g_User;
 
+const app = express();
+
+var alexaRouter = express.Router()
+app.use('/', alexaRouter)
 
 
-const server = express();
-server.use(bodyParser.urlencoded({
+alexaRouter.use(verifier)
+
+alexaRouter.use(bodyParser.urlencoded({
     extended: true
 }));
-server.use(bodyParser.json());
+
+alexaRouter.use(bodyParser.json());
+
+
 
 let uniqID;
 let displayName;
@@ -39,11 +47,11 @@ var hanlders = Alexa.handlers
 var languageStrings = Alexa.languageStrings
 
 
-server.post('/', function (request, response, next) {
+app.post('/', function (request, response, next) {
 
 
     //console.log(request)
-    //console.log(JSON.stringify(request.body))
+    console.log(JSON.stringify(request.body))
 
     var reqsession = request.body.session
     if (reqsession != undefined) {
@@ -167,7 +175,7 @@ function DefaultWelcomeIntent() {
         }).then(function (data) {
             if (data == null) {
                 if (!gapp.isPermissionGranted()) {
-                    return gapp.askForPermission('To address you by name and for saving portfolio ', gapp.SupportedPermissions.NAME);
+                    return gapp.askForPermission('To address you by name and for saving portfolio details', gapp.SupportedPermissions.NAME);
                 }
             } else {
                 GenProc.m_sendSimpleMessage("Hello **" + data.displayName + "**,  \nWelcome to AllCryptoCoinZ!!!  \n  \n*Say a coin name* ")
@@ -229,7 +237,7 @@ function getCoinValue(coinObject, external) {
         if (external != true) {
             oCoin = Util.m_getCoinObject({
                 count: count,
-                CryptoCoin: gapp.getArgument("CryptoCoin")[0]
+                CryptoCoin: gapp.getArgument("CryptoCoin")
             })
         } else {
 
@@ -275,7 +283,7 @@ function TotalPortfolioValue() {
     // })
 }
 
-server.listen((process.env.PORT || 8000), function () {
+app.listen((process.env.PORT || 8000), function () {
     //console.log("Server is up and running... ");
 
     fetchCoin.m_updateCoins("update").then(function (success) {
@@ -285,7 +293,7 @@ server.listen((process.env.PORT || 8000), function () {
         console.log(error)
     })
 });
-server.get('/users/:secret?', (req, res) => {
+app.get('/users/:secret?', (req, res) => {
 
     if (req.params.secret == "rmr999") {
         Util.m_getUsers().then(function (useritem) {
@@ -298,7 +306,7 @@ server.get('/users/:secret?', (req, res) => {
     }
 });
 
-server.get('/users/del/:key?/:secret?', (req, res) => {
+app.get('/users/del/:key?/:secret?', (req, res) => {
 
     if (req.params.secret == "rmr999") {
         Util.m_deleteUser(req.params.key).then(function (useritem) {
@@ -311,12 +319,12 @@ server.get('/users/del/:key?/:secret?', (req, res) => {
     }
 });
 
-server.get('/rahulmr', (req, res) => {
+app.get('/rahulmr', (req, res) => {
     res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n' + new Date()).end();
 });
 
 
-server.get('/updateCoins/:optype?', (req, res) => {
+app.get('/updateCoins/:optype?', (req, res) => {
     var optype = "";
     optype = req.params.optype
 
@@ -330,7 +338,7 @@ server.get('/updateCoins/:optype?', (req, res) => {
         res.status(400).send(error)
     })
 });
-server.get('/users/:secret?', (req, res) => {
+app.get('/users/:secret?', (req, res) => {
 
     if (req.params.secret == "rmr999") {
         Util.m_getUsers().then(function (useritem) {
@@ -344,7 +352,7 @@ server.get('/users/:secret?', (req, res) => {
         res.status(400).send("Check the request")
     }
 });
-server.get('/cv/:coin?', (req, res) => {
+app.get('/cv/:coin?', (req, res) => {
 
     if (req.params.coin != "") {
 
@@ -375,12 +383,12 @@ server.get('/cv/:coin?', (req, res) => {
 
 
 });
-server.get('/rahulmr', (req, res) => {
+app.get('/rahulmr', (req, res) => {
     res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n' + new Date()).end();
 });
 
 
-server.get('/updateCoins/:optype?', (req, res) => {
+app.get('/updateCoins/:optype?', (req, res) => {
     var optype = "";
     optype = req.params.optype
 

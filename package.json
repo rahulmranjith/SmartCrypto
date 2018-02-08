@@ -20,6 +20,7 @@
     "q": "^1.5.1",
     "es6-map": "^0.1.4",
     "prettyjson": "^1.2.1",
+    "alexa-verifier-middleware": "1.0.1",
     "underscore.string": "^3.3.4"
   },
   "engines": {

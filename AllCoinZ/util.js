@@ -122,8 +122,6 @@ function getCoinObject(CoinInfo) {
     var cryptoCoin;
     var speechOP = "";
 
-
-
     var deferred = Q.defer();
 
     cryptoCoin = CoinInfo.CryptoCoin;
@@ -131,13 +129,21 @@ function getCoinObject(CoinInfo) {
         myCurrency = CoinInfo.currency
     }
 
+    if (CoinInfo.found != true) {
+
+    }
+
     if (cryptoCoin == undefined || myCurrency == undefined) {
         speechOP = "Coin or Currency cannot be identified.";
 
         deferred.reject(speechOP);
     } else {
-        cryptoCoin = myCoins.m_findCoin(cryptoCoin.toUpperCase());;
 
+        if (CoinInfo.found != true) {
+            cryptoCoin = myCoins.m_findCoin(cryptoCoin.toUpperCase());;
+        } else {
+            cryptoCoin = CoinInfo.CryptoCoin
+        }
 
         var BaseLinkUrl = "https://www.cryptocompare.com";
         var link = BaseLinkUrl + cryptoCoin[0].u;
@@ -155,9 +161,6 @@ function getCoinObject(CoinInfo) {
             var JSONResponse = JSON.parse(response.body);
             var coinValue = ""
             var speechOP = ""
-
-
-
             if (coinValue != undefined) {
                 oCoin = {
                     CoinFN: cryptoCoin[0].c,
