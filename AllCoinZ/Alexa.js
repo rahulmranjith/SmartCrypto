@@ -412,17 +412,20 @@ function UpdateCoinByCountIntentHandler() {
 	var decimalSlotValue;
 	var self = this;
 
-	if (cryptoCoinValue == false) {
-		return self.emit(':askWithCard', "Coin cannot be identified .Please try again.", "Coin cannot be identified .Please try again.", this.t('SKILL_NAME'), "Coin cannot be identified .Please try again.")
+	var coinShortName = jsCoin.m_findCoin(cryptoCoinValue.toUpperCase());
+	if (coinShortName == undefined || coinShortName == null || coinShortName.length == 0) {
+		var intentRequest = '<break time ="0.5s"/> ' + getRandomValues(COIN_SELECT_MESSAGE, "MSG")
+		return this.emit(':askWithCard', "Coin cannot be identified .<break time ='0.2s'/> Try with a valid coin name  " + intentRequest, "Coin cannot be identified .<break time ='0.2s'/> Try with a valid coin name  " + intentRequest)
 	} else {
-		var coinShortName = jsCoin.m_findCoin(cryptoCoinValue.toUpperCase());
-		if (coinShortName != undefined && coinShortName != null) {
-			if (coinShortName.length > 0) {
-				cryptoCoinValue = coinShortName[0].n.toUpperCase()
-			};
-		}
+
+		cryptoCoinValue = coinShortName[0].n.toUpperCase()
 
 	}
+
+
+
+
+
 	if (inputcountSlotValue != false) {
 		inputcountSlotValue = parseInt(inputcountSlotValue);
 		if (isNaN(inputcountSlotValue)) {
@@ -563,7 +566,7 @@ function confirmPortfolioUpdate() {
 		var coinShortName = jsCoin.m_findCoin(cryptoCoinValue.toUpperCase());
 		if (coinShortName == undefined || coinShortName == null || coinShortName.length == 0) {
 			var intentRequest = '<break time ="0.5s"/> ' + getRandomValues(COIN_SELECT_MESSAGE, "MSG")
-			return this.emit(':askWithCard', "Coin cannot be identified .Please try again " + intentRequest, "Coin cannot be identified .Please try again ")
+			return this.emit(':askWithCard', "Coin cannot be identified .<break time ='0.2s'/> Try with a valid coin name  " + intentRequest, "Coin cannot be identified .<break time ='0.2s'/> Try with a valid coin name  " + intentRequest)
 		} else {
 
 			cryptoCoinValue = coinShortName[0].n.toUpperCase()
@@ -662,10 +665,10 @@ function GetCoinValueByCountIntentHandler() {
 		cryptoCoin = jsCoin.m_findCoin(cryptoCoin.toUpperCase());
 	}
 	if (cryptoCoin == false || cryptoCoin == undefined) {
-		var output = "Coin cannot be identified Please try again."
+		var output = "Coin cannot be identified <break time ='0.2s'/> Try with a valid coin name " + '<break time ="0.5s"/> ' + getRandomValues(COIN_SELECT_MESSAGE, "MSG")
 		this.response.speak(output).listen(output);
 		return this.emit(':responseReady');
-		//return self.emit(':askWithCard', "Coin cannot be identified .Please try again.", "Coin cannot be identified .Please try again.", this.t('SKILL_NAME'), "Coin cannot be identified .Please try again.")
+		//return self.emit(':askWithCard', "Coin cannot be identified .<break time ='0.2s'/> Try with a valid coin name ", "Coin cannot be identified .<break time ='0.2s'/> Try with a valid coin name ", this.t('SKILL_NAME'), "Coin cannot be identified .<break time ='0.2s'/> Try with a valid coin name ")
 	}
 	if (inputcount == false) {
 		inputcount = 1;
