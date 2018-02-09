@@ -23,7 +23,7 @@ var alexaRouter = express.Router()
 app.use('/', alexaRouter)
 
 
-//alexaRouter.use(verifier)
+alexaRouter.use(verifier)
 
 alexaRouter.use(bodyParser.urlencoded({
     extended: true
@@ -51,7 +51,7 @@ app.post('/', function (request, response, next) {
 
 
     //console.log(request)
-    console.log(JSON.stringify(request.body))
+    //console.log(JSON.stringify(request.body))
 
     var reqsession = request.body.session
     if (reqsession != undefined) {
