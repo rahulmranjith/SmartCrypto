@@ -384,20 +384,20 @@ function ChangeCurrencyIntentHandler() {
 	dbAllCoinZ.g_UpdateInsert(gUser, {
 		uniqID: uniqID
 	}, {
-		displayName: "",
-		uniqID: uniqID,
-		curr: userCurrency
-	}).then(function () {
-		var lastSearch = self.attributes.lastSearch = {
+			displayName: "",
+			uniqID: uniqID,
+			curr: userCurrency
+		}).then(function () {
+			var lastSearch = self.attributes.lastSearch = {
 
-		}
-		self.attributes.lastSearch.lastSpeech = "Default currency has been set to " + userCurrency
-		self.attributes.lastSearch.lastIntent = "TellChangeCurrencyIntent";
-		self.emitWithState("TellChangeCurrencyIntent");
+			}
+			self.attributes.lastSearch.lastSpeech = "Default currency has been set to " + userCurrency
+			self.attributes.lastSearch.lastIntent = "TellChangeCurrencyIntent";
+			self.emitWithState("TellChangeCurrencyIntent");
 
-	}, function (error) {
-		console.log(error)
-	})
+		}, function (error) {
+			console.log(error)
+		})
 }
 
 
@@ -812,15 +812,15 @@ var descriptionHandlers = Alexa.CreateStateHandler(states.RESULTS, {
 
 	"TellCoinUpdateIntent": function () {
 
-			var responseMessage = this.attributes.lastSearch;
-			this.handler.state = states.SearchUpdateMODE;
-			this.attributes.lastSearch.lastSpeech = responseMessage;
-			var repromptSpeech = getRandomValues(COIN_SELECT_MESSAGE, "MSG");
-			this.response.speak(responseMessage).listen(repromptSpeech).cardRenderer("Portfolio Update :", responseMessage)
-			this.emit(':responseReady');
-		}
+		var responseMessage = this.attributes.lastSearch;
+		this.handler.state = states.SearchUpdateMODE;
+		this.attributes.lastSearch.lastSpeech = responseMessage;
+		var repromptSpeech = getRandomValues(COIN_SELECT_MESSAGE, "MSG");
+		this.response.speak(responseMessage).listen(repromptSpeech).cardRenderer("Portfolio Update :", responseMessage)
+		this.emit(':responseReady');
+	}
 
-		,
+	,
 	"TellCoinValueIntent": function () {
 		var CoinInfo = this.attributes.lastSearch.results[0];
 		var infoType = isSlotValid(this.event.request, "infoType");
@@ -985,10 +985,10 @@ function getGenericHelpMessage() {
 	//'You can ask me to tell value of crypto coin, or, you can say exit... What can I help you with?',
 
 	var sentences = ["ask - What's the value of " + getRandomValues(SAMPLE_COINS, "CoinName"),
-		"say - Add 1.23 " + getRandomValues(SAMPLE_COINS, "CoinName"),
+	"say - Add 1.23 " + getRandomValues(SAMPLE_COINS, "CoinName"),
 		"say - What's my portfolio",
-		"say - Change currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency"),
-		"say - Set Currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency")
+	"say - Change currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency"),
+	"say - Set Currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency")
 
 	]
 	const randomMessage = "You can " + sentences[getRandom(0, sentences.length - 1)];
