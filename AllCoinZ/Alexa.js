@@ -52,7 +52,7 @@ var SAMPLE_CURRENCIES = [{
 	Currency: "CNY"
 }]
 
-var WELCOME_MESSAGE = "Welcome to " + skillName + " !! \n <break time='1s'/>Get crypto currency values in local currencies and manage portfolios . <break time='0.4s'/>For example, " + getGenericHelpMessage() + "<break time='0.5s'/> or <break time='1s'/> Say help for available commands ";
+var WELCOME_MESSAGE = "Welcome to " + skillName + " !! \n <break time='1s'/>" + getGenericHelpMessage() // 'Get crypto currency values in local currencies and manage portfolios . <break time='0.4s'/>For example, " + getGenericHelpMessage() + "<break time='0.5s'/> or <break time='1s'/> Say help for available commands ";
 var HELP_MESSAGE = "I can help you find the value of a crypto coin or manage your portfolio.";
 var NEW_SEARCH_MESSAGE = getGenericHelpMessage();
 var SEARCH_STATE_HELP_MESSAGE = getGenericHelpMessage();
@@ -271,7 +271,7 @@ function PortfolioHandler() {
 		}
 		if (result == null || myPortfolio == null) {
 			var intentRequest = '<break time ="0.5s"/> ' + "Say a coin name"
-			self.emit(':askWithCard', "Please create a new portfolio. Check help for commands <break time ='0.5s'/> or " + intentRequest, "Please create a new portfolio. Check help !!!", self.t('SKILL_NAME'), "Please create a new portfolio. Check help for commands !!!");
+			self.emit(':askWithCard', "Your portfolio is empty .Please create a new portfolio. Check help for commands <break time ='0.5s'/> or " + intentRequest, "Your portfolio is empty .Please create a new portfolio. Check help !!!", self.t('SKILL_NAME'), "Your portfolio is empty .Please create a new portfolio. Check help for commands !!!");
 		}
 		if (result.curr == null) {
 			Util.m_myCurrency == "INR"
@@ -330,7 +330,9 @@ function PortfolioHandler() {
 				largeImageUrl: 'https://i.imgur.com/yXARQuc.png'
 			};
 			if (cryptoCoin == '') {
-				return sendPortfolioUpdate("Please create a new portfolio. Check help !!!");
+				var intentRequest = '<break time ="0.5s"/> ' + " Say a coin name"
+				self.emit(':askWithCard', "Your portfolio is empty .Please create a new portfolio. Check help for commands <break time ='0.5s'/> or " + intentRequest, "Your portfolio is empty .Please create a new portfolio. Check help !!!", self.t('SKILL_NAME'), "Your portfolio is empty .Please create a new portfolio. Check help for commands !!!");
+				return //sendPortfolioUpdate("Please create a new portfolio. Check help !!!");
 			}
 
 			var summaryDetails = "Total Portfolio Value: " + totalCurrency.toFixed(3) + " " + displayCurrency + " equivalent to " + totalBTC.toFixed(5) + " " + displayBTC + "\n\n"
@@ -455,6 +457,7 @@ function UpdateCoinByCountIntentHandler() {
 			break;
 		case "REMOVE":
 		case "DELETE":
+			inputcountSlotValue = "";
 			userRequestedOption = "DELETE";
 			break;
 		case "SELL":
@@ -474,7 +477,15 @@ function UpdateCoinByCountIntentHandler() {
 	}).then(function (item) {
 		var coinQuantity;
 		var updatedQuantity
-		var updatetext = "added";
+		var updatetext = "";
+		if (userRequestedOption == "ADD") {
+			updatetext = "added"
+		} else if (userRequestedOption == "DEDUCT") {
+			updatetext = "deducted"
+		} else if (userRequestedOption == "DELETE") {
+			updatetext = "deleted"
+			updatedQuantity = 0;
+		}
 		if (item == null) {
 			updatedQuantity = inputcountSlotValue
 			userInfoData = {
@@ -494,13 +505,10 @@ function UpdateCoinByCountIntentHandler() {
 					//var updatedQuantity = 1;
 					coinQuantity = currentPortfolio[cryptoCoinValue]
 					if (userRequestedOption == "ADD") {
-						updatetext = "added"
 						updatedQuantity = +inputcountSlotValue + +coinQuantity;
 					} else if (userRequestedOption == "DEDUCT") {
-						updatetext = "deducted"
 						updatedQuantity = +coinQuantity - inputcountSlotValue;
 					} else if (userRequestedOption == "DELETE") {
-						updatetext = "deleted"
 						updatedQuantity = 0;
 					}
 					if (updatedQuantity < 0) {
@@ -528,6 +536,9 @@ function UpdateCoinByCountIntentHandler() {
 		var currentValue = inputcountSlotValue
 		if (updatedQuantity != undefined) {
 			currentValue = updatedQuantity
+		}
+		if (userRequestedOption == "DELETE") {
+			currentValue = 0;
 		}
 		dbAllCoinZ.g_UpdateInsert(gUser, {
 			uniqID: uniqID
@@ -559,8 +570,8 @@ function confirmPortfolioUpdate() {
 
 
 	var slotsFilled = cryptoCoinValue && inputcountSlotValue && buySellSlotValue
-	if (buySellSlotValue != false && (buySellSlotValue.toUpperCase() == "REMOVE" || buySellSlotValue.toUpperCase() == "DELETE")) {
-		buySellSlotValue = true;
+	if (buySellSlotValue != false && cryptoCoinValue != false && (buySellSlotValue.toUpperCase() == "REMOVE" || buySellSlotValue.toUpperCase() == "DELETE")) {
+		slotsFilled = true;
 	}
 	if (slotsFilled != false) {
 		var coinShortName = jsCoin.m_findCoin(cryptoCoinValue.toUpperCase());
@@ -590,7 +601,7 @@ function confirmPortfolioUpdate() {
 		inputcountSlotValue = +inputcountSlotValue + +decimalSlotValue;
 		var buysell = buySellSlotValue.toUpperCase();
 
-		if (buysell.indexOf('DEL') > -1) {
+		if (buysell.indexOf('DEL') > -1 || buysell.indexOf('REM') > -1) {
 			inputcountSlotValue = "";
 		}
 		const speechOutput = 'You would like to ' + buysell + ' ' + inputcountSlotValue + ' ' +
@@ -670,7 +681,7 @@ function GetCoinValueByCountIntentHandler() {
 		return this.emit(':responseReady');
 		//return self.emit(':askWithCard', "Coin cannot be identified .<break time ='0.2s'/> Try with a valid coin name ", "Coin cannot be identified .<break time ='0.2s'/> Try with a valid coin name ", this.t('SKILL_NAME'), "Coin cannot be identified .<break time ='0.2s'/> Try with a valid coin name ")
 	}
-	if (inputcount == false) {
+	if (isNaN(inputcount)) {
 		inputcount = 1;
 	}
 	if (decimal != false) {
@@ -739,6 +750,12 @@ var descriptionHandlers = Alexa.CreateStateHandler(states.RESULTS, {
 		if (this.attributes.lastSearch.lastIntent.toUpperCase() == "UPDATECOINBYCOUNTINTENT") {
 			speechOutput = "Ok. I am cancelling the portfolio update " + getRandomValues(COIN_SELECT_MESSAGE, "MSG")
 			repromptSpeech = " The portfolio update has been cancelled" + getRandomValues(COIN_SELECT_MESSAGE, "MSG")
+			this.handler.state = states.SearchUpdateMODE;
+			this.response.speak(speechOutput).listen(repromptSpeech);
+			this.emit(':responseReady');
+		} else {
+			speechOutput = "Ok. " + getRandomValues(COIN_SELECT_MESSAGE, "MSG")
+			repromptSpeech = "" + getRandomValues(COIN_SELECT_MESSAGE, "MSG")
 			this.handler.state = states.SearchUpdateMODE;
 			this.response.speak(speechOutput).listen(repromptSpeech);
 			this.emit(':responseReady');
@@ -870,6 +887,48 @@ var descriptionHandlers = Alexa.CreateStateHandler(states.RESULTS, {
 	},
 	"SessionEndedRequest": function () {
 		this.emit("AMAZON.StopIntent");
+	},
+	"GetCoinValueByCountIntent": function () {
+		if (this.attributes.lastSearch) {
+			this.attributes.lastSearch.lastIntent = "";
+			this.attributes.lastSearch.lastIntentStatus = ""
+		}
+		GetCoinValueByCountIntentHandler.call(this);
+	},
+	"GetCoinValueByDecimalIntent": function () {
+		if (this.attributes.lastSearch) {
+			this.attributes.lastSearch.lastIntent = "";
+			this.attributes.lastSearch.lastIntentStatus = ""
+		}
+		GetCoinValueByDecimalIntentHandler.call(this);
+	},
+	"UpdateCoinByCountIntent": function () {
+		if (this.attributes.lastSearch) {
+			this.attributes.lastSearch.lastIntent = "";
+			this.attributes.lastSearch.lastIntentStatus = ""
+		}
+		confirmPortfolioUpdate.call(this);
+	},
+	"UpdateCoinByDecimalIntent": function () {
+		if (this.attributes.lastSearch) {
+			this.attributes.lastSearch.lastIntent = "";
+			this.attributes.lastSearch.lastIntentStatus = ""
+		}
+		confirmPortfolioUpdate.call(this);
+	},
+	"ChangeCurrencyIntent": function () {
+		if (this.attributes.lastSearch) {
+			this.attributes.lastSearch.lastIntent = "";
+			this.attributes.lastSearch.lastIntentStatus = ""
+		}
+		ChangeCurrencyIntentHandler.call(this);
+	},
+	"PortfolioIntent": function () {
+		if (this.attributes.lastSearch) {
+			this.attributes.lastSearch.lastIntent = "";
+			this.attributes.lastSearch.lastIntentStatus = ""
+		}
+		PortfolioHandler.call(this);
 	},
 	"Unhandled": function () {
 		console.log("Unhandled intent in startSearchHandlers");
