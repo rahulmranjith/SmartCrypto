@@ -4,7 +4,7 @@ var gUser = dbAllCoinZ.g_User;
 const myCoins = require('../AllCoinZ/jsonCoin');
 
 var platform;
-let myCurrency;
+var myCurrency;
 
 var HttpResponse;
 
