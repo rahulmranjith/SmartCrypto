@@ -77,15 +77,15 @@ alexaRouter.use(bodyParser.json());
 
 
 
-let uniqID;
-let displayName;
+var  uniqID;
+var  displayName;
 var currency = "";
 var exchange = "CCCAGG"
 var platform;
 
 var gapp;
 const ApiAiApp = require('actions-on-google').DialogflowApp;
-let res;
+var  res;
 
 var hanlders = Alexa.handlers
 var languageStrings = Alexa.languageStrings
@@ -117,7 +117,7 @@ app.post('/', function (request, response, next) {
 
         res = response;
         Util.m_setHttpResponse(res)
-        let originalRequest = gapp.body_.originalRequest
+        var  originalRequest = gapp.body_.originalRequest
 
         //console.log(originalRequest.source)  
         switch (originalRequest.source) {
@@ -143,7 +143,7 @@ app.post('/', function (request, response, next) {
         }
         Util.m_platform = platform
 
-        let actionMap = new Map();
+        var  actionMap = new Map();
         actionMap.set('getCoinValue', getCoinValue);
         actionMap.set('TotalPortfolioValue', TotalPortfolioValue);
         actionMap.set('ViewPortfolio', ViewPortfolio);
@@ -175,9 +175,9 @@ function help() {
 function googleWelcomeContext() {
     if (gapp.isPermissionGranted()) {
 
-        let userName = gapp.getUserName().displayName;
+        var  userName = gapp.getUserName().displayName;
         displayName = userName
-        let userID = gapp.getUser().user_id;
+        var  userID = gapp.getUser().user_id;
         dbAllCoinZ.g_UpdateInsert(gUser, {
             uniqID: uniqID
         }, {
@@ -221,7 +221,7 @@ function portfolioOptionSelect() {
 function DefaultWelcomeIntent() {
 
     if (Util.m_platform == "google") {
-        let namePermission = gapp.SupportedPermissions.NAME;
+        var  namePermission = gapp.SupportedPermissions.NAME;
 
         dbAllCoinZ.g_getRecord(gUser, {
             uniqID: gapp.getUser().user_id

@@ -265,7 +265,7 @@ function PortfolioHandler() {
 	dbAllCoinZ.g_getRecord(gUser, {
 		uniqID: uniqID
 	}).then(function (result) {
-		let myPortfolio;
+		var myPortfolio;
 		if (result != null) {
 			myPortfolio = result.portfolio;
 		}

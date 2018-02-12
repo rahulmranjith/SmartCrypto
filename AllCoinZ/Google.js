@@ -45,9 +45,9 @@ function getHelp(displayName) {
     //     )
     // );
 
-    let hasScreen = gapp.hasSurfaceCapability(gapp.SurfaceCapabilities.SCREEN_OUTPUT)
+    var  hasScreen = gapp.hasSurfaceCapability(gapp.SurfaceCapabilities.SCREEN_OUTPUT)
 
-    let richresponse = gapp.buildRichResponse()
+    var  richresponse = gapp.buildRichResponse()
     // Create a basic card and add it to the rich response 
     if (hasScreen) {
         richresponse = richresponse.addSimpleResponse('<speak><break time="1s"/>AllCryptoCoinZ Help</speak>')

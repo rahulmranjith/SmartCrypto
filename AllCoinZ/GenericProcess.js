@@ -231,7 +231,7 @@ function getPortfolio(userInfo) {
     dbAllCoinZ.g_getRecord(gUser, {
         uniqID: userInfo.uniqID
     }).then(function (result) {
-        let myPortfolio;
+        var  myPortfolio;
         if (result != null) {
             myPortfolio = result.portfolio;
         }
