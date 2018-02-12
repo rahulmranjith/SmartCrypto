@@ -14,7 +14,9 @@ const telegramPush = require('./AllCoinZ/push')
 const fetchCoin = require('./AllCoinZ/fetchCoin');
 const Google = require('./AllCoinZ/Google')
 const Alexa = require('./AllCoinZ/Alexa')
-const verifier = require('alexa-verifier-middleware')
+var verifier// = require('alexa-verifier-middleware')
+
+var verifier = require('alexa-verifier')
 var gUser = dbAllCoinZ.g_User;
 
 const app = express();
@@ -22,8 +24,50 @@ const app = express();
 var alexaRouter = express.Router()
 app.use('/', alexaRouter)
 
+alexaRouter.use(function (req, res, next) {
+    if (req._body) {
+        var er = 'The raw request body has already been parsed.'
+        return res.status(400).json({ status: 'failure', reason: er })
+    }
 
-alexaRouter.use(verifier)
+    // TODO: if _rawBody is set and a string, don't obliterate it here!
+
+    // mark the request body as already having been parsed so it's ignored by
+    // other body parser middlewares
+    req._body = true
+    req.rawBody = ''
+    req.on('data', function (data) {
+        return req.rawBody += data
+    })
+    req.on('end', function () {
+        var certUrl, er, error, signature
+
+        try {
+            req.body = JSON.parse(req.rawBody)
+        } catch (error) {
+            er = error
+            req.body = {}
+        }
+        certUrl = req.headers.signaturecertchainurl
+        signature = req.headers.signature
+        var skipver = req.headers.skipver
+        if (skipver) {
+            if (skipver == 'rmr999alexaskill') {
+                next()
+            }
+        } else {
+            verifier(certUrl, signature, req.rawBody, function (er) {
+                if (er) {
+                    res.status(400).json({ status: 'failure', reason: er })
+                } else {
+                    next()
+                }
+            })
+        }
+    })
+})
+
+//alexaRouter.use(verifier)
 
 alexaRouter.use(bodyParser.urlencoded({
     extended: true

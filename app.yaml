@@ -1,2 +1,4 @@
 env: flex
 runtime: nodejs
+skip_files:
+- ^(.*/)?\.sqlite$
