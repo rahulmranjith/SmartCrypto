@@ -111,7 +111,19 @@ function SyncPortfolio(userInfo, gapp) {
     if (gapp.getArgument("number") != null) {
         newQuantity = gapp.getArgument("number")
     };
-    var BuySell = (gapp.getArgument("BuySell").toUpperCase() == "ADD")
+
+    var buysellDeleteOption;
+
+    if (gapp.getArgument("BuySell")) {
+        buysellDeleteOption = gapp.getArgument("BuySell").toUpperCase()
+    }
+
+
+    if (gapp.getArgument("Delete")) {
+        buysellDeleteOption = gapp.getArgument("Delete").toUpperCase()
+    }
+
+
     var userInfoData;
 
     dbAllCoinZ.g_getRecord(gUser, {
@@ -121,11 +133,11 @@ function SyncPortfolio(userInfo, gapp) {
         var updatedQuantity
         var updatetext = "";
 
-        if (gapp.getArgument("BuySell").toUpperCase() == "ADD") {
+        if (buysellDeleteOption == "ADD") {
             updatetext = "added"
-        } else if (gapp.getArgument("BuySell").toUpperCase() == "DEDUCT") {
+        } else if (buysellDeleteOption == "DEDUCT") {
             updatetext = "deducted"
-        } else if (gapp.getArgument("BuySell").toUpperCase() == "DELETE") {
+        } else if (buysellDeleteOption == "DELETE") {
             updatetext = "deleted"
             updatedQuantity = 0;
         }
@@ -149,13 +161,13 @@ function SyncPortfolio(userInfo, gapp) {
                 } else {
                     //var updatedQuantity = 1;
                     coinQuantity = currentPortfolio[cryptoCoin]
-                    if (gapp.getArgument("BuySell").toUpperCase() == "ADD") {
+                    if (buysellDeleteOption == "ADD") {
                         updatetext = "added"
                         updatedQuantity = +newQuantity + +coinQuantity;
-                    } else if (gapp.getArgument("BuySell").toUpperCase() == "DEDUCT") {
+                    } else if (buysellDeleteOption == "DEDUCT") {
                         updatetext = "deducted"
                         updatedQuantity = +coinQuantity - newQuantity;
-                    } else if (gapp.getArgument("BuySell").toUpperCase() == "DELETE") {
+                    } else if (buysellDeleteOption == "DELETE") {
                         updatetext = "deleted"
                         updatedQuantity = 0;
                     }
@@ -173,6 +185,8 @@ function SyncPortfolio(userInfo, gapp) {
             } else {
                 if (updatetext != "added") {
                     quantityused = 0;
+                } else {
+                    quantityused = newQuantity;
                 }
                 userInfoData = {
                     displayName: userInfo.displayName,
@@ -190,6 +204,7 @@ function SyncPortfolio(userInfo, gapp) {
         }
         if (updatetext == "deleted") {
             currentValue = 0;
+            newQuantity="All "
         }
         dbAllCoinZ.g_UpdateInsert(gUser, {
             uniqID: userInfo.uniqID

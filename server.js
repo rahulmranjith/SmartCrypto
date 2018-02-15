@@ -158,6 +158,7 @@ app.post('/', function (request, response, next) {
         actionMap.set('input.unknown', DefaultFallbackIntent);
         actionMap.set('BuySellCoin', BuySellCoin);
         actionMap.set('gethelp', help);
+        actionMap.set('DeleteCoin', BuySellCoin);
         actionMap.set('GoogleWelcomeContext', googleWelcomeContext)
         actionMap.set('ViewPortfolio-SelectItemAction', portfolioOptionSelect)
         actionMap.set('getCoinValueOption', getCoinValueOption)
