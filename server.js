@@ -52,7 +52,7 @@ alexaRouter.use(function (req, res, next) {
         signature = req.headers.signature
         var skipver = req.headers.skipver
         if (req.body && req.body.originalRequest) {
-            if (req.body.originalRequest.source == "google") {
+            if (req.body.originalRequest.source) {
                 skipver = "bypass"
             }
         }
