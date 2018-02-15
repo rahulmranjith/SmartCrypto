@@ -51,8 +51,13 @@ alexaRouter.use(function (req, res, next) {
         certUrl = req.headers.signaturecertchainurl
         signature = req.headers.signature
         var skipver = req.headers.skipver
+        if (req.body && req.body.originalRequest) {
+            if (req.body.originalRequest.source == "google") {
+                skipver = "bypass"
+            }
+        }
         if (skipver) {
-            if (skipver == 'rmr999alexaskill') {
+            if (skipver == 'rmr999alexaskill' || skipver == "bypass") {
                 next()
             }
         } else {
@@ -77,15 +82,15 @@ alexaRouter.use(bodyParser.json());
 
 
 
-var  uniqID;
-var  displayName;
+var uniqID;
+var displayName;
 var currency = "";
 var exchange = "CCCAGG"
 var platform;
 
 var gapp;
 const ApiAiApp = require('actions-on-google').DialogflowApp;
-var  res;
+var res;
 
 var hanlders = Alexa.handlers
 var languageStrings = Alexa.languageStrings
@@ -117,7 +122,7 @@ app.post('/', function (request, response, next) {
 
         res = response;
         Util.m_setHttpResponse(res)
-        var  originalRequest = gapp.body_.originalRequest
+        var originalRequest = gapp.body_.originalRequest
 
         //console.log(originalRequest.source)  
         switch (originalRequest.source) {
@@ -143,7 +148,7 @@ app.post('/', function (request, response, next) {
         }
         Util.m_platform = platform
 
-        var  actionMap = new Map();
+        var actionMap = new Map();
         actionMap.set('getCoinValue', getCoinValue);
         actionMap.set('TotalPortfolioValue', TotalPortfolioValue);
         actionMap.set('ViewPortfolio', ViewPortfolio);
@@ -156,9 +161,6 @@ app.post('/', function (request, response, next) {
         actionMap.set('GoogleWelcomeContext', googleWelcomeContext)
         actionMap.set('ViewPortfolio-SelectItemAction', portfolioOptionSelect)
         actionMap.set('getCoinValueOption', getCoinValueOption)
-        actionMap.set('ViewPortfolio.FollowBuySell', ViewPortfolioFollowBuySell)
-
-
         gapp.handleRequest(actionMap);
     }
 })
@@ -175,9 +177,9 @@ function help() {
 function googleWelcomeContext() {
     if (gapp.isPermissionGranted()) {
 
-        var  userName = gapp.getUserName().displayName;
+        var userName = gapp.getUserName().displayName;
         displayName = userName
-        var  userID = gapp.getUser().user_id;
+        var userID = gapp.getUser().user_id;
         dbAllCoinZ.g_UpdateInsert(gUser, {
             uniqID: uniqID
         }, {
@@ -185,23 +187,16 @@ function googleWelcomeContext() {
                 uniqID: userID,
                 curr: "USD"
             }).then(function () {
-                GenProc.m_sendSimpleMessage("Hello " + userName + ", Welcome to AllCryptoCoinZ!!! Say help for getting assitance or Say a coin name ")
+                GenProc.m_sendSimpleMessage("Hello " + userName + ", Welcome to Smart Crypto!!! Say help for getting assitance or Say a coin name ")
             }, function (error) {
                 console.log(error)
             })
         // gapp.ask("Hi " + userName + " I can already tell you the value of crypto coin. Which coin would you like to select ? ");
     } else {
-        GenProc.m_sendSimpleMessage("Hello  Welcome to AllCryptoCoinZ!!! Say help for getting assitance or Say a coin name ")
+        GenProc.m_sendSimpleMessage("Hello  Welcome to Smart Crypto!!! Say help for getting assitance or Say a coin name ")
     }
 }
 
-
-function ViewPortfolioFollowBuySell() {
-
-    var a;
-    a = 1;
-
-}
 
 
 function portfolioOptionSelect() {
@@ -215,13 +210,20 @@ function portfolioOptionSelect() {
     if (!selectedItem) {
         gapp.ask('You did not select any item from the list');
     }
-    getCoinValue(coinObject, true)
+
+    if (selectedItem == 'My Portfolio') {
+        ViewPortfolio();
+    }
+    else {
+        getCoinValue(coinObject, true)
+    }
+
 }
 
 function DefaultWelcomeIntent() {
 
     if (Util.m_platform == "google") {
-        var  namePermission = gapp.SupportedPermissions.NAME;
+        var namePermission = gapp.SupportedPermissions.NAME;
 
         dbAllCoinZ.g_getRecord(gUser, {
             uniqID: gapp.getUser().user_id
@@ -231,7 +233,7 @@ function DefaultWelcomeIntent() {
                     return gapp.askForPermission('To address you by name and for saving portfolio details', gapp.SupportedPermissions.NAME);
                 }
             } else {
-                GenProc.m_sendSimpleMessage("Hello **" + data.displayName + "**,  \nWelcome to AllCryptoCoinZ!!!  \n  \n*Say a coin name* ")
+                GenProc.m_sendSimpleMessage("Hello **" + data.displayName + "**,  \nWelcome to Smart Crypto!!!  \n  \n*Say a coin name* ")
             }
         })
 
@@ -373,7 +375,7 @@ app.get('/users/del/:key?/:secret?', (req, res) => {
 });
 
 app.get('/rahulmr', (req, res) => {
-    res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n' + new Date()).end();
+    res.status(200).send('JAI - Welcome to Smart Crypto \n' + new Date()).end();
 });
 
 
@@ -437,7 +439,7 @@ app.get('/cv/:coin?', (req, res) => {
 
 });
 app.get('/rahulmr', (req, res) => {
-    res.status(200).send('JAI - Welcome to AllCryptoCoinZ \n' + new Date()).end();
+    res.status(200).send('JAI - @ Welcome to Smart Crypto \n' + new Date()).end();
 });
 
 

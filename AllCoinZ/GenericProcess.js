@@ -119,7 +119,16 @@ function SyncPortfolio(userInfo, gapp) {
     }).then(function (item) {
         var coinQuantity;
         var updatedQuantity
-        var updatetext = "added";
+        var updatetext = "";
+
+        if (gapp.getArgument("BuySell").toUpperCase() == "ADD") {
+            updatetext = "added"
+        } else if (gapp.getArgument("BuySell").toUpperCase() == "DEDUCT") {
+            updatetext = "deducted"
+        } else if (gapp.getArgument("BuySell").toUpperCase() == "DELETE") {
+            updatetext = "deleted"
+            updatedQuantity = 0;
+        }
         //console.log("items" + item);
         if (item == null) {
             updatedQuantity = newQuantity
@@ -162,12 +171,15 @@ function SyncPortfolio(userInfo, gapp) {
                     portfolio: JSON.stringify(currentPortfolio)
                 }
             } else {
+                if (updatetext != "added") {
+                    quantityused = 0;
+                }
                 userInfoData = {
                     displayName: userInfo.displayName,
                     uniqID: userInfo.uniqID,
                     curr: "INR",
                     portfolio: JSON.stringify({
-                        [cryptoCoin]: newQuantity
+                        [cryptoCoin]: quantityused
                     })
                 }
             }
@@ -175,6 +187,9 @@ function SyncPortfolio(userInfo, gapp) {
         var currentValue = newQuantity
         if (updatedQuantity != undefined) {
             currentValue = updatedQuantity
+        }
+        if (updatetext == "deleted") {
+            currentValue = 0;
         }
         dbAllCoinZ.g_UpdateInsert(gUser, {
             uniqID: userInfo.uniqID
@@ -231,7 +246,7 @@ function getPortfolio(userInfo) {
     dbAllCoinZ.g_getRecord(gUser, {
         uniqID: userInfo.uniqID
     }).then(function (result) {
-        var  myPortfolio;
+        var myPortfolio;
         if (result != null) {
             myPortfolio = result.portfolio;
         }
@@ -248,11 +263,11 @@ function getPortfolio(userInfo) {
             }
         }
         Util.m_myCurrency = result.curr;
-        if (myPortfolio == null) {} else {
+        if (myPortfolio == null) { } else {
             //console.log(JSON.parse(myPortfolio));
             deferred.resolve(JSON.parse(myPortfolio), result.curr);
         }
-    }, function (error) {})
+    }, function (error) { })
     return deferred.promise;
 }
 
