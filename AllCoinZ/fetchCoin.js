@@ -1,10 +1,8 @@
 const coinURL = "https://min-api.cryptocompare.com/data/all/coinlist"
 const Q = require('q')
 const request = require('request');
-// const userInfo = require('./db/initialize');
 
 const jsCoin = require('../AllCoinZ/jsonCoin')
-// let gUser = userInfo.m_User;
 
 function fetchCoins() {}
 var alexa = [];

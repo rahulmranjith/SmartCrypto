@@ -6,10 +6,7 @@ const http = require('http');
 const request = require('request');
 const Map = require('es6-map');
 const Q = require('q')
-//const dbAllCoinZ = require('./db/initialize');
-
-const dynamoDB = require('./db/dynamoDB');
-const exposedAPI = require('./AllCoinZ/exposedAPI');
+const dbAllCoinZ = require('./db/initialize');
 const telegramAPI = require('./AllCoinZ/telegram')
 const Util = require('./AllCoinZ/util')
 const GenProc = require('./AllCoinZ/GenericProcess')
@@ -19,22 +16,12 @@ const Google = require('./AllCoinZ/Google')
 const Alexa = require('./AllCoinZ/Alexa')
 var verifier// = require('alexa-verifier-middleware')
 const uuidv1 = require('uuid/v1');
-const ApiAiApp = require('actions-on-google').DialogflowApp;
-var uniqID;
-var displayName;
-var currency = "";
-var exchange = "CCCAGG"
-var platform;
-var gapp;
-
-var res;
-var hanlders = Alexa.handlers
-var languageStrings = Alexa.languageStrings
 
 var verifier = require('alexa-verifier')
-//var gUser = dbAllCoinZ.g_User;
+var gUser = dbAllCoinZ.g_User;
 
 const app = express();
+
 var alexaRouter = express.Router()
 //app.use('/', alexaRouter)
 
@@ -94,6 +81,8 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 
+
+
 app.get('/auth', (req, res) => {
     //res.status(200).send('JAI - @ Welcome to Smart Crypto \n' + new Date()).end();
     var clientID = 'JAIsmartcrypto'
@@ -121,17 +110,48 @@ app.get('/auth', (req, res) => {
     if (req.query.state) {
         STATE_STRING = req.query.state
     }
+
+    // dbAllCoinZ.g_UpdateInsert(gUser, {
+    //     uniqID: ACCESS_TOKEN
+    // }, {
+    //         displayName: displayName,
+    //         uniqID: ACCESS_TOKEN,
+    //         curr: userCurrency
+    //     }).then(function () {
+    //         GenProc.m_sendSimpleMessage("Default currency has been set to " + userCurrency)
+    //     }, function (error) {
+    //         console.log(error)
+    //     })
+
+
     var responseoAuthURL = 'https://oauth-redirect.googleusercontent.com/r/' + projectID + '#access_token=' + ACCESS_TOKEN + '&token_type=bearer&state=' + STATE_STRING
+
     res.redirect(responseoAuthURL)
+
+
 });
 
 
+var uniqID;
+var displayName;
+var currency = "";
+var exchange = "CCCAGG"
+var platform;
 
+var gapp;
+const ApiAiApp = require('actions-on-google').DialogflowApp;
+var res;
+
+var hanlders = Alexa.handlers
+var languageStrings = Alexa.languageStrings
 
 
 app.post('/', function (request, response, next) {
+
+
     //console.log(request)
     console.log(JSON.stringify(request.body))
+
     var reqsession = request.body.session
     if (reqsession != undefined) {
         if (reqsession.user != null) {
@@ -148,6 +168,8 @@ app.post('/', function (request, response, next) {
 
         Google.m_gapp(gapp)
         //console.log("GAPP" + JSON.stringify(gapp.body_.originalRequest))
+
+
         res = response;
         Util.m_setHttpResponse(res)
         var originalRequest = gapp.body_.originalRequest
@@ -211,15 +233,17 @@ function namepermission() {
         var userName = gapp.getUserName().displayName;
         displayName = userName
         var userID = gapp.getUser().accessToken//gapp.getUser().user_id;
-        dynamoDB.g_UpdateInsert({
-            displayName: userName,
-            uniqID: userID,
-            curr: "USD"
-        }).then(function () {
-            GenProc.m_sendSimpleMessage("Hello " + userName + ", Welcome to Smart Crypto!!! Say help for getting assitance or Say a coin name ")
-        }, function (error) {
-            console.log(error)
-        })
+        dbAllCoinZ.g_UpdateInsert(gUser, {
+            uniqID: uniqID
+        }, {
+                displayName: userName,
+                uniqID: userID,
+                curr: "USD"
+            }).then(function () {
+                GenProc.m_sendSimpleMessage("Hello " + userName + ", Welcome to Smart Crypto!!! Say help for getting assitance or Say a coin name ")
+            }, function (error) {
+                console.log(error)
+            })
 
     } else {
         GenProc.m_sendSimpleMessage("Hello  Welcome to Smart Crypto!!! Say help for getting assitance or Say a coin name ")
@@ -228,9 +252,12 @@ function namepermission() {
 
 
 function googleWelcomeContext() {
+
     if (gapp.getSignInStatus() == "OK" && !gapp.isPermissionGranted()) {
+
         var namePermission = gapp.SupportedPermissions.NAME;
-        dynamoDB.g_getRecord({
+
+        dbAllCoinZ.g_getRecord(gUser, {
             uniqID: gapp.getUser().accessToken//gapp.getUser().user_id
         }).then(function (data) {
             if (data == null) {
@@ -245,13 +272,17 @@ function googleWelcomeContext() {
     } else if (!gapp.getUser().accessToken) {
         return gapp.tell('You need to sign-in before using some features.This is a one time process and is needed to store your currency/portfolio details.');
     }
+
+
 }
 
 // i
 
 
 function portfolioOptionSelect() {
+
     const selectedItem = gapp.getContextArgument('actions_intent_option', 'OPTION').value;
+
     var coinObject = {
         count: selectedItem.split('#')[0],
         CryptoCoin: selectedItem.split('#')[1]
@@ -266,10 +297,13 @@ function portfolioOptionSelect() {
     else {
         getCoinValue(coinObject, true)
     }
+
 }
 
+
+
 function askSignIn() {
-    gapp.askForSignIn();
+    gapp.askForSignIn("hello");
 }
 
 function DefaultWelcomeIntent() {
@@ -278,9 +312,10 @@ function DefaultWelcomeIntent() {
             askSignIn();
         } else {
             var namePermission = gapp.SupportedPermissions.NAME;
-            dynamoDB.g_getRecord({
+
+            dbAllCoinZ.g_getRecord(gUser, {
                 uniqID: gapp.getUser().accessToken//gapp.getUser().user_id
-            }).then((data) => {
+            }).then(function (data) {
                 if (data == null) {
                     if (!gapp.isPermissionGranted()) {
                         return gapp.askForPermission('Thanks for signing in . And to address you by name ', gapp.SupportedPermissions.NAME);
@@ -293,18 +328,23 @@ function DefaultWelcomeIntent() {
     } else {
         GenProc.m_getWelcomeMessage(displayName)
     }
+
 }
 
 function checkAuthenticated() {
     if (gapp.getSignInStatus() === gapp.SignInStatus.OK) {
         let accessToken = gapp.getUser().accessToken;
-
+        // access account data with the token
     } else {
-        gapp.tell('You need to sign-in before using some features.This is a one time process and is needed to store your currency/portfolio details.');
 
+        gapp.tell('You need to sign-in before using some features.This is a one time process and is needed to store your currency/portfolio details.');
+        //gapp.askForSignIn("hello");
     }
 }
 function ChangeCurrency() {
+
+
+
     var userCurrency = gapp.getArgument("currency-name")
     if (userCurrency == "" && gapp.getArgument["CryptoCoin"] !== "") {
         userCurrency = gapp.getArgument["CryptoCoin"]
@@ -312,15 +352,18 @@ function ChangeCurrency() {
     if (userCurrency == "") {
         return GenProc.m_sendSimpleMessage("Currency could not be identified.No changes are made :(")
     }
-    dynamoDB.g_UpdateInsert({
-        displayName: displayName,
-        uniqID: uniqID,
-        curr: userCurrency
-    }).then(function () {
-        GenProc.m_sendSimpleMessage("Default currency has been set to " + userCurrency)
-    }, function (error) {
-        console.log(error)
-    })
+
+    dbAllCoinZ.g_UpdateInsert(gUser, {
+        uniqID: uniqID
+    }, {
+            displayName: displayName,
+            uniqID: uniqID,
+            curr: userCurrency
+        }).then(function () {
+            GenProc.m_sendSimpleMessage("Default currency has been set to " + userCurrency)
+        }, function (error) {
+            console.log(error)
+        })
 }
 
 function DefaultFallbackIntent() {
@@ -332,10 +375,15 @@ function BuySellCoin() {
         displayName,
         uniqID
     }, gapp)
-
+    // .then(function (message) {
+    //     sendDialogflowResponse(res, message)
+    // }, function (error) {
+    //     sendDialogflowResponse(res, error)
+    // })
 }
 
 function getCoinValue(coinObject, external) {
+
     Util.m_getCurrency(uniqID).then(function () {
 
         var count = 1;
@@ -369,22 +417,32 @@ function ViewPortfolio() {
         displayName,
         uniqID
     }, false)
-
+    // .then(function (VPortfolio) {
+    //     sendDialogflowResponse(res, VPortfolio)
+    // }, function (error) {
+    //     console.log(error);
+    //     sendDialogflowResponse(res, error)
+    // })
 }
+
 function TotalPortfolioValue() {
     GenProc.m_getTotalPortfolioValue({
         displayName,
         uniqID
     }, true)
-
+    // .then(function (TPV) {
+    //     //console.log("aaa" + TPV)
+    //     sendDialogflowResponse(res, TPV)
+    // },
+    // function (error) {
+    //     console.log(error);
+    //     sendDialogflowResponse(res, error)
+    // })
 }
-app.get('/rahulmr', (req, res) => {
-    //res.status(200).send('JAI - Welcome to Smart Crypto \n' + new Date()).end();
-    exposedAPI.welcome(req, res);
-});
 
 app.listen((process.env.PORT || 8000), function () {
     //console.log("Server is up and running... ");
+
     fetchCoin.m_updateCoins("update").then(function (success) {
         console.log("Loaded the coin array without errors..")
 
@@ -392,27 +450,145 @@ app.listen((process.env.PORT || 8000), function () {
         console.log(error)
     })
 });
+app.get('/users/:secret?', (req, res) => {
+
+    if (req.params.secret == "rmr999") {
+        Util.m_getUsers().then(function (useritem) {
+            var users = JSON.stringify(useritem)
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).send(users)
+        })
+    } else {
+        res.status(400).send("Check the request")
+    }
+});
+
+app.get('/users/del/:key?/:secret?', (req, res) => {
+
+    if (req.params.secret == "rmr999") {
+        Util.m_deleteUser(req.params.key).then(function (useritem) {
+            var users = JSON.stringify(useritem)
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).send(users)
+        })
+    } else {
+        res.status(400).send("Check request")
+    }
+});
+
+app.get('/rahulmr', (req, res) => {
+    res.status(200).send('JAI - Welcome to Smart Crypto \n' + new Date()).end();
+});
+
 
 app.get('/updateCoins/:optype?', (req, res) => {
-    exposedAPI.getCoins(req, res);
-});
-app.get('/users/del/:key?/:secret?', (req, res) => {
-    exposedAPI.deleteUser(req, res);
+    var optype = "";
+    optype = req.params.optype
+
+    fetchCoin.m_updateCoins(optype).then(function (success) {
+        console.log(success)
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).send(success)
+
+    }, function (error) {
+        console.log(error);
+        res.status(400).send(error)
+    })
 });
 app.get('/users/:secret?', (req, res) => {
-    exposedAPI.getUsers(req, res);
+
+    if (req.params.secret == "rmr999") {
+        Util.m_getUsers().then(function (useritem) {
+            var users = JSON.stringify(useritem)
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).send(users)
+        })
+
+
+    } else {
+        res.status(400).send("Check the request")
+    }
 });
 app.get('/cv/:coin?', (req, res) => {
-    exposedAPI.getCoinValue(req, res);
+
+    if (req.params.coin != "") {
+
+        var oCoin
+        oCoin = Util.m_getCoinObject({
+            Count: 1,
+            CryptoCoin: req.params.coin,
+            currency: "INR"
+        })
+
+        oCoin.then(function (CoinInfo) {
+
+            var coinDetail = "💰" + "" + CoinInfo.CoinFN.toUpperCase() + "💰\n\n " + 1 + " " + CoinInfo.CoinSN + " = " + CoinInfo.CoinValue.RAW[CoinInfo.CoinSN][CoinInfo.CoinCurrency].PRICE.toFixed(5) + "\n "
+
+
+            res.setHeader('Content-Type', 'application/text');
+            res.status(200).send(coinDetail)
+
+        }).catch(function (err) {
+            console.log("m_getCoinObject method failed" + err)
+        });
+
+
+
+    } else {
+        res.status(400).send("Check the request")
+    }
+
+
 });
 app.get('/rahulmr', (req, res) => {
     res.status(200).send('JAI - @ Welcome to Smart Crypto \n' + new Date()).end();
 });
 
+
+app.get('/updateCoins/:optype?', (req, res) => {
+    var optype = "";
+    optype = req.params.optype
+
+    fetchCoin.m_updateCoins(optype).then(function (success) {
+        console.log(success)
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).send(success)
+
+    }, function (error) {
+        console.log(error);
+        res.status(400).send(error)
+    })
+});
+
+
+
+
+
 function sendDialogflowResponse(res, result) {
+    //console.log(gapp.body_.originalRequest.data.user.userId)
 
     if (Util.m_platform != "google") {
         res.send(result)
     }
+    //console.log("result"+JSON.stringify(result))
 
+    //     res.send({"messages": [
+    //   {
+    //     "displayText": "Text response",
+    //     "platform": "google",
+    //     "textToSpeech": "A",//result.messages[0].subtitle,
+    //     "type": "simple_response"
+    //   }
+    // ]})
+
+    //   gapp.ask(gapp.buildRichResponse()
+    //   // Create a basic card and add it to the rich response
+    //   .addSimpleResponse('Simple Response')
+    //   .addBasicCard(gapp.buildBasicCard('Basic Card')
+    //     .setTitle('Basica Card Simple Title')
+    //     .addButton('Button', 'https://example.google.com/mathandprimes')
+    //     .setImage('https://www.cryptocompare.com/media/20646/eth.png', 'Ethereum')
+    //     .setImageDisplay('CROPPED')
+    //   )
+    // );
 }

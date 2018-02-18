@@ -1,7 +1,7 @@
 const Util = require('../AllCoinZ/util')
 var Alexa = require('alexa-sdk');
-const dbAllCoinZ = require('../db/initialize');
-var gUser = dbAllCoinZ.g_User;
+const dynamoDB = require('../db/dynamoDB');
+
 const GenProc = require('../AllCoinZ/GenericProcess')
 const jsCoin = require('../AllCoinZ/jsonCoin');
 const languageStrings = {
@@ -262,7 +262,7 @@ function PortfolioHandler() {
 	var self = this;
 	const uniqID = this.event.context.System.user.userId
 
-	dbAllCoinZ.g_getRecord(gUser, {
+	dynamoDB.g_getRecord({
 		uniqID: uniqID
 	}).then(function (result) {
 		var myPortfolio;
@@ -381,9 +381,7 @@ function ChangeCurrencyIntentHandler() {
 		return;
 	}
 
-	dbAllCoinZ.g_UpdateInsert(gUser, {
-		uniqID: uniqID
-	}, {
+	dynamoDB.g_UpdateInsert({
 		displayName: "",
 		uniqID: uniqID,
 		curr: userCurrency
@@ -472,7 +470,7 @@ function UpdateCoinByCountIntentHandler() {
 
 	const uniqID = this.event.context.System.user.userId;
 	const displayName = "";
-	dbAllCoinZ.g_getRecord(gUser, {
+	dynamoDB.g_getRecord({
 		uniqID: uniqID
 	}).then(function (item) {
 		var coinQuantity;
@@ -540,9 +538,7 @@ function UpdateCoinByCountIntentHandler() {
 		if (userRequestedOption == "DELETE") {
 			currentValue = 0;
 		}
-		dbAllCoinZ.g_UpdateInsert(gUser, {
-			uniqID: uniqID
-		}, userInfoData).then(function () {
+		dynamoDB.g_UpdateInsert(userInfoData).then(function () {
 
 			var responseMessage = inputcountSlotValue + " " + cryptoCoinValue.toUpperCase() + " has been " + updatetext + " !!!\nAvailable " + cryptoCoinValue.toUpperCase() + " : " + currentValue
 			self.handler.state = states.SearchUpdateMODE;
@@ -812,15 +808,15 @@ var descriptionHandlers = Alexa.CreateStateHandler(states.RESULTS, {
 
 	"TellCoinUpdateIntent": function () {
 
-			var responseMessage = this.attributes.lastSearch;
-			this.handler.state = states.SearchUpdateMODE;
-			this.attributes.lastSearch.lastSpeech = responseMessage;
-			var repromptSpeech = getRandomValues(COIN_SELECT_MESSAGE, "MSG");
-			this.response.speak(responseMessage).listen(repromptSpeech).cardRenderer("Portfolio Update :", responseMessage)
-			this.emit(':responseReady');
-		}
+		var responseMessage = this.attributes.lastSearch;
+		this.handler.state = states.SearchUpdateMODE;
+		this.attributes.lastSearch.lastSpeech = responseMessage;
+		var repromptSpeech = getRandomValues(COIN_SELECT_MESSAGE, "MSG");
+		this.response.speak(responseMessage).listen(repromptSpeech).cardRenderer("Portfolio Update :", responseMessage)
+		this.emit(':responseReady');
+	}
 
-		,
+	,
 	"TellCoinValueIntent": function () {
 		var CoinInfo = this.attributes.lastSearch.results[0];
 		var infoType = isSlotValid(this.event.request, "infoType");
@@ -985,10 +981,10 @@ function getGenericHelpMessage() {
 	//'You can ask me to tell value of crypto coin, or, you can say exit... What can I help you with?',
 
 	var sentences = ["ask - What's the value of " + getRandomValues(SAMPLE_COINS, "CoinName"),
-		"say - Add 1.23 " + getRandomValues(SAMPLE_COINS, "CoinName"),
+	"say - Add 1.23 " + getRandomValues(SAMPLE_COINS, "CoinName"),
 		"say - What's my portfolio",
-		"say - Change currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency"),
-		"say - Set Currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency")
+	"say - Change currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency"),
+	"say - Set Currency to " + getRandomValues(SAMPLE_CURRENCIES, "Currency")
 
 	]
 	const randomMessage = "You can " + sentences[getRandom(0, sentences.length - 1)];

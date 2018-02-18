@@ -3,8 +3,9 @@ const telegram = require('../AllCoinZ/telegram')
 const Google = require('../AllCoinZ/Google')
 const slack = require('../AllCoinZ/slack')
 const Q = require('q')
-const dbAllCoinZ = require('../db/initialize');
-var gUser = dbAllCoinZ.g_User;
+//const dbAllCoinZ = require('../db/initialize');
+const dynamoDB = require('../db/dynamoDB');
+//var gUser = dbAllCoinZ.g_User;
 const myCoins = require('../AllCoinZ/jsonCoin');
 
 function getWelcomeMessage(displayName) {
@@ -126,7 +127,7 @@ function SyncPortfolio(userInfo, gapp) {
 
     var userInfoData;
 
-    dbAllCoinZ.g_getRecord(gUser, {
+    dynamoDB.g_getRecord({
         uniqID: userInfo.uniqID
     }).then(function (item) {
         var coinQuantity;
@@ -157,25 +158,26 @@ function SyncPortfolio(userInfo, gapp) {
             var currentPortfolio = JSON.parse(item.portfolio)
             if (currentPortfolio != null) {
                 if (currentPortfolio[cryptoCoin] == undefined) {
-                    currentPortfolio[cryptoCoin] = newQuantity;
+                    coinQuantity = 0;
                 } else {
                     //var updatedQuantity = 1;
                     coinQuantity = currentPortfolio[cryptoCoin]
-                    if (buysellDeleteOption == "ADD") {
-                        updatetext = "added"
-                        updatedQuantity = +newQuantity + +coinQuantity;
-                    } else if (buysellDeleteOption == "DEDUCT") {
-                        updatetext = "deducted"
-                        updatedQuantity = +coinQuantity - newQuantity;
-                    } else if (buysellDeleteOption == "DELETE") {
-                        updatetext = "deleted"
-                        updatedQuantity = 0;
-                    }
-                    if (updatedQuantity < 0) {
-                        updatedQuantity = 0;
-                    }
-                    currentPortfolio[cryptoCoin] = updatedQuantity
                 }
+                if (buysellDeleteOption == "ADD") {
+                    updatetext = "added"
+                    updatedQuantity = +newQuantity + +coinQuantity;
+                } else if (buysellDeleteOption == "DEDUCT") {
+                    updatetext = "deducted"
+                    updatedQuantity = +coinQuantity - newQuantity;
+                } else if (buysellDeleteOption == "DELETE") {
+                    updatetext = "deleted"
+                    updatedQuantity = 0;
+                }
+                if (updatedQuantity < 0) {
+                    updatedQuantity = 0;
+                }
+                currentPortfolio[cryptoCoin] = updatedQuantity
+
                 userInfoData = {
                     displayName: item.displayName,
                     uniqID: item.uniqID,
@@ -204,11 +206,9 @@ function SyncPortfolio(userInfo, gapp) {
         }
         if (updatetext == "deleted") {
             currentValue = 0;
-            newQuantity="All "
+            newQuantity = "All "
         }
-        dbAllCoinZ.g_UpdateInsert(gUser, {
-            uniqID: userInfo.uniqID
-        }, userInfoData).then(function () {
+        dynamoDB.g_UpdateInsert(userInfoData).then(function () {
             switch (Util.m_platform) {
                 case "telegram":
                 case "slack":
@@ -258,7 +258,7 @@ function callPayLoadFormatMessage(message) {
 
 function getPortfolio(userInfo) {
     var deferred = Q.defer();
-    dbAllCoinZ.g_getRecord(gUser, {
+    dynamoDB.g_getRecord({
         uniqID: userInfo.uniqID
     }).then(function (result) {
         var myPortfolio;

@@ -1,6 +1,7 @@
 const Q = require('q')
-const dbAllCoinZ = require('../db/initialize');
-var gUser = dbAllCoinZ.g_User;
+//const dbAllCoinZ = require('../db/initialize');
+const dynamoDB = require('../db/dynamoDB');
+
 const myCoins = require('../AllCoinZ/jsonCoin');
 
 var platform;
@@ -25,7 +26,7 @@ function removeCurrencySymbols(currency) {
 
 function deleteUser(id) {
     var deferred = Q.defer();
-    dbAllCoinZ.g_deleteUser(gUser, id).then(function (item) {
+    dynamoDB.g_deleteUser(id).then(function (item) {
         deferred.resolve(item)
     }, function (error) {
         console.log("Could not fetch" + JSON.stringify(error))
@@ -38,7 +39,7 @@ function deleteUser(id) {
 
 function getUsers() {
     var deferred = Q.defer();
-    dbAllCoinZ.g_getRecords(gUser).then(function (item) {
+    dynamoDB.g_getRecords().then(function (item) {
 
         deferred.resolve(item)
 
@@ -55,7 +56,7 @@ function getUsers() {
 function getCurrency(uniqID) {
 
     var deferred = Q.defer();
-    dbAllCoinZ.g_getRecord(gUser, {
+    dynamoDB.g_getRecord({
         uniqID: uniqID
     }).then(function (item) {
         ////console.log("item " + item)
@@ -182,7 +183,7 @@ function getCoinObject(CoinInfo) {
     return deferred.promise;
 }
 
-var defaultSuggestions = ['BTC', 'XRP', 'ETH', 'ADA', 'Buy [+]', 'Sell [-]', 'Del [x]', 'My Portfolio', 'Set Currency']
+var defaultSuggestions = ['BTC', 'XRP', 'ETH', 'ADA', 'Add Coin', 'Deduct Coin', 'Del [x]', 'My Portfolio', 'Set Currency']
 
 
 module.exports = {
