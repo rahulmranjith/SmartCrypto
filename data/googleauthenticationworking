@@ -243,8 +243,6 @@ app.post('/', function (request, response, next) {
         actionMap.set('getCoinValueOption', getCoinValueOption)
         actionMap.set('namepermission', namepermission)
         actionMap.set('sign.in', checkAuthenticated)
-        actionMap.set('actionsignin', actionsignin)
-        
 
         gapp.handleRequest(actionMap);
     }
@@ -346,12 +344,6 @@ function DefaultWelcomeIntent() {
     } else {
         GenProc.m_getWelcomeMessage(displayName)
     }
-}
-
-function actionsignin(){
-
-    var a;
-    a=1;
 }
 
 function checkAuthenticated() {
