@@ -129,7 +129,7 @@ app.get('/auth', (req, res) => {
 
 
 app.get('/home', function (request, response, next) {
-    response.sendFile(__dirname + '/AllCOinZ/home.html');
+    response.sendFile(__dirname + '/AllCoinZ/home.html');
 }
 )
 
