@@ -133,7 +133,7 @@ app.get('/home', function (request, response, next) {
 }
 )
 
-//https://actionsts.smartcrypto.bid/
+//https://actionsts.smartcrypto.bid/https://a5641d11.ngrok.io
 var exposedURL = 'https://actionsts.smartcrypto.bid/'
 app.get('/token', (req, res) => {
 
@@ -420,7 +420,7 @@ function ChangeCurrency() {
     }).then(function () {
         GenProc.m_sendSimpleMessage("Default currency has been set to " + userCurrency)
     }, function (error) {
-        console.log(error)
+        GenProc.m_sendSimpleMessage("Currency could not be set.Please try again or contact support")
     })
 }
 

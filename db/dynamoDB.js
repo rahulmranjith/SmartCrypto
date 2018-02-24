@@ -119,27 +119,28 @@ var deleteUsers = function (id) {
 
 var updateInsert = function (newItem) {
     return new Promise((resolve, reject) => {
-        if (!newItem.displayName) {
-            newItem.displayName = " Dear User"
+
+        var UpdateExpressionConfigured = "SET "
+        var ExpressionAttributeValueConfigured = {}
+        if (newItem.displayName) {
+            UpdateExpressionConfigured += "displayName=:displayName,"
+            ExpressionAttributeValueConfigured[":displayName"] = newItem.displayName
         }
-        if (!newItem.curr) {
-            newItem.curr = "USD"
+        if (newItem.curr) {
+            UpdateExpressionConfigured += "curr=:curr,"
+            ExpressionAttributeValueConfigured[":curr"] = newItem.curr
         }
-        if (!newItem.portfolio) {
-            newItem.portfolio = "{}"
+        if (newItem.portfolio) {
+            UpdateExpressionConfigured += "portfolio=:portfolio,"
+            ExpressionAttributeValueConfigured[":portfolio"] = newItem.portfolio
         }
+        UpdateExpressionConfigured = UpdateExpressionConfigured.substr(0, UpdateExpressionConfigured.length - 1)
         inputs = {
             TableName: table,
             Key: { "uniqID": newItem.uniqID },
 
-
-            UpdateExpression: "SET displayName=:displayName,curr =:curr ,portfolio=:portfolio ",
-            ExpressionAttributeValues: {
-                ":displayName": newItem.displayName,
-                ":curr": newItem.curr,
-                ":portfolio": newItem.portfolio,
-                //":uniqID": newItem.uniqID
-            },
+            UpdateExpression: UpdateExpressionConfigured,
+            ExpressionAttributeValues: ExpressionAttributeValueConfigured,
             // ConditionExpression: "uniqID = :uniqID",
             ReturnValues: "ALL_NEW"
         }
