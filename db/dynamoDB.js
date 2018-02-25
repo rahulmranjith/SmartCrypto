@@ -3,8 +3,8 @@ var AWS = require("aws-sdk");
 AWS.config.update({
     region: "us-west-2",
     endpoint: 'https://dynamodb.us-west-2.amazonaws.com',// "http://localhost:8009",
-    accessKeyId: 'AKIAJ4NC6WCCVRMB5YAQ',
-    secretAccessKey: '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'
+    accessKeyId: '',
+    secretAccessKey: ''
 });
 
 var dynamodb = new AWS.DynamoDB();

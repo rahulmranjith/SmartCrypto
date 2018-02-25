@@ -96,11 +96,12 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 
+var projectID = 'allcryptocoinz'
 app.get('/auth', (req, res) => {
     //res.status(200).send('JAI - @ Welcome to Smart Crypto \n' + new Date()).end();
     var clientID = 'JAIsmartcrypto'
-    var redirectURL = 'https://oauth-redirect.googleusercontent.com/r/allcryptocoinz'
-    var projectID = 'allcryptocoinz'
+    var redirectURL = 'https://oauth-redirect.googleusercontent.com/r/' + projectID
+
     var ACCESS_TOKEN = 'JAISmartCryptoAT' + uuidv1()
     var STATE_STRING;
 
@@ -134,7 +135,7 @@ app.get('/home', function (request, response, next) {
 )
 
 //https://actionsts.smartcrypto.bid/https://a5641d11.ngrok.io
-var exposedURL = 'https://actionsts.smartcrypto.bid/'
+var exposedURL = 'https://a5641d11.ngrok.io/'
 app.get('/token', (req, res) => {
 
     var authorizCode = req.query.code
@@ -142,9 +143,9 @@ app.get('/token', (req, res) => {
     var authURL = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=' //+ authorizCode
     var clientID //=  'JAISPCI'
     clientID = '178495420010-247u2k5ir6r9e6biehjv2i43a5nudgmu.apps.googleusercontent.com'
-    var redirectURL = 'https://oauth-redirect.googleusercontent.com/r/allcryptocoinz'
-    var projectID = 'allcryptocoinz'
-    var clientsecret = 'vPvYZ6bLsYhuXUDjQt-E-60R'
+    var redirectURL = 'https://oauth-redirect.googleusercontent.com/r/'+projectID
+    
+    var clientsecret = ''
 
     request.post({
         headers: { 'content-type': 'application/x-www-form-urlencoded' },
