@@ -1,4 +1,4 @@
-Welcome to the AllCryptoCoinZ
+Welcome to the SmartCrypto
 =========================
 
 Click `Show` in the header to see your app live. Updates to your code will instantly deploy and update live.
