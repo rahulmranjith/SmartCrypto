@@ -155,7 +155,8 @@ function SyncPortfolio(userInfo, gapp) {
             }
             //console.log(JSON.stringify(item))
         } else {
-            var currentPortfolio = JSON.parse(item.portfolio)
+            var currentPortfolio;
+            if (item.portfolio) { currentPortfolio = JSON.parse(item.portfolio) }
             if (currentPortfolio != null) {
                 if (currentPortfolio[cryptoCoin] == undefined) {
                     coinQuantity = 0;
