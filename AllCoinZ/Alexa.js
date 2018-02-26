@@ -271,7 +271,7 @@ function PortfolioHandler() {
 		}
 		if (result == null || myPortfolio == null) {
 			var intentRequest = '<break time ="0.5s"/> ' + "Say a coin name"
-			self.emit(':askWithCard', "Your portfolio is empty .Please create a new portfolio. Check help for commands <break time ='0.5s'/> or " + intentRequest, "Your portfolio is empty .Please create a new portfolio. Check help !!!", self.t('SKILL_NAME'), "Your portfolio is empty .Please create a new portfolio. Check help for commands !!!");
+			return self.emit(':askWithCard', "Your portfolio is empty .Please create a new portfolio. Check help for commands <break time ='0.5s'/> or " + intentRequest, "Your portfolio is empty .Please create a new portfolio. Check help !!!", self.t('SKILL_NAME'), "Your portfolio is empty .Please create a new portfolio. Check help for commands !!!");
 		}
 		if (result.curr == null) {
 			Util.m_myCurrency == "INR"
@@ -495,7 +495,8 @@ function UpdateCoinByCountIntentHandler() {
 				})
 			}
 		} else {
-			var currentPortfolio = JSON.parse(item.portfolio)
+			var currentPortfolio;
+            if (item.portfolio) { currentPortfolio = JSON.parse(item.portfolio) }
 			if (currentPortfolio != null) {
 				if (currentPortfolio[cryptoCoinValue] == undefined) {
 					currentPortfolio[cryptoCoinValue] = inputcountSlotValue;
@@ -605,11 +606,14 @@ function confirmPortfolioUpdate() {
 
 		var lastSearch = this.attributes.lastSearch = {
 			speechOutput: this.event.request,
+			lastIntent : "UpdateCoinByCountIntent",
+			lastIntentStatus : "UpdateCoinByCountIntentPending",
+			lastSpeech : speechOutput
 		}
 
-		this.attributes.lastSearch.lastIntent = "UpdateCoinByCountIntent";
-		this.attributes.lastSearch.lastIntentStatus = "UpdateCoinByCountIntentPending"
-		this.attributes.lastSearch.lastSpeech = speechOutput
+		// this.attributes.lastSearch.lastIntent = "UpdateCoinByCountIntent";
+		// this.attributes.lastSearch.lastIntentStatus = "UpdateCoinByCountIntentPending"
+		// this.attributes.lastSearch.lastSpeech = speechOutput
 
 		this.response.speak(speechOutput).listen(speechOutput);
 		this.handler.state = states.RESULTS;
@@ -677,7 +681,7 @@ function GetCoinValueByCountIntentHandler() {
 		return this.emit(':responseReady');
 		//return self.emit(':askWithCard', "Coin cannot be identified .<break time ='0.2s'/> Try with a valid coin name ", "Coin cannot be identified .<break time ='0.2s'/> Try with a valid coin name ", this.t('SKILL_NAME'), "Coin cannot be identified .<break time ='0.2s'/> Try with a valid coin name ")
 	}
-	if (isNaN(inputcount)) {
+	if (isNaN(inputcount) || inputcount == false) {
 		inputcount = 1;
 	}
 	if (decimal != false) {
@@ -885,17 +889,17 @@ var descriptionHandlers = Alexa.CreateStateHandler(states.RESULTS, {
 		this.emit("AMAZON.StopIntent");
 	},
 	"GetCoinValueByCountIntent": function () {
-		if (this.attributes.lastSearch) {
-			this.attributes.lastSearch.lastIntent = "";
-			this.attributes.lastSearch.lastIntentStatus = ""
-		}
+		// if (this.attributes.lastSearch) {
+		// 	this.attributes.lastSearch.lastIntent = "";
+		// 	this.attributes.lastSearch.lastIntentStatus = ""
+		// }
 		GetCoinValueByCountIntentHandler.call(this);
 	},
 	"GetCoinValueByDecimalIntent": function () {
-		if (this.attributes.lastSearch) {
-			this.attributes.lastSearch.lastIntent = "";
-			this.attributes.lastSearch.lastIntentStatus = ""
-		}
+		// if (this.attributes.lastSearch) {
+		// 	this.attributes.lastSearch.lastIntent = "";
+		// 	this.attributes.lastSearch.lastIntentStatus = ""
+		// }
 		GetCoinValueByDecimalIntentHandler.call(this);
 	},
 	"UpdateCoinByCountIntent": function () {
