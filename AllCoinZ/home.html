@@ -1,0 +1,56 @@
+<html>
+
+<head>
+    <script type="text/javascript">
+
+        function oauthSignIn() {
+            // Google's OAuth 2.0 endpoint for requesting an access token
+            var oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
+
+            // Create <form> element to submit parameters to OAuth 2.0 endpoint.
+            var form = document.createElement('form');
+            form.setAttribute('method', 'GET'); // Send as a GET request.
+            form.setAttribute('action', oauth2Endpoint);
+
+            var searchParams = new URLSearchParams(window.location.search);
+            var state = searchParams.get("state");
+            var redirect_uri //= searchParams.get("redirect_uri");
+            var clientid = searchParams.get("client_id");
+            redirect_uri = 'https://a5641d11.ngrok.io/token'
+            debugger;
+             //alert(redirect_uri + " " + clientid)
+            // Parameters to pass to OAuth 2.0 endpoint.
+            var params = {
+                'client_id': clientid,
+                'redirect_uri': redirect_uri,
+                'response_type': 'code',
+                'scope': 'email',
+                'state': state,
+                'include_granted_scopes': 'true',
+
+            };
+            // Add form parameters as hidden input values.
+            for (var p in params) {
+                var input = document.createElement('input');
+                input.setAttribute('type', 'hidden');
+                input.setAttribute('name', p);
+                input.setAttribute('value', params[p]);
+                form.appendChild(input);
+            }
+            // Add form to page and submit it to open the OAuth 2.0 endpoint.
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        window.onload = oauthSignIn
+    </script>
+
+    <body>
+        <!-- hello -->
+        <!-- <button id="b" onclick="oauthSignIn()" >click</button> -->
+
+    </body>
+
+</head>
+
+</html>

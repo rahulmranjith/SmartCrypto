@@ -7,7 +7,9 @@ var Sequelize = require('sequelize');
 var app = express();
 
 
-global.lg = function(message){console.log(message)}; 
+global.lg = function (message) {
+  console.log(message)
+};
 
 
 // setup a new database
@@ -18,23 +20,23 @@ var sequelize = new Sequelize('AllCryptoCoinZ', process.env.DB_USER, process.env
   pool: {
     max: 5,
     min: 0,
-    idle: 10000 
+    idle: 10000
   },
-    // Security note: the database is saved to the file `database.sqlite` on the local filesystem. It's deliberately placed in the `.data` directory
-    // which doesn't get copied if someone remixes the project.
-  //storage: 'D:/MyPersonalWork/2017 December/NewProjects_/Git/AllCryptoCoinZ/AllCryptoCoinZ/data/AllCryptoCoinZ.sqlite'
+  // Security note: the database is saved to the file `database.sqlite` on the local filesystem. It's deliberately placed in the `.data` directory
+  // which doesn't get copied if someone remixes the project.
+  //storage: 'D:/MyPersonalWork/2017 December/NewProjects_/Git/AllCryptoCoinZ/data/AllCryptoCoinZ.sqlite'
   storage: 'data/AllCryptoCoinZ.sqlite'
 });
 
 // authenticate with the database
 sequelize
   .authenticate()
-  .then(() => { 
+  .then(() => {
     console.log('Connection has been established successfully.');
   })
   .catch(err => {
     console.error('Unable to connect to the database:', err);
-  }); 
+  });
 
 
 
@@ -48,12 +50,12 @@ const User = sequelize.define('user', {
   curr: {
     type: Sequelize.STRING
   },
-  portfolio:{
-    type:Sequelize.STRING
+  portfolio: {
+    type: Sequelize.STRING
   }
 });
 
- 
+
 User.sync(
   //{force: true}
 );
@@ -65,8 +67,8 @@ User.sync(
 // }, function (error) {
 //      console.log("Value Error" + JSON.stringify(error))
 // })  
-   
- 
+
+
 // User.destroy({
 //     where: {
 //          uniqID:"U8J0ZPRJR"490302005 
@@ -74,67 +76,88 @@ User.sync(
 // }) 
 
 // User.find({where:{uniqID:"ABwppHGPMtus_OInPU49GevukD7HE7e-XDr47X8CXS28ftsSq5PMByRWw_Z8PEV0OcMR5cXA8KWt8bFHzA"}}).then(function(success){
-  
+
 //   console.log(success)
 
 
 
 // },function(error){console.log(error)})
 
- 
+
 //methods
 var getRecords = function (model) {
-  
+
   return model.findAll();
 };
 
-var getRecord = function (model,where) {
+var getRecord = function (model, where) {
   return model.find({
-      where: where
+    where: where
   });
 };
 
-var createRecord = function (model,item) {
-      model.create(item).then(function(error){
-       
-  
-  },function(error){
-      
+var createRecord = function (model, item) {
+  model.create(item).then(function (error) {
+
+
+  }, function (error) {
+
   });
+};
+
+// User.destroy({
+//     where: {
+//          uniqID:"U8J0ZPRJR"490302005 
+//     }
+// }) 
+
+var deleteUsers = function (model, id) {
+  if (id == "all") {
+    return model.destroy({
+      where:{}
+    });
+  } else {
+    return model.destroy({
+      where: {
+        id: id
+      }
+    });
+  }
 };
 
 var updateInsert = function (model, where, newItem) {
-return model.findOne({
-      where: where
+  return model.findOne({
+    where: where
   }).then(function (item) {
-        
-      if (!item) {
-       console.log("Item Not Found");
-        return model.create(newItem).then(function (item) {
-              return {
-                  item: item,
-                  created: true
-              }
-          })
-      } else {
-        console.log("Item Found");
-          return model.update(newItem, {
-              where: where
-          }).then(function (item) {
-              return {
-                  item: item,
-                  created: false
-              }
 
-          })
-      }
+    if (!item) {
+      console.log("Item Not Found");
+      return model.create(newItem).then(function (item) {
+        return {
+          item: item,
+          created: true
+        }
+      })
+    } else {
+      console.log("Item Found");
+      return model.update(newItem, {
+        where: where
+      }).then(function (item) {
+        return {
+          item: item,
+          created: false
+        }
+
+      })
+    }
   })
 }
 
 module.exports = {
-  g_User:User,
-  g_getRecord:getRecord,
-  g_getRecords:getRecords,
-  g_createRecord:createRecord,
-  g_UpdateInsert:updateInsert,
+  g_User: User,
+  g_getRecord: getRecord,
+  g_getRecords: getRecords,
+  g_createRecord: createRecord,
+  g_UpdateInsert: updateInsert,
+  g_deleteUser: deleteUsers
 }

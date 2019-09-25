@@ -1,18 +1,20 @@
 const Q = require('q')
-const dbAllCoinZ = require('../db/initialize');
-var gUser = dbAllCoinZ.g_User;
+//const dbAllCoinZ = require('../db/initialize');
+const dynamoDB = require('../db/dynamoDB');
+
 const myCoins = require('../AllCoinZ/jsonCoin');
 
 var platform;
-let myCurrency;
+var myCurrency;
 
 var HttpResponse;
 
-function setHttpResponse(HttpRes){
-    HttpResponse=HttpRes
+function setHttpResponse(HttpRes) {
+    HttpResponse = HttpRes
 }
-function getHttpResponse(){
-   return  HttpResponse;
+
+function getHttpResponse() {
+    return HttpResponse;
 }
 
 function removeCurrencySymbols(currency) {
@@ -22,9 +24,22 @@ function removeCurrencySymbols(currency) {
 
 
 
+function deleteUser(id) {
+    var deferred = Q.defer();
+    dynamoDB.g_deleteUser(id).then(function (item) {
+        deferred.resolve(item)
+    }, function (error) {
+        console.log("Could not fetch" + JSON.stringify(error))
+        deferred.reject("Could not fetch" + JSON.stringify(error))
+
+    })
+
+    return deferred.promise;
+}
+
 function getUsers() {
     var deferred = Q.defer();
-    dbAllCoinZ.g_getRecords(gUser).then(function (item) {
+    dynamoDB.g_getRecords().then(function (item) {
 
         deferred.resolve(item)
 
@@ -41,7 +56,7 @@ function getUsers() {
 function getCurrency(uniqID) {
 
     var deferred = Q.defer();
-    dbAllCoinZ.g_getRecord(gUser, {
+    dynamoDB.g_getRecord({
         uniqID: uniqID
     }).then(function (item) {
         ////console.log("item " + item)
@@ -103,39 +118,37 @@ function getSimpleMessageObject(message) {
 
 
 
-function getCoinObject(coinsCount) {
+function getCoinObject(CoinInfo) {
     var speechOutput = "";;
     var cryptoCoin;
     var speechOP = "";
 
-
-
     var deferred = Q.defer();
 
-    cryptoCoin = coinsCount.CryptoCoin;
-    ////console.log("hello " + JSON.stringify(result.parameters))
+    cryptoCoin = CoinInfo.CryptoCoin;
+    if (CoinInfo.currency != undefined) {
+        myCurrency = CoinInfo.currency
+    }
 
-    console.log("myCurrency" + myCurrency)
+    if (CoinInfo.found != true) {
+
+    }
+
     if (cryptoCoin == undefined || myCurrency == undefined) {
         speechOP = "Coin or Currency cannot be identified.";
 
-        deferred.reject(null);
+        deferred.reject(speechOP);
     } else {
-        //console.log("cryptocoins" + cryptoCoin)
 
-        //          for (const key of Object.keys(myCoins)) {
-        //             //console.log(key, myCoins[key]);
-        //         }
-
-        console.log("get coin val" + cryptoCoin)
-        cryptoCoin = myCoins.m_findCoin(cryptoCoin.toUpperCase());;
-
+        if (CoinInfo.found != true) {
+            cryptoCoin = myCoins.m_findCoin(cryptoCoin.toUpperCase());;
+        } else {
+            cryptoCoin = CoinInfo.CryptoCoin
+        }
 
         var BaseLinkUrl = "https://www.cryptocompare.com";
         var link = BaseLinkUrl + cryptoCoin[0].u;
         var ilink = BaseLinkUrl + cryptoCoin[0].iu;
-        //var baseUrl = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=';
-        //var parsedUrl = baseUrl + cryptoCoin[0].n + "&tsyms=" + currency
 
         var baseUrl = 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms=';
         var parsedUrl = baseUrl + cryptoCoin[0].n + "&tsyms=BTC," + myCurrency + "&e=CCCAGG"
@@ -146,15 +159,9 @@ function getCoinObject(coinsCount) {
         var request = require('request');
         request(parsedUrl, function (error, response, body) {
 
-            //console.log("JSON Response" + JSON.stringify(response.body))
             var JSONResponse = JSON.parse(response.body);
-            ////console.log("JSON Coin Value :"+cryptoCoin[0].n+ ":"+ JSONResponse[cryptoCoin[0].n]);
-            //console.log(JSONResponse);
-            var coinValue = "" // JSONResponse[cryptoCoin[0].n.toUpperCase()][currency];
+            var coinValue = ""
             var speechOP = ""
-            ////console.log("CV" + coinValue);
-
-
             if (coinValue != undefined) {
                 oCoin = {
                     CoinFN: cryptoCoin[0].c,
@@ -163,20 +170,20 @@ function getCoinObject(coinsCount) {
                     CoinURL: link,
                     CoinValue: JSONResponse,
                     CoinCurrency: myCurrency,
-                    CoinCount: coinsCount.count
+                    CoinCount: CoinInfo.count
                 }
                 deferred.resolve(oCoin);
             } else {
                 oCoin = null;
                 deferred.reject(null);
             }
-            ////console.log(speechOP);
+
         })
     }
     return deferred.promise;
 }
 
-
+var defaultSuggestions = ['BTC', 'XRP', 'ETH', 'ADA', 'Add Coin', 'Deduct Coin', 'Del [x]', 'My Portfolio', 'Set Currency']
 
 
 module.exports = {
@@ -188,6 +195,8 @@ module.exports = {
     m_getCoinObject: getCoinObject,
     m_myCurrency: myCurrency,
     m_getUsers: getUsers,
-    m_setHttpResponse:setHttpResponse,
-    m_getHttpResponse:getHttpResponse
+    m_deleteUser: deleteUser,
+    m_setHttpResponse: setHttpResponse,
+    m_getHttpResponse: getHttpResponse,
+    m_getDefaultSuggestions: defaultSuggestions
 }

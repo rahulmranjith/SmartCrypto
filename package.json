@@ -10,6 +10,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "alexa-sdk": "1.0.25",
     "express": "^4.15.3",
     "sqlite3": "*",
     "sequelize": "*",
@@ -19,7 +20,10 @@
     "q": "^1.5.1",
     "es6-map": "^0.1.4",
     "prettyjson": "^1.2.1",
-    "underscore.string": "^3.3.4"
+    "alexa-verifier": "^1.0.0",
+    "underscore.string": "^3.3.4",
+    "mocha": "^5.0.0",
+    "jsonwebtoken": ">=8.1.1"
   },
   "engines": {
     "node": "8.1.x"
